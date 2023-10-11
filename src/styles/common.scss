@@ -1,0 +1,149 @@
+.flx-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#nprogress .bar {
+	height: 5px;
+	background: #00cdc4 !important; // 自定义颜色
+}
+.flex-box {
+	display: flex;
+
+	// width: 100%;
+	// height: 100%;
+	flex: 1;
+	background-color: var(--el-bg-color);
+}
+
+// 头像下拉框popper样式
+.el-popper.avatar-popper {
+	transform: translateY(-8px);
+	.el-dropdown-menu {
+		padding: 15px 10px 14px;
+		.el-dropdown-menu__item {
+			border-radius: 4px;
+		}
+	}
+	.el-popper__arrow {
+		display: none;
+	}
+}
+
+// 表单页面通用布局
+.common-layout-system {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding-left: 35px;
+	padding-right: 28px;
+	padding-top: 22px;
+	border-radius: 10px;
+
+	// display: flex;
+	height: 0;
+	background: #fff;
+	.el-form {
+		margin-bottom: 0;
+		.wrap {
+			flex-wrap: wrap;
+			.el-form-item {
+				margin-bottom: 0;
+				.el-input {
+					width: 320px;
+				}
+			}
+			.el-button {
+				margin-left: 10px;
+				width: 72px;
+				&:first-of-type {
+					margin-left: 20px;
+				}
+			}
+		}
+	}
+	.el-select {
+		width: 100%;
+	}
+	.search-buttons {
+		display: flex;
+		flex-direction: row-reverse;
+		margin-bottom: 20px;
+	}
+	.operat-buttons {
+		display: flex;
+		margin-top: 26px;
+		margin-bottom: 12px;
+		background-color: #fff;
+		.space {
+			flex: 1;
+		}
+	}
+	.pagination-block {
+		display: flex;
+		flex-direction: row-reverse;
+		margin: 29px 0;
+
+		// margin-left: 30px;
+		// margin-right: 30px;
+	}
+	:deep(.el-card__body) {
+		padding: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}
+:deep(.el-table) {
+	th {
+		background-color: #fafafa;
+		color: rgb(0 0 0 / 85%);
+		word-break: break-word;
+	}
+}
+.needHide {
+	height: 100px;
+}
+.height-fade-enter-active,
+.height-fade-leave-active {
+	transition: all 0.3s ease;
+}
+.height-fade-enter-from,
+.height-fade-leave-to {
+	height: 0;
+	opacity: 0;
+}
+.two-word-button {
+	display: inline-block;
+	width: 40px;
+	span{
+		font-size: 12px;
+	}
+}
+.four-word-button {
+	display: inline-block;
+	width: 80px;
+	span{
+		font-size: 12px;
+	}
+}
+.button-hold-position:not(:first-child) {
+	display: none;
+}
+.el-drawer.data-auth-drawer {
+	// overflow: hidden;
+	.el-drawer__body {
+		display: flex;
+
+		// overflow: auto;
+		flex-direction: column;
+		flex: 1;
+		padding-bottom: 0;
+		height: 0;
+	}
+	.el-drawer__footer {
+		.el-button {
+			width: 70px;
+			height: 32px;
+		}
+	}
+}

@@ -1,0 +1,301 @@
+{
+  "code": 200,
+  "data": {
+      "token": "751e9e3a-86af-4be1-b69f-90698cee5eb3",
+      "userInfoVo": {
+          "deptTreeVoList": [],
+          "menuVoList": [
+                                {
+                              "affix": 0,
+                              "childrenList": [
+
+
+                              ],
+                              "component": "/dataMarket/index",
+                              "hidden": 0,
+                              "id": 66,
+                              "keepAlive": 1,
+                              "path": "_1_64_65_",
+                              "permission": "partner",
+                              "pid": 65,
+                              "redirect": "/dataMarket",
+                              "router": "dataMarket",
+                              "sort": 1,
+                              "title": "数据市场",
+                              "type": 1
+                          },
+                               {
+                              "affix": 0,
+                              "childrenList": [
+
+
+                              ],
+                              "component": "/advancedSearch/index",
+                              "hidden": 0,
+                              "id": 66,
+                              "keepAlive": 1,
+                              "path": "_1_64_65_",
+                              "permission": "partner",
+                              "pid": 65,
+                              "redirect": "/advancedSearch",
+                              "router": "advancedSearch",
+                              "sort": 1,
+                              "title": "高级搜索",
+                              "type": 1
+                          },
+            {
+              "affix": 0,
+              "childrenList": [
+                  {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataCatalogMenu/dataCatalog/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataCatalogMenu/dataCatalog",
+                      "router": "dataCatalog",
+                      "sort": 1,
+                      "title": "数据目录",
+                      "type": 2
+                  },
+                                {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataCatalogMenu/labelManage/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataCatalogMenu/labelManage",
+                      "router": "labelManage",
+                      "sort": 1,
+                      "title": "标签管理",
+                      "type": 2
+                  }
+              ],
+              "hidden": 0,
+              "id": 64,
+              "keepAlive": 1,
+              "path": "_1_",
+              "pid": 1,
+              "redirect": "/dataCatalogMenu",
+              "router": "dataCatalogMenu",
+              "sort": 2,
+              "title": "数据目录",
+              "type": 1
+          },
+                      {
+              "affix": 0,
+              "childrenList": [
+                  {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataQuality/qualityReport/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataQuality/qualityReport",
+                      "router": "qualityReport",
+                      "sort": 1,
+                      "title": "质量报告",
+                      "type": 2
+                  },
+                                {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataQuality/qualityConfig/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataQuality/qualityConfig",
+                      "router": "qualityConfig",
+                      "sort": 1,
+                      "title": "质量配置",
+                      "type": 2
+                  },
+                                             {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataQuality/explorationConfig/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataQuality/explorationConfig",
+                      "router": "explorationConfig",
+                      "sort": 1,
+                      "title": "探查配置",
+                      "type": 2
+                  }
+              ],
+              "hidden": 0,
+              "id": 64,
+              "keepAlive": 1,
+              "path": "_1_",
+              "pid": 1,
+              "redirect": "/dataQuality",
+              "router": "dataQuality",
+              "sort": 2,
+              "title": "数据质量",
+              "type": 1
+          },
+                             {
+              "affix": 0,
+              "childrenList": [
+                  {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataAPI/APICatalog/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataAPI/APICatalog",
+                      "router": "APICatalog",
+                      "sort": 1,
+                      "title": "API目录",
+                      "type": 2
+                  },
+                                {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataAPI/APIConfig/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataAPI/APIConfig",
+                      "router": "APIConfig",
+                      "sort": 1,
+                      "title": "API配置",
+                      "type": 2
+                  },
+                                             {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataAPI/userAnalysis/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataAPI/userAnalysis",
+                      "router": "userAnalysis",
+                      "sort": 1,
+                      "title": "用户分析",
+                      "type": 2
+                  },
+                                             {
+                      "affix": 0,
+                      "childrenList": [
+                      ],
+                       "component": "/dataAPI/pathManage/index",
+                      "hidden": 0,
+                      "icon": "icon-zhongchengduhezuofang",
+                      "id": 65,
+                      "keepAlive": 1,
+                      "path": "_1_64_",
+                      "pid": 64,
+                      "redirect": "/dataAPI/pathManage",
+                      "router": "pathManage",
+                      "sort": 1,
+                      "title": "路径管理",
+                      "type": 2
+                  }
+              ],
+              "hidden": 0,
+              "id": 64,
+              "keepAlive": 1,
+              "path": "_1_",
+              "pid": 1,
+              "redirect": "/dataAPI",
+              "router": "dataAPI",
+              "sort": 2,
+              "title": "数据API",
+              "type": 1
+          },
+ {
+                              "affix": 0,
+                              "childrenList": [
+
+
+                              ],
+                              "component": "/SQLQuery/index",
+                              "hidden": 0,
+                              "id": 66,
+                              "keepAlive": 1,
+                              "path": "_1_64_65_",
+                              "permission": "partner",
+                              "pid": 65,
+                              "redirect": "/SQLQuery",
+                              "router": "SQLQuery",
+                              "sort": 1,
+                              "title": "SQL查询",
+                              "type": 1
+                          }
+
+
+
+
+
+          ],
+          "sysRoleList": [
+              {
+                  "code": "SuperAdministrator",
+                  "createBy": "Admin",
+                  "createTime": "2023-01-10 11:37:23",
+                  "dataScope": 1,
+                  "description": "初始角色，不支持停用，管理所有部门",
+                  "id": 1,
+                  "name": "超级管理员",
+                  "updateBy": "Admin",
+                  "updateTime": "2023-07-07 15:14:33"
+              }
+          ],
+          "sysUser": {
+              "avatarUrl": "http://172.16.1.44:9000/ocr/2023/10/09/avatar/1696816145621_logo.png",
+              "createBy": "Admin",
+              "createTime": "2023-07-10 11:01:24",
+              "deleted": 0,
+              "email": "123@qwe.com",
+              "enabled": 1,
+              "id": 29,
+              "lastLoginTime": "2023-10-10 14:39:23",
+              "nickName": "hza1234",
+              "password": "$2a$10$QWAydkz37QzESKpbl29bMuZTPQF8g1VeQNYAjPROJjI5JLYrj1D2O",
+              "phone": "13145678900",
+              "updateBy": "hza1234",
+              "updateTime": "2023-10-10 14:39:23",
+              "username": "hza1234"
+          }
+      }
+  },
+  "msg": "success"
+}

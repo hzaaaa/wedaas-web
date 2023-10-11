@@ -1,0 +1,8 @@
+// .eslintignore
+node_modules
+dist
+*.sh
+*.md
+.vscode
+/public
+# src/

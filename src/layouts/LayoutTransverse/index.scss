@@ -1,0 +1,138 @@
+.el-container {
+	width: 100%;
+	height: 100%;
+	.el-aside {
+		overflow: inherit;
+		width: auto;
+
+		// transition: all 10s linear;
+		// .menu {
+		// 	display: flex;
+		// 	flex-direction: column;
+		// 	width: 208px;
+		// 	height: 100%;
+		// 	transition: all 0.3s ease;
+		// 	.el-scrollbar {
+		// 		:deep(.el-menu) {
+		// 			overflow-x: hidden;
+		// 			border-right: none;
+
+		// 			// .el-menu-item {
+		// 			// 	span{
+		// 			// 		display: inline-block;
+		// 			// 		padding-left: 8px;
+		// 			// 	}
+		// 			// }
+		// 			.el-sub-menu {
+		// 				.el-sub-menu__title {
+		// 					span.has-icon {
+		// 						display: inline-block;
+		// 						padding-left: 9px;
+		// 					}
+		// 					span {
+		// 						padding-left: 3px;
+		// 					}
+		// 					.flip {
+		// 						transform: rotate(-180deg);
+		// 					}
+		// 					& + .el-menu {
+		// 						.el-menu-item {
+		// 							span {
+		// 								padding-left: 3px;
+		// 							}
+		// 						}
+		// 					}
+		// 				}
+		// 				& + .el-menu-item {
+		// 					padding-left: 43px;
+		// 					& ~ .el-menu-item {
+		// 						padding-left: 43px;
+		// 					}
+		// 				}
+		// 			}
+
+		// 			// .el-menu-item {
+		// 			// 	padding-left: 43px;
+		// 			// }
+		// 		}
+
+		// 		// .el-menu.sidebar-not-show {
+		// 		// 	width: 0;
+		// 		// }
+		// 	}
+		// }
+
+		// .menu.sidebar-not-show {
+		// 	width: 0;
+		// }
+	}
+	.el-header {
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
+		padding: 0 0 0 28px;
+
+		// height: 80px;
+		height:56px;
+		background-color: #112625;
+		.logo-img {
+			box-sizing: border-box;
+
+			// border-bottom: 1px solid #282a35;
+
+			// height: 55px;
+
+			// span {
+			// 	font-weight: bold;
+			// 	font-size: 21.5px;
+			// 	color: #dadada;
+			// 	white-space: nowrap;
+			// }
+			img {
+				// margin-right: 6px;
+
+				// width: 28px;
+				// object-fit: contain;
+				width: 196px;
+			}
+		}
+		.header-ri {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-grow: 1;
+			box-sizing: border-box;
+			padding: 0 24px 0 116px;
+			height: 100%;
+			background-color: #112625;
+			:deep(.top-menu){
+				flex: 1;
+				height: 100%;
+				.el-menu {
+						border-bottom: none;
+						height: 100%;
+						background-color: #112625;
+				}
+			}
+
+			// :deep(.tool-bar-lf) {
+			// 	flex: 1;
+			// 	.el-menu {
+			// 		background-color: #112625;
+			// 	}
+			// }
+			:deep(.tool-bar-ri) {
+				.toolBar-icon,
+				.username {
+					color: var(--el-text-color-primary);
+				}
+			}
+		}
+	}
+	.outer-container {
+		.inner-container {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+}

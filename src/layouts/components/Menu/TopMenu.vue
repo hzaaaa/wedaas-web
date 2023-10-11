@@ -55,12 +55,12 @@ const topMenuList = computed(() => {
 	return authStore.showMenuListGet;
 });
 
-const handleClickTopMenu = (subItem: any) => {
-	if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");
-	if (authStore.activeTopMenuPathGet != subItem.path) {
-		router.push(subItem.path);
-	}
-};
+// const handleClickTopMenu = (subItem: any) => {
+// 	if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");
+// 	if (authStore.activeTopMenuPathGet != subItem.path) {
+// 		router.push(subItem.path);
+// 	}
+// };
 
 const handleClickMenu = (subItem: any) => {
 	if (subItem.meta.isLink) return window.open(subItem.meta.isLink, "_blank");

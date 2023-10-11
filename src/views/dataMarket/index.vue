@@ -1,5 +1,5 @@
 <template>
-  <div class="">dataMarket</div>
+	<div class="">dataMarket</div>
 </template>
 
 <script setup lang="ts">

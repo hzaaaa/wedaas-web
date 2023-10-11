@@ -37,7 +37,13 @@ export function getAuthMenuList(menuList: OriginMenu.OriginMenuOptions[]) {
 			// }
 			if (current.type === 1) {
 				newItem = [
-					{ path: `/${current.router}`, name: current.router, redirect: getRedirect(current.childrenList), meta: metaVal },
+					{
+						path: `/${current.router}`,
+						name: current.router,
+						component: current.component ? current.component : "",
+						redirect: getRedirect(current.childrenList),
+						meta: metaVal,
+					},
 				];
 				// newItem.path = `/${current.router}`;
 				// newItem.redirect = current.redirect;

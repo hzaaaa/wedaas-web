@@ -15,9 +15,13 @@ import locale from "element-plus/dist/locale/zh-cn.mjs";
 import directives from "@/directives/index";
 
 import "@/assets/iconfont/iconfont.js";
+import { objComponent } from '@/components/index'
 
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+	app.component(key, component);
+}
+for (const [key, component] of Object.entries(objComponent)) {
 	app.component(key, component);
 }
 app.use(directives);

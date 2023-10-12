@@ -89,7 +89,8 @@ export function getAuthMenuList(menuList: OriginMenu.OriginMenuOptions[]) {
 const getRedirect = (menuList: OriginMenu.OriginMenuOptions[] = []): string => {
 	let redirect = "";
 	if (menuList.length) {
-		if (menuList[0].redirect) {
+		// if (menuList[0].redirect) {
+		if (menuList[0].redirect && menuList[0].hidden === 0) {// && menuList[0].hidden === 0 解决隐藏子菜单不能为第一个child
 			redirect = menuList[0].redirect;
 		} else if (menuList[0].childrenList?.length) {
 			//

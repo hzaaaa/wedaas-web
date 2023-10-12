@@ -5,6 +5,7 @@ import permission from "./permission";
 import permissionPage from "./permissionPage";
 import unmatch from "./routeNoMatch";
 import authDisabled from "./authDisabled";
+import overflow from "./overflow";
 
 const directivesList: any = {
 	// check,
@@ -14,6 +15,7 @@ const directivesList: any = {
 	throttle,
 	unmatch,
 	authDisabled,
+	overflow,
 };
 
 const directives = {

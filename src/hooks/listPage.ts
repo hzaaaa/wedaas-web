@@ -1,14 +1,14 @@
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 import { useUserStoreSessionStorage } from "@/stores/user";
 
-export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQueryParamsByForm?: Function) => {
+export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQueryParamsByForm?: any, queryCallBack?: any) => {
 	const queryForm = ref(JSON.parse(JSON.stringify(queryFormRaw)));
 
 	const pageParams = reactive({
 		pageNum: 1,
 		pageSize: 10,
 		total: 0,
-		pageSizesList: [10],
+		pageSizesList: [10, 20],
 	});
 	let useQueryParams = {};
 
@@ -34,8 +34,13 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 			.then((res: any) => {
 				tableDataList.value = res?.data?.records || res?.data?.list || [];
 				pageParams.total = res.data.total;
+				// debugger
 				pageParams.pageNum = pageNum;
 				tableLoading.value = false;
+				nextTick(() => {
+
+					queryCallBack && queryCallBack();
+				})
 			})
 			.catch((err: any) => {
 				tableLoading.value = false;
@@ -58,6 +63,10 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				pageParams.pageSize = pageSize;
 				pageParams.pageNum = 1;
 				tableLoading.value = false;
+				nextTick(() => {
+
+					queryCallBack && queryCallBack();
+				})
 			})
 			.catch((err: any) => {
 				tableLoading.value = false;

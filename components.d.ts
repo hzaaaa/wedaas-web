@@ -50,11 +50,13 @@ declare module '@vue/runtime-core' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/svgIcon/index.vue')['default']
     Tihuan: typeof import('./src/components/svgIcon/tihuan.vue')['default']
+    TooltipWrap: typeof import('./src/components/tooltipWrap.vue')['default']
     TreeFilter: typeof import('./src/components/TreeFilter/index.vue')['default']
   }
   export interface ComponentCustomProperties {

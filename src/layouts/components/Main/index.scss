@@ -1,9 +1,9 @@
 .el-main {
 	display: flex;
+	overflow-x: hidden;
 	flex-direction: column;
 	box-sizing: border-box;
 	padding: 14px 24px 24px;
-	min-width: 760px;
 	height: 100%;
 	background-color: #f6f6f6;
 }

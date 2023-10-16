@@ -266,7 +266,7 @@ const beanInfo = {};
 // };
 let {
 	tableLoading,
-	tableMaxHeight,
+
 	pageParams,
 	tableDataList,
 	handleCurrentPageChange,

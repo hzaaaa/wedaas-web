@@ -2,11 +2,11 @@
 	<div class="left-tree-right-table-layout">
 		<div class="aside" :class="asideClass">
 			<div class="action-btn-wrap">
-				<el-icon v-if="asideClass === 'wider'" @click="foldClick"><Fold /></el-icon>
-				<el-icon v-if="asideClass === 'narrower'" @click="expandClick"><Expand /></el-icon>
+				<el-icon v-if="asideClass === 'wider-at-hook'" @click="foldClick"><Fold /></el-icon>
+				<el-icon v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
 			</div>
 			<Transition>
-				<div class="tree-wrap" v-if="asideClass === 'wider'">
+				<div class="tree-wrap" v-if="asideClass === 'wider-at-hook'">
 					<div class="view-all">查看全部</div>
 					<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
 				</div>
@@ -56,7 +56,7 @@
 
 				<div class="space"></div>
 			</div>
-			<div class="show-data-list">
+			<div class="show-data-list" style="cursor: pointer">
 				<div class="card-list thin-scrollbar" v-if="show_mode === 'card'">
 					<!-- <el-scrollbar> 使用这个失去flex 特性 -->
 					<div class="card-item" v-for="dataItem in tableDataList" @click="gotoDetails(dataItem)">
@@ -142,6 +142,7 @@
 import treeDataJson from "./treeData.json";
 import listDataJson from "./listData.json";
 import useListPageHook from "@/hooks/listPage";
+import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 
 import router from "@/routers";
 interface Tree {
@@ -168,14 +169,9 @@ const treeData = ref(treeDataJson.data);
 const handleNodeClick = (data: Tree) => {
 	console.log(data);
 };
-const asideClass = ref("wider");
-const foldClick = () => {
-	asideClass.value = "narrower";
-};
-const expandClick = () => {
-	asideClass.value = "wider";
-};
 
+let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
+// debugger;
 const openFormPageClick = (status: any, row?: any) => {
 	// let pathName = pageName + "Api";
 	// userStore.setBehavior(status);
@@ -263,21 +259,12 @@ let {
 </script>
 
 <style lang="scss" scoped>
-.v-enter-active,
-.v-leave-active {
-	transition: opacity 0.2s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-	opacity: 0;
-}
 .left-tree-right-table-layout {
 	flex: 1;
 	height: 0;
 	display: flex;
 	width: 100%;
-	.narrower {
+	.narrower-at-hook {
 		width: 24px !important;
 
 		padding: 10px 2px !important;

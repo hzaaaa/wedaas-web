@@ -1,10 +1,11 @@
 <template>
 	<div>
-		<el-dialog v-model="dialogVisible" title=" " @open="getExpireInfo" width="1100px" class="expire common-dialog">
-			<el-tabs class="full-content-tabs" v-model="activeTab">
-				<el-tab-pane label="请求参数" name="请求参数">
-					<div class="table-wrap" style="">
+		<el-dialog v-model="dialogVisible" title="获取数据" @open="getExpireInfo" width="1100px" class="expire common-dialog">
+			<div class="content-body">
+				<div class="table-wrap" :class="asideClass" style="">
+					<Transition>
 						<el-table
+							v-if="asideClass === 'wider-at-hook'"
 							class="common-table"
 							:data="tableIndata"
 							border
@@ -26,46 +27,38 @@
 							</el-table-column>
 							<el-table-column label="必填" prop="required" show-overflow-tooltip></el-table-column>
 						</el-table>
-					</div>
-				</el-tab-pane>
-				<el-tab-pane label="分页参数" name="分页参数">
-					<div class="table-wrap" style="">
-						<el-table
-							class="common-table"
-							:data="pageData"
-							border
-							style="
-								border-radius: 4px;
-								border: 1px solid rgb(232, 232, 232);
-								height: 100%;
-								max-height: 100%;
-								box-sizing: border-box;
-							"
-						>
-							<el-table-column label="参数名" prop="paramName" show-overflow-tooltip></el-table-column>
-							<el-table-column label="条件" prop="condition" show-overflow-tooltip></el-table-column>
-
-							<el-table-column label="值" prop="value" show-overflow-tooltip>
-								<template #default="scope">
-									<el-input v-model="scope.row.value" maxlength="100" />
-								</template>
-							</el-table-column>
-							<el-table-column label="必填" prop="required" show-overflow-tooltip></el-table-column>
-						</el-table>
-					</div>
-				</el-tab-pane>
-			</el-tabs>
-			<template #footer>
-				<el-button @click="dialogVisible = false">取消</el-button>
-				<el-button type="primary" @click="submit"> 生成API链接 </el-button>
-				<!-- <el-button @click="check">check</el-button> -->
-				<div class="link-block">
-					<div class="content">
-						{{
-							`curl -XGET "${location.protocol}//${location.host}:${location.port}/api/edu/educode/cc189c99-6fbd-41bf-bc0f-8c02d0274716"`
-						}}
-					</div>
+					</Transition>
 				</div>
+				<div class="icon-wrap">
+					<el-icon v-if="asideClass === 'wider-at-hook'" @click="foldClick"><ArrowUp /></el-icon>
+					<el-icon v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><ArrowDown /></el-icon>
+				</div>
+				<div class="result-wrap" style="">
+					<el-table
+						v-if="resultDataList.length !== 0"
+						class="common-table"
+						:data="resultDataList"
+						border
+						style="
+							border-radius: 4px;
+							border: 1px solid rgb(232, 232, 232);
+							height: 100%;
+							max-height: 100%;
+							box-sizing: border-box;
+						"
+					>
+						<el-table-column type="index" label=" " />
+						<template v-for="item in sqlQueryResult.data.ddl">
+							<el-table-column sortable min-width="120" :label="item" :prop="item" show-overflow-tooltip></el-table-column>
+						</template>
+					</el-table>
+					<el-empty v-if="resultDataList.length === 0" style="height: 100%" description="description" />
+				</div>
+			</div>
+			<template #footer>
+				<el-button type="primary" @click="">查看</el-button>
+				<el-button type="primary" @click="submit"> 下载数据 </el-button>
+				<!-- <el-button @click="check">check</el-button> -->
 			</template>
 		</el-dialog>
 	</div>
@@ -75,25 +68,31 @@
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import detailsDataJson from "./detailsData.json";
+import sqlQueryResult from "./sqlQueryResult.json";
+import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
+let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 let allData = detailsDataJson.data;
 const tableIndata = ref([...allData.apiParamIn]);
-const pageData = ref([
-	{
-		paramName: "page_num",
-		condition: "=",
-		value: "",
-		required: false,
-	},
-	{
-		paramName: "page_size",
-		condition: "=",
-		value: "",
-		required: false,
-	},
-]);
-const activeTab = ref("请求参数");
+const buildResultList = (inputList: any) => {
+	let resultList = <any>[];
+	let rowList = inputList.ddl;
+	for (let j = 0; j < inputList.list.length; j++) {
+		let itemList = inputList.list[j];
+		let itemObj = <any>{};
+		for (let i = 0; i < rowList.length; i++) {
+			let name = rowList[i];
+			itemObj[name] = itemList[i];
+		}
+		resultList.push(itemObj);
+	}
+	return resultList;
+};
+let resultList = buildResultList(sqlQueryResult.data);
+const resultDataList = ref(resultList);
+// const resultDataList = ref([]);
+
 const dialogVisible = ref(false);
-const location = <any>window.location;
+
 const dialogProps = ref<any>();
 
 const acceptParams = (params: any) => {
@@ -131,13 +130,34 @@ defineExpose({
 
 <style lang="scss" scoped>
 :deep(.el-dialog__header) {
-	padding-bottom: 0 !important;
+	// padding-bottom: 0 !important;
+}
+.content-body {
+	width: 100%;
+	height: 60vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+.icon-wrap {
+	text-align: center;
 }
 .table-wrap {
-	max-height: 980px;
-	height: 45vh;
+	transition: all 0.3s; //过渡
+	// max-height: 350px;
+	height: 240px;
 	// display: flex;
 	flex-direction: column;
+}
+.narrower-at-hook {
+	height: 0 !important; //过渡
+}
+.result-wrap {
+	flex: 1;
+	position: relative;
+	border-bottom: 1px solid #e8e8e8;
+	overflow: hidden;
+	border-radius: 4px;
 }
 :deep(.el-dialog__body) {
 	display: flex;

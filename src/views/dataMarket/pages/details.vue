@@ -72,7 +72,7 @@
 				</div>
 				<div class="btn-block">
 					<div class="mrtb-item mrtb-apbtn pointer" @click="openGetLinkDialogClick">获取链接</div>
-					<div class="mrtb-item mrtb-getdata pointer">获取数据</div>
+					<div class="mrtb-item mrtb-getdata pointer" @click="openGetDataDialogClick">获取数据</div>
 				</div>
 			</div>
 			<div class="right-top">
@@ -81,7 +81,7 @@
 					<div class="text">申请该数据权限</div>
 				</div>
 				<div class="btn-block">
-					<div class="mrtb-item mrtb-getdata pointer">申请权限</div>
+					<div class="mrtb-item mrtb-getdata pointer" @click="openApplyForPermissionDialogClick">申请权限</div>
 				</div>
 			</div>
 
@@ -96,22 +96,46 @@
 					class="desc more-ellipsis"
 					type="y"
 				></tooltipWrap>
-				<div class="contact pointer">数据接口联系人</div>
+				<div class="contact pointer" @click="openContactInfoDialogClick">数据接口联系人</div>
 			</div>
 		</div>
 		<getLinkDialog ref="getLinkDialogRef" @refreshData=""></getLinkDialog>
+		<getDataDialog ref="getDataDialogRef" @refreshData=""></getDataDialog>
+		<applyForPermissionDialog ref="applyForPermissionDialogRef" @refreshData=""></applyForPermissionDialog>
+		<contactInfoDialog ref="contactInfoDialogRef" @refreshData=""></contactInfoDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
 import detailsDataJson from "./detailsData.json";
 import getLinkDialog from "./getLinkDialog.vue";
+import getDataDialog from "./getDataDialog.vue";
+import contactInfoDialog from "./contactInfoDialog.vue";
+import applyForPermissionDialog from "./applyForPermissionDialog.vue";
 let allData = detailsDataJson.data;
 const tableOutdata = ref([...allData.apiParamOut, ...allData.apiParamOut]);
 const tableIndata = ref([...allData.apiParamIn, ...allData.apiParamIn]);
 const getLinkDialogRef = <any>ref(null);
+const getDataDialogRef = <any>ref(null);
+const applyForPermissionDialogRef = <any>ref(null);
+const contactInfoDialogRef = <any>ref(null);
 const openGetLinkDialogClick = () => {
 	getLinkDialogRef.value.acceptParams({
+		row: {},
+	});
+};
+const openGetDataDialogClick = () => {
+	getDataDialogRef.value.acceptParams({
+		row: {},
+	});
+};
+const openApplyForPermissionDialogClick = () => {
+	applyForPermissionDialogRef.value.acceptParams({
+		row: {},
+	});
+};
+const openContactInfoDialogClick = () => {
+	contactInfoDialogRef.value.acceptParams({
 		row: {},
 	});
 };
@@ -271,8 +295,8 @@ const openGetLinkDialogClick = () => {
 					background: #f8f8f8;
 				}
 				.mrtb-getdata {
-					color: #ff8259;
-					background: rgba(255, 130, 89, 0.1);
+					color: var(--el-color-primary);
+					background: var(--el-color-primary-light-9);
 				}
 			}
 		}

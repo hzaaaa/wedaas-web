@@ -35,6 +35,9 @@ export const postOriginAuthMenuListApi = () => {
  * @name 退出登录模块
  */
 export const logoutApi = () => {
+	return new Promise((resolve) => {
+		resolve({ code: 200, msg: "success" });
+	});
 	return http.post(AUTHPORT + `/auth/logout`);
 };
 /**

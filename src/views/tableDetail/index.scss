@@ -1,0 +1,12 @@
+.tab-block-wrapper {
+  display: flex;
+  flex: 1;
+  margin-left: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #fff;
+  .el-tabs{
+    flex: 1;
+  }
+}
+

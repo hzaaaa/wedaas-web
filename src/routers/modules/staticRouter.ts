@@ -18,14 +18,14 @@ export const staticRouter: RouteRecordRaw[] = [
 			title: "登录",
 		}, // 注意这里要带上 文件后缀.vue
 	},
-	{
-		path: '/home',
-		name: "home",
-		component: () => import("@/views/home/index.vue"),
-		meta: {
-			title: "主页",
-		}, // 注意这里要带上 文件后缀.vue
-	},
+	// {
+	// 	path: '/home',
+	// 	name: "home",
+	// 	component: () => import("@/views/home/index.vue"),
+	// 	meta: {
+	// 		title: "主页",
+	// 	}, // 注意这里要带上 文件后缀.vue
+	// },
 	// {
 	//   path: "/layout",
 	//   name: "layout",

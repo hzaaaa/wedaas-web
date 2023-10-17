@@ -1,3 +1,4 @@
+import { ElMessage } from "element-plus";
 /**
  * @description **工具方法** 通用下载
  */
@@ -17,4 +18,31 @@ export const downloadByBlob = (filename: string, content: any) => {
 	a.click();
 	a.remove();
 	window.URL.revokeObjectURL(a.href);
+};
+
+export const copyTextToClipboard = (copyContent: string, copyName?: string) => {
+	if (navigator.clipboard) {
+		// 新api，安全限制较多，https 或 localhost 才可用
+		navigator.clipboard.writeText(copyContent);
+	} else {
+		// 传统api，随时可能会废弃
+		const tempInput = document.createElement("input");
+		tempInput.setAttribute("value", copyContent);
+		document.body.append(tempInput);
+		tempInput.select();
+		document.execCommand("copy");
+		tempInput.remove();
+	}
+	copyName = copyName || ''
+	ElMessage.success(`复制${copyName}成功`);
+};
+
+export const bigObj2smallObj = (bigO: any, smallO: any) => {
+	let target = <any>{ ...smallO };
+	for (let key in target) {
+		if (bigO[key] !== null && bigO[key] !== undefined) {
+			target[key] = bigO[key];
+		}
+	}
+	return target;
 };

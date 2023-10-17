@@ -1,0 +1,83 @@
+{
+  "code": 1,
+  "data": [
+      {
+          "rootId": 4,
+          "rootName": "教育网数据",
+          "rootTotal": 2,
+          "childTuple": [
+              {
+                  "total": 2,
+                  "rootId": 4,
+                  "rootName": "教育网数据",
+                  "childName": "educode",
+                  "childId": 6
+              }
+          ]
+      },
+      {
+          "rootId": 1,
+          "rootName": "数据服务测试",
+          "rootTotal": 2,
+          "childTuple": [
+              {
+                  "total": 2,
+                  "rootId": 1,
+                  "rootName": "数据服务测试",
+                  "childName": "cg",
+                  "childId": 1
+              }
+          ]
+      },
+      {
+          "rootId": 2,
+          "rootName": "数据订阅平台",
+          "rootTotal": 12,
+          "childTuple": [
+              {
+                  "total": 2,
+                  "rootId": 2,
+                  "rootName": "数据订阅平台",
+                  "childName": "审计GPT",
+                  "childId": 4
+              },
+              {
+                  "total": 4,
+                  "rootId": 2,
+                  "rootName": "数据订阅平台",
+                  "childName": "审计日表",
+                  "childId": 8
+              },
+              {
+                  "total": 4,
+                  "rootId": 2,
+                  "rootName": "数据订阅平台",
+                  "childName": "审计次表",
+                  "childId": 7
+              },
+              {
+                  "total": 2,
+                  "rootId": 2,
+                  "rootName": "数据订阅平台",
+                  "childName": "审计通用",
+                  "childId": 3
+              }
+          ]
+      },
+      {
+          "rootId": 3,
+          "rootName": "购号网数据",
+          "rootTotal": 1,
+          "childTuple": [
+              {
+                  "total": 1,
+                  "rootId": 3,
+                  "rootName": "购号网数据",
+                  "childName": "phone",
+                  "childId": 5
+              }
+          ]
+      }
+  ],
+  "action": "success"
+}

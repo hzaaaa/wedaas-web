@@ -14,12 +14,9 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 
 	const tableDataList = ref<any>([]);
 	const tableLoading = ref<boolean>(false);
-	let tableMaxHeight = ref(0); //已废弃使用
+
 	onMounted(() => {
-		nextTick(() => {
-			tableMaxHeight.value = window.innerHeight - 80 - 24 * 2 - 20 - 52 - 82 - 50;
-			// head- contentPadding- bgTopPadding- addButton - 分页高度 - search
-		});
+
 	});
 	const handleCurrentPageChange = (pageNum: number) => {
 		let params = {
@@ -188,7 +185,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 	//#endregion
 	return {
 		tableLoading,
-		tableMaxHeight,
+
 		pageParams,
 		tableDataList,
 		handleCurrentPageChange,

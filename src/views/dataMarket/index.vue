@@ -7,8 +7,12 @@
 			</div>
 			<Transition>
 				<div class="tree-wrap" v-if="asideClass === 'wider-at-hook'">
+					<div class="market-tabs">
+						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
+						<div class="market-tabs-item pointer">我的空间</div>
+					</div>
 					<div class="view-all">查看全部</div>
-					<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
+					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
 				</div>
 			</Transition>
 		</div>
@@ -90,7 +94,7 @@
 						v-loading="tableLoading"
 						:data="tableDataList"
 						border
-						style="width: 0 !important; flex: 1 !important; height: auto"
+						style="flex: 1 !important; height: auto"
 						ref="multipleTableRef"
 						:default-sort="{ prop: 'update_time', order: 'descending' }"
 						@row-click="gotoDetails"
@@ -166,6 +170,12 @@ const changeLabelName = (list: any) => {
 };
 changeLabelName(treeDataJson.data);
 const treeData = ref(treeDataJson.data);
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
 const handleNodeClick = (data: Tree) => {
 	console.log(data);
 };
@@ -282,9 +292,42 @@ let {
 		background: #fff;
 		padding: 16px;
 		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		.tree-wrap {
+			flex: 1;
+			height: 0;
+			display: flex;
+			flex-direction: column;
+		}
 		.action-btn-wrap {
 			display: flex;
 			justify-content: flex-end;
+		}
+		.market-tabs {
+			position: relative;
+			display: flex;
+			justify-content: space-between;
+			padding: 8px 0;
+			.market-tabs-item {
+				flex: 1;
+				text-align: center;
+				font-size: 13px;
+				line-height: 16px;
+				color: #27272e;
+				opacity: 0.7;
+				font-weight: 400;
+				&:nth-child(1) {
+					border-right: 1px solid #e8e8e8;
+				}
+			}
+			.market-tabs-active {
+				font-weight: 500;
+				font-size: 13px;
+				line-height: 16px;
+				opacity: 1;
+				color: var(--el-color-primary);
+			}
 		}
 		.view-all {
 			font-size: 13px;
@@ -295,6 +338,11 @@ let {
 			background: #f8f8f8;
 			border-radius: 4px;
 			margin: 8px 0;
+		}
+		.tree-class {
+			flex: 1;
+			height: 0;
+			overflow: auto;
 		}
 	}
 	.content {

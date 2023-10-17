@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog v-model="dialogVisible" title="获取数据" @open="getExpireInfo" width="1100px" class="expire common-dialog">
+		<el-dialog v-model="dialogVisible" title="获取数据" @open="getExpireInfo" width="1100px" class="common-dialog">
 			<div class="content-body">
 				<div class="table-wrap" :class="asideClass" style="">
 					<Transition>

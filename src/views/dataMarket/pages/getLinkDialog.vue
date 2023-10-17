@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog v-model="dialogVisible" title=" " @open="getExpireInfo" width="1100px" class="expire common-dialog">
+		<el-dialog v-model="dialogVisible" title=" " @open="getExpireInfo" width="1100px" class="common-dialog">
 			<el-tabs class="full-content-tabs" v-model="activeTab">
 				<el-tab-pane label="请求参数" name="请求参数">
 					<div class="table-wrap" style="">

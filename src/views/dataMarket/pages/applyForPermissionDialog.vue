@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog v-model="dialogVisible" title="申请表权限" @open="getExpireInfo" width="640px" class="expire common-dialog">
+		<el-dialog v-model="dialogVisible" title="申请表权限" @open="getExpireInfo" width="640px" class="common-dialog">
 			<div class="content-body">
 				<div class="table-info">
 					<div class="desc">

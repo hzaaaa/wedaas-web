@@ -1,9 +1,10 @@
 <template>
-	<div class="advanced-search-wrapper" :style="{ width: isCollapse ? '30px' : '224px' }">
-		<el-icon class="collapse-icon" @click="isCollapse = !isCollapse">
+	<div class="advanced-search-wrapper" :style="{ width: isCollapse ? '16px' : '224px' }">
+		<el-icon class="collapse-icon" @click="isCollapse = !isCollapse" style="float: right">
 			<component :is="isCollapse ? 'expand' : 'fold'"></component>
 		</el-icon>
-		<div :style="{ display: isCollapse ? 'none' : '' }">
+		<div class="search-form-wrapper" style="margin-top: 20px; width: 224px">
+			<div class="mask" :style="{ width: isCollapse ? '100%' : '0' }"></div>
 			<div class="component-title">
 				<el-icon><Search /></el-icon>
 				<span>高级搜索</span>
@@ -69,12 +70,32 @@ const options = [
 
 <style lang="scss" scoped>
 .advanced-search-wrapper {
-	overflow-x: hidden;
+	display: flex;
+	overflow: hidden;
+	flex-direction: column;
+	flex-shrink: 0;
 	padding: 10px 12px;
+	width: 224px;
 	background-color: #fff;
+
+	// transform-origin: left;
+	transition: width 0.3s ease;
 	.collapse-icon.el-icon {
+		align-self: flex-end;
 		&:hover {
 			cursor: pointer;
+		}
+	}
+	.search-form-wrapper {
+		position: relative;
+		.mask {
+			position: absolute;
+			right: 0;
+			z-index: 999;
+			width: 0;
+			height: 100%;
+			background-color: #fff;
+			transition: width 0.2s ease;
 		}
 	}
 	.component-title {

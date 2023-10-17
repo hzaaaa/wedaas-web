@@ -259,6 +259,25 @@
                               "sort": 1,
                               "title": "SQL查询",
                               "type": 1
+                          },
+                           {
+                              "affix": 0,
+                              "childrenList": [
+
+
+                              ],
+                              "component": "/tableDetail/index",
+                              "hidden": 1,
+                              "id": 66,
+                              "keepAlive": 1,
+                              "path": "_1_64_65_",
+                              "permission": "partner",
+                              "pid": 65,
+                              "redirect": "/tableDetail",
+                              "router": "tableDetail",
+                              "sort": 1,
+                              "title": "表详情",
+                              "type": 1
                           }
 
 

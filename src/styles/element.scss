@@ -457,3 +457,27 @@
 	width: fit-content;
 	min-width: 100%;
 }
+.el-popper.el-popover.retrieval-popover{
+  width: fit-content !important;
+	.popover-header{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+  .popover-content{
+    display: flex;
+		margin-top: 15px;
+		.content-detail{
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			margin-left: 10px;
+			width: 250px;
+			height: 80px;
+			div{
+				display: flex;
+				justify-content: space-between;
+			}
+		}
+  }
+}

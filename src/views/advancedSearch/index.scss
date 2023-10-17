@@ -1,6 +1,130 @@
-.result-wrapper{
-  flex: 1;
+.common-layout-system{
+  overflow-x: hidden;
   margin-left: 6px;
   border-radius: 4px;
+  height: auto;
   background-color: #fff;
+  .operat-buttons{
+    justify-content: space-between;
+    margin-top: 0;
+    .el-icon{
+      margin-left: 8px;
+    }
+
+  }
+  .table-wrapper{
+    display: flex;
+    flex-direction: column;
+
+    // overflow-y: auto;
+    flex: 1;
+     border-top: 1px solid #ebeef5;
+    height: 0;
+    .common-table.el-table{
+      tbody{
+        tr{
+.table-cell{
+        .cell{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          div{
+            display: flex;
+            align-items: center;
+            &:first-of-type{
+              margin-bottom: 5px;
+            }
+          }
+          span{
+            margin-left: 4px;
+          }
+        }
+      }
+        }
+
+      }
+
+
+
+
+    }
+  }
+  .cards-wrapper{
+    display: flex;
+
+    // flex-direction: column;
+
+    // overflow-y: auto;
+    flex: 1;
+    height: 0;
+    :deep(.el-scrollbar){
+      // display: flex;
+      // flex: 1;
+
+    // height: 0;
+    .el-scrollbar__wrap{
+      .el-scrollbar__view{
+        display: flex;
+        flex-wrap: wrap;
+
+      }
+    }
+    }
+    .result-card.el-card{
+      display: flex;
+      flex-direction: column;
+      margin: 0 15px 15px 0;
+      border-radius: 10px;
+      width: 240px;
+      :deep(.el-card__header){
+        border: none;
+.card-header{
+        display: flex;
+        align-items: center;
+
+      }
+      }
+      :deep(.el-card__body){
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 0;
+
+        // height: auto;
+        .card-info{
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          padding-left: 20px;
+  .info-desc{
+overflow: hidden; /* 超出部分隐藏 */
+    flex: 1;
+text-overflow: ellipsis; /* 超出部分省略号表示 */
+	white-space: nowrap; /* 强制单行显示 */
+  }
+        }
+        .footer{
+          justify-content: space-around;
+          align-items: center;
+
+          // align-self: ;
+          margin-top: auto;
+          margin-bottom: 0;
+          padding-left: 0;
+          border-top: 1px solid #ebeef5;
+          height: 50px;
+          background-color: #ccc;
+
+        }
+      }
+
+    }
+  }
+  .pagination-block{
+     flex-direction: row;
+    .el-pagination{
+      flex: 1;
+    }
+  }
 }
+

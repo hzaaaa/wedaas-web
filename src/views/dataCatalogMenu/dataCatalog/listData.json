@@ -1,0 +1,315 @@
+{
+	"code": 1,
+	"data": {
+		"total": 205,
+		"curPage": 1,
+		"totalPage": 5,
+		"pageSize": 50,
+		"wheres": null,
+		"list": [
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.activity_info",
+				"description": "活动表",
+				"tableName": "activity_info"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.activity_rule",
+				"description": "优惠规则",
+				"tableName": "activity_rule"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.activity_sku",
+				"description": "活动参与商品",
+				"tableName": "activity_sku"
+			},
+			{
+				"schema": "阿里云hive元数据库.api_proxy_server_syslog",
+				"tableId": "阿里云hive元数据库.api_proxy_server_syslog.ads_audit_day_consumer",
+				"description": "",
+				"tableName": "ads_audit_day_consumer"
+			},
+			{
+				"schema": "阿里云hive元数据库.api_proxy_server_syslog",
+				"tableId": "阿里云hive元数据库.api_proxy_server_syslog.ads_audit_day_provider",
+				"description": "",
+				"tableName": "ads_audit_day_provider"
+			},
+			{
+				"schema": "阿里云hive元数据库.api_proxy_server_syslog",
+				"tableId": "阿里云hive元数据库.api_proxy_server_syslog.ads_audit_gpt_day_consumer",
+				"description": "",
+				"tableName": "ads_audit_gpt_day_consumer"
+			},
+			{
+				"schema": "阿里云hive元数据库.api_proxy_server_syslog",
+				"tableId": "阿里云hive元数据库.api_proxy_server_syslog.ads_audit_gpt_day_provider",
+				"description": "",
+				"tableName": "ads_audit_gpt_day_provider"
+			},
+			{
+				"schema": "阿里云hive元数据库.test01",
+				"tableId": "阿里云hive元数据库.test01.ali_test",
+				"description": "",
+				"tableName": "ali_test"
+			},
+			{
+				"schema": "阿里云hive元数据库.default",
+				"tableId": "阿里云hive元数据库.default.ali_test",
+				"description": "",
+				"tableName": "ali_test"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_day_consumer",
+				"description": "",
+				"tableName": "audit_day_consumer"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_day_provider",
+				"description": "",
+				"tableName": "audit_day_provider"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_gpt_day_consumer",
+				"description": "",
+				"tableName": "audit_gpt_day_consumer"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_gpt_day_provider",
+				"description": "",
+				"tableName": "audit_gpt_day_provider"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_gpt_times_consumer",
+				"description": "",
+				"tableName": "audit_gpt_times_consumer"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_gpt_times_provider",
+				"description": "",
+				"tableName": "audit_gpt_times_provider"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_sourcecode_exdesc",
+				"description": "",
+				"tableName": "audit_sourcecode_exdesc"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_times_consumer",
+				"description": "",
+				"tableName": "audit_times_consumer"
+			},
+			{
+				"schema": "数据订阅平台审计数据.audit_service",
+				"tableId": "数据订阅平台审计数据.audit_service.audit_times_provider",
+				"description": "",
+				"tableName": "audit_times_provider"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_attr_info",
+				"description": "属性表",
+				"tableName": "base_attr_info"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_attr_value",
+				"description": "属性值表",
+				"tableName": "base_attr_value"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_category1",
+				"description": "一级分类表",
+				"tableName": "base_category1"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_category2",
+				"description": "二级分类表",
+				"tableName": "base_category2"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_category3",
+				"description": "三级分类表",
+				"tableName": "base_category3"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_dic",
+				"description": "",
+				"tableName": "base_dic"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_frontend_param",
+				"description": "前端数据保护表",
+				"tableName": "base_frontend_param"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_province",
+				"description": "",
+				"tableName": "base_province"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_region",
+				"description": "",
+				"tableName": "base_region"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_sale_attr",
+				"description": "基本销售属性表",
+				"tableName": "base_sale_attr"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.base_trademark",
+				"description": "品牌表",
+				"tableName": "base_trademark"
+			},
+			{
+				"schema": "hadoop元数据.default",
+				"tableId": "hadoop元数据.default.bigdata_test01",
+				"description": "",
+				"tableName": "bigdata_test01"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.cart_info",
+				"description": "购物车表 用户登录系统时更新冗余",
+				"tableName": "cart_info"
+			},
+			{
+				"schema": "hadoop元数据.cfx_dingsun",
+				"tableId": "hadoop元数据.cfx_dingsun.cfx_car_damage",
+				"description": "车辆损伤记录表",
+				"tableName": "cfx_car_damage"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.cms_banner",
+				"description": "首页banner表",
+				"tableName": "cms_banner"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.comment_info",
+				"description": "商品评论表",
+				"tableName": "comment_info"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.coupon_info",
+				"description": "优惠券表",
+				"tableName": "coupon_info"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.coupon_range",
+				"description": "优惠券范围表",
+				"tableName": "coupon_range"
+			},
+			{
+				"schema": "mysql.gmall",
+				"tableId": "mysql.gmall.coupon_use",
+				"description": "优惠券领用表",
+				"tableName": "coupon_use"
+			},
+			{
+				"schema": "hadoop元数据.gmall",
+				"tableId": "hadoop元数据.gmall.dim_activity_full",
+				"description": "?????",
+				"tableName": "dim_activity_full"
+			},
+			{
+				"schema": "hadoop元数据.gmall",
+				"tableId": "hadoop元数据.gmall.dim_coupon_full",
+				"description": "??????",
+				"tableName": "dim_coupon_full"
+			},
+			{
+				"schema": "hadoop元数据.gmall",
+				"tableId": "hadoop元数据.gmall.dim_date",
+				"description": "?????",
+				"tableName": "dim_date"
+			},
+			{
+				"schema": "hadoop元数据.gmall",
+				"tableId": "hadoop元数据.gmall.dim_province_full",
+				"description": "?????",
+				"tableName": "dim_province_full"
+			},
+			{
+				"schema": "hadoop元数据.default",
+				"tableId": "hadoop元数据.default.dim_province_full",
+				"description": "?????",
+				"tableName": "dim_province_full"
+			},
+			{
+				"schema": "hadoop元数据.gmall",
+				"tableId": "hadoop元数据.gmall.dim_sku_full",
+				"description": "?????",
+				"tableName": "dim_sku_full"
+			},
+			{
+				"schema": "hadoop元数据.gmall",
+				"tableId": "hadoop元数据.gmall.dim_user_zip",
+				"description": "用户表",
+				"tableName": "dim_user_zip"
+			},
+			{
+				"schema": "阿里云hive元数据库.api_proxy_server_syslog",
+				"tableId": "阿里云hive元数据库.api_proxy_server_syslog.dwd_audit_service_data_inc",
+				"description": "",
+				"tableName": "dwd_audit_service_data_inc"
+			},
+			{
+				"schema": "CHDHIVE元数据.hotels",
+				"tableId": "CHDHIVE元数据.hotels.dwd_hotelpictures_inc",
+				"description": "",
+				"tableName": "dwd_hotelpictures_inc"
+			},
+			{
+				"schema": "CHDHIVE元数据.hotels",
+				"tableId": "CHDHIVE元数据.hotels.dwd_hotelrooms_inc",
+				"description": "",
+				"tableName": "dwd_hotelrooms_inc"
+			},
+			{
+				"schema": "CHDHIVE元数据.hotels",
+				"tableId": "CHDHIVE元数据.hotels.dwd_hotels_temp_full",
+				"description": "",
+				"tableName": "dwd_hotels_temp_full"
+			},
+			{
+				"schema": "阿里云hive元数据库.api_platform_test_cg",
+				"tableId": "阿里云hive元数据库.api_platform_test_cg.dwd_platform_consumer_full",
+				"description": "",
+				"tableName": "dwd_platform_consumer_full"
+			},
+			{
+				"schema": "hadoop元数据.api_platform",
+				"tableId": "hadoop元数据.api_platform.dwd_platform_consumer_full",
+				"description": "",
+				"tableName": "dwd_platform_consumer_full"
+			}
+		],
+		"pagedBegin": 0,
+		"orderBy": null
+	},
+	"action": "success"
+}

@@ -7,8 +7,12 @@
 			</div>
 			<Transition>
 				<div class="tree-wrap" v-if="asideClass === 'wider-at-hook'">
+					<div class="market-tabs">
+						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
+						<div class="market-tabs-item pointer">我的空间</div>
+					</div>
 					<div class="view-all">查看全部</div>
-					<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
+					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
 				</div>
 			</Transition>
 		</div>
@@ -90,7 +94,7 @@
 						v-loading="tableLoading"
 						:data="tableDataList"
 						border
-						style="flex: 1 !important; width: 0 !important; height: auto"
+						style="flex: 1 !important; height: auto"
 						ref="multipleTableRef"
 						:default-sort="{ prop: 'update_time', order: 'descending' }"
 						@row-click="gotoDetails"
@@ -166,6 +170,12 @@ const changeLabelName = (list: any) => {
 };
 changeLabelName(treeDataJson.data);
 const treeData = ref(treeDataJson.data);
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
+treeData.value = [...treeData.value, ...treeData.value];
 const handleNodeClick = (data: Tree) => {
 	console.log(data);
 };
@@ -272,6 +282,8 @@ let {
 		}
 	}
 	.aside {
+		display: flex;
+		flex-direction: column;
 		box-sizing: border-box;
 		margin-right: 16px;
 		padding: 16px;
@@ -279,10 +291,40 @@ let {
 		width: 240px;
 		height: 100%;
 		background: #fff;
-		transition: all 0.3s;
+		.tree-wrap {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			height: 0;
+		}
 		.action-btn-wrap {
 			display: flex;
 			justify-content: flex-end;
+		}
+		.market-tabs {
+			display: flex;
+			position: relative;
+			justify-content: space-between;
+			padding: 8px 0;
+			.market-tabs-item {
+				flex: 1;
+				opacity: 0.7;
+				line-height: 16px;
+				text-align: center;
+				font-weight: 400;
+				font-size: 13px;
+				color: #27272e;
+				&:nth-child(1) {
+					border-right: 1px solid #e8e8e8;
+				}
+			}
+			.market-tabs-active {
+				opacity: 1;
+				line-height: 16px;
+				font-weight: 500;
+				font-size: 13px;
+				color: var(--el-color-primary);
+			}
 		}
 		.view-all {
 			margin: 8px 0;
@@ -293,6 +335,16 @@ let {
 			font-weight: 500;
 			font-size: 13px;
 			color: #27272e;
+		}
+		.tree-class {
+			overflow: auto;
+			flex: 1;
+			height: 0;
+		}
+		.tree-class {
+			overflow: auto;
+			flex: 1;
+			height: 0;
 		}
 	}
 	.content {

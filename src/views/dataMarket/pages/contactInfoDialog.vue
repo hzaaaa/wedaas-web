@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog v-model="dialogVisible" title="联系人信息" @open="getExpireInfo" width="640px" class="expire common-dialog">
+		<el-dialog v-model="dialogVisible" title="联系人信息" @open="getExpireInfo" width="640px" class="common-dialog">
 			<div class="content-body">
 				<div class="info-item">
 					<span class="key">创建人:</span>

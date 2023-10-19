@@ -1,0 +1,20 @@
+{
+	"code": 1,
+	"data": [
+		{
+			"td": "",
+			"ti": "CHDHIVE元数据.test01.t1",
+			"tn": "t1",
+			"dn": "test01",
+			"ds": "CHDHIVE元数据.test01"
+		},
+		{
+			"td": "",
+			"ti": "CHDHIVE元数据.test01.t2",
+			"tn": "t2",
+			"dn": "test01",
+			"ds": "CHDHIVE元数据.test01"
+		}
+	],
+	"action": "success"
+}

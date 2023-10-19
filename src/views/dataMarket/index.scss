@@ -1,86 +1,88 @@
 .common-layout-right {
-  background: #fff;
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-  width: 0;
-	height: 100%;
+  box-sizing: border-box;
 	padding-left: 35px;
 	padding-right: 28px;
 	padding-top: 22px;
 	border-radius: 10px;
-  box-sizing: border-box;
+  width: 0;
+	height: 100%;
+	background: #fff;
+
 	// display: flex;
 	// height: 100%;
-
   .show-data-list {
-    flex: 1;
-    height: 0;
-    width: 100%;
-    overflow: auto;
     display: flex;
+    overflow: auto;
+    flex: 1;
+    width: 100%;
+    height: 0;
     .table-list{
-      width: 100%;
       display: flex;
       flex: 1;
+      width: 100%;
+
       // display: flex;
     }
     .card-list{
-      width: 100%;
       display: flex;
+      overflow: auto;
       flex-wrap: wrap;
       flex: 1;
-      overflow: auto;
+      width: 100%;
       :deep(.card-item){
+        position: relative;
+        z-index: 9;
+        box-sizing: border-box;
+        margin: 16px 12px 10px 0;
+        padding: 16px 24px;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
         width: 256px;
+
         // width: 216px;
         height: 276px;
-        border: 1px solid #e8e8e8;
-        box-sizing: border-box;
-        border-radius: 8px;
-        padding: 16px 24px;
-        margin: 16px 12px 10px 0;
-        position: relative;
         transition: all .2s;
-        z-index: 9;
         &:hover{
-          box-shadow: 0 3px 6px rgba(0,0,0,.16);
+          box-shadow: 0 3px 6px rgb(0 0 0 / 16%);
         }
         .header{
-          height: 32px;
-          width: 100%;
-          color: rgba(26,26,26,.9);
           display: flex;
           justify-content: flex-start;
           align-items: center;
+          width: 100%;
+          height: 32px;
+          color: rgb(26 26 26 / 90%);
           .header-right{
             flex: 1;
+            line-height: 16px;
             font-weight: 500;
             font-size: 13px;
-            line-height: 16px;
             color: #27272e;
+
             // padding-left: 8px;
           }
         }
         .description{
-          font-weight: 400;
-          font-size: 13px;
-          line-height: 20px;
-          height: 60px;
-          margin: 16px 0 0;
-          letter-spacing: .02em;
-          color: #27272e;
-          opacity: .7;
           display: -webkit-box;
           overflow: hidden;
-          text-overflow: ellipsis;
+          margin: 16px 0 0;
+          height: 60px;
+          opacity: .7;
+          line-height: 20px;
           -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
+          text-overflow: ellipsis;
           text-align: justify;
+          font-weight: 400;
+          font-size: 13px;
+          color: #27272e;
           word-wrap: break-word;
           word-break: break-all;
+          letter-spacing: .02em;
+          -webkit-box-orient: vertical;
         }
-        
         .list-item{
           display: flex;
           justify-content: flex-start;
@@ -88,40 +90,37 @@
           margin-top: 16px;
           .item-right{
             flex: 1;
-            font-size: 13px;
-            line-height: 16px;
-            
-            color: #27272e;
             opacity: .7;
+            line-height: 16px;
+            font-size: 13px;
+            color: #27272e;
             letter-spacing: .02em;
           }
         }
         .foot{
-          margin-top: 16px;
-          position: relative;
           display: flex;
+          position: relative;
           justify-content: space-between;
           align-items: center;
+          margin-top: 16px;
           .foot-right{
-            font-size: 13px;
             line-height: 16px;
-            letter-spacing: .03em;
+            font-size: 13px;
             color: #b0b1b4;
+            letter-spacing: .03em;
           }
         }
       }
     }
   }
 	.el-form{
-
 		.el-button--primary{
 			margin-bottom: 18px;
 		}
 	}
 	.el-button--primary + .el-button--primary {
-			margin-left: 0px;
+			margin-left: 0;
 	}
-	background: #fff;
 	.wrap {
 		flex-wrap: wrap;
 	}

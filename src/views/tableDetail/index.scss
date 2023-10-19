@@ -1,3 +1,32 @@
+
+.search-form-wrapper{
+  > div{
+    div{
+      z-index: 1;
+    }
+  }
+}
+	.sub-title {
+		&::before {
+			display: inline-block;
+			margin-right: 5px;
+			border-radius: 2px;
+			width: 2px;
+			height: 12px;
+			background: #e46307;
+			content: "";
+		}
+	}
+	.filter-criteria {
+		display: flex;
+		flex-direction: column;
+		.table-detail-info {
+			margin-top: 10px;
+		}
+	}
+	.el-divider {
+		margin: 0;
+	}
 .tab-block-wrapper {
   display: flex;
   flex: 1;

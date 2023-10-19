@@ -90,7 +90,7 @@
 						v-loading="tableLoading"
 						:data="tableDataList"
 						border
-						style="width: 0 !important; flex: 1 !important; height: auto"
+						style="flex: 1 !important; width: 0 !important; height: auto"
 						ref="multipleTableRef"
 						:default-sort="{ prop: 'update_time', order: 'descending' }"
 						@row-click="gotoDetails"
@@ -260,51 +260,50 @@ let {
 
 <style lang="scss" scoped>
 .left-tree-right-table-layout {
-	flex: 1;
-	height: 0;
 	display: flex;
+	flex: 1;
 	width: 100%;
+	height: 0;
 	.narrower-at-hook {
-		width: 24px !important;
-
 		padding: 10px 2px !important;
+		width: 24px !important;
 		.action-btn-wrap {
 			justify-content: center !important;
 		}
 	}
-
 	.aside {
-		transition: all 0.3s;
+		box-sizing: border-box;
+		margin-right: 16px;
+		padding: 16px;
+		border-radius: 10px;
 		width: 240px;
 		height: 100%;
-		margin-right: 16px;
-		border-radius: 10px;
 		background: #fff;
-		padding: 16px;
-		box-sizing: border-box;
+		transition: all 0.3s;
 		.action-btn-wrap {
 			display: flex;
 			justify-content: flex-end;
 		}
 		.view-all {
-			font-size: 13px;
-			line-height: 1;
-			color: #27272e;
-			font-weight: 500;
-			padding: 10px 8px;
-			background: #f8f8f8;
-			border-radius: 4px;
 			margin: 8px 0;
+			padding: 10px 8px;
+			border-radius: 4px;
+			background: #f8f8f8;
+			line-height: 1;
+			font-weight: 500;
+			font-size: 13px;
+			color: #27272e;
 		}
 	}
 	.content {
-		flex: 1;
-		height: 100%;
-		border-radius: 10px;
-		background: #fff;
 		display: flex;
 		flex-direction: column;
+		flex: 1;
+		border-radius: 10px;
+		height: 100%;
+		background: #fff;
 	}
+
 	@import "./index";
 }
 </style>

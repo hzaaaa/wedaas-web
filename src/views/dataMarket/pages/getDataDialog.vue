@@ -10,11 +10,11 @@
 							:data="tableIndata"
 							border
 							style="
+								box-sizing: border-box;
+								border: 1px solid rgb(232 232 232);
 								border-radius: 4px;
-								border: 1px solid rgb(232, 232, 232);
 								height: 100%;
 								max-height: 100%;
-								box-sizing: border-box;
 							"
 						>
 							<el-table-column label="参数名" prop="fieldName" show-overflow-tooltip></el-table-column>
@@ -39,13 +39,7 @@
 						class="common-table"
 						:data="resultDataList"
 						border
-						style="
-							border-radius: 4px;
-							border: 1px solid rgb(232, 232, 232);
-							height: 100%;
-							max-height: 100%;
-							box-sizing: border-box;
-						"
+						style="box-sizing: border-box; border: 1px solid rgb(232 232 232); border-radius: 4px; height: 100%; max-height: 100%"
 					>
 						<el-table-column type="index" label=" " />
 						<template v-for="item in sqlQueryResult.data.ddl">
@@ -133,30 +127,31 @@ defineExpose({
 	// padding-bottom: 0 !important;
 }
 .content-body {
+	display: flex;
+	overflow: hidden;
+	flex-direction: column;
 	width: 100%;
 	height: 60vh;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
 }
 .icon-wrap {
 	text-align: center;
 }
 .table-wrap {
-	transition: all 0.3s; //过渡
-	// max-height: 350px;
-	height: 240px;
 	// display: flex;
 	flex-direction: column;
+
+	// max-height: 350px;
+	height: 240px;
+	transition: all 0.3s; //过渡
 }
 .narrower-at-hook {
 	height: 0 !important; //过渡
 }
 .result-wrap {
-	flex: 1;
-	position: relative;
-	border-bottom: 1px solid #e8e8e8;
 	overflow: hidden;
+	position: relative;
+	flex: 1;
+	border-bottom: 1px solid #e8e8e8;
 	border-radius: 4px;
 }
 :deep(.el-dialog__body) {
@@ -167,24 +162,24 @@ defineExpose({
 	padding-top: 0;
 }
 .link-block {
-	background: #f8f8f8;
-	border-radius: 4px;
-	min-height: 112px;
-	margin: 16px 0 0;
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
-	padding: 8px 16px;
+	margin: 16px 0 0;
 	margin-top: 30px;
+	padding: 8px 16px;
+	border-radius: 4px;
+	min-height: 112px;
+	background: #f8f8f8;
 	.content {
+		overflow: auto;
+		margin-right: 16px;
+		padding: 8px 0;
+		height: 100px;
+		line-height: 16px;
 		font-weight: 400;
 		font-size: 13px;
-		line-height: 16px;
 		color: var(--colormaintext);
-		margin-right: 16px;
-		height: 100px;
-		overflow: auto;
-		padding: 8px 0;
 		word-wrap: break-word;
 		word-break: break-all;
 	}

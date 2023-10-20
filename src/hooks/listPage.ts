@@ -15,9 +15,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 	const tableDataList = ref<any>([]);
 	const tableLoading = ref<boolean>(false);
 
-	onMounted(() => {
-
-	});
+	onMounted(() => {});
 	const handleCurrentPageChange = (pageNum: number) => {
 		let params = {
 			pageNum: pageNum,
@@ -35,9 +33,8 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				pageParams.pageNum = pageNum;
 				tableLoading.value = false;
 				nextTick(() => {
-
 					queryCallBack && queryCallBack();
-				})
+				});
 			})
 			.catch((err: any) => {
 				tableLoading.value = false;
@@ -61,9 +58,8 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				pageParams.pageNum = 1;
 				tableLoading.value = false;
 				nextTick(() => {
-
 					queryCallBack && queryCallBack();
-				})
+				});
 			})
 			.catch((err: any) => {
 				tableLoading.value = false;
@@ -142,7 +138,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 	// 重置搜索表单按钮
 	const doReset = () => {
 		queryForm.value = JSON.parse(JSON.stringify(queryFormRaw));
-		searchByQueryForm()
+		searchByQueryForm();
 	};
 	//搜索按钮
 	const searchByQueryForm = () => {
@@ -153,14 +149,13 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 	};
 	onMounted(() => {
 		searchByQueryForm();
-
 	});
 	onActivated(() => {
 		// 调用时机为首次挂载
 		// 以及每次从缓存中被重新插入时
 		refreshData();
 		// handleCurrentPageChange_refresh
-	})
+	});
 	// // 抽屉修改或新增事件完成后重新调用查询接口刷新父组件
 	const subData = (val: any) => {
 		searchByQueryForm();

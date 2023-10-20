@@ -1,0 +1,28 @@
+.fold-panel-wrapper{
+     padding: 10px 12px;
+  background-color: #fff;
+
+  // will-change: auto;
+  transition: width 0.3s ease-in-out;
+  transition-delay: 0.1s;
+.fold-panel{
+  // height: 100%;
+  background-color: #fff;
+  will-change: tansform;
+  transform-origin: left;
+  transition-duration:  0.3s;
+  transition-delay: 0.1s;
+  .slot-wrapper{
+position: relative;
+		.mask {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-color: #fff;
+			transition: opacity 0.1s ease-in-out;
+		}
+  }
+
+}
+}
+

@@ -1,6 +1,38 @@
 <template>
 	<div class="flex" style="height: 100%">
-		<AdvancedSearchBar />
+		<!-- <AdvancedSearchBar /> -->
+		<fold-panel :width="224">
+			<div class="search-form-wrapper" style="margin-top: 20px">
+				<!-- <div class="mask" :style="{ width: isCollapse ? '100%' : '0' }"></div> -->
+				<div class="component-title">
+					<el-icon><Search /></el-icon>
+					<span>高级搜索</span>
+				</div>
+				<el-input v-model="input1" size="large" placeholder="Please Input" prefix-icon="Search" />
+				<div>
+					<span class="sub-title">筛选条件</span>
+				</div>
+				<el-divider />
+				<div class="filter-criteria">
+					<span class="filter-title">数据源</span>
+					<el-select v-model="value" class="m-2" placeholder="Select" size="large">
+						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+					</el-select>
+					<el-select v-model="value" class="m-2" placeholder="Select" size="large">
+						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+					</el-select>
+					<el-divider border-style="dotted" />
+					<span class="filter-title">数据目录</span>
+					<el-select v-model="value" class="m-2" placeholder="Select" size="large">
+						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+					</el-select>
+					<span class="filter-title">数据标签</span>
+					<el-select v-model="value" class="m-2" placeholder="Select" size="large">
+						<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+					</el-select>
+				</div>
+			</div>
+		</fold-panel>
 		<div class="common-layout-system">
 			<div class="operat-buttons">
 				<span>结果</span>
@@ -140,7 +172,7 @@
 </template>
 
 <script setup lang="ts">
-import {} from "vue";
+import { ref } from "vue";
 import useListPageHook from "@/hooks/listPage";
 import { getAdvancedSearchListApi } from "@/api/modules/mock/mock";
 import AdvancedSearchBar from "./components/advancedSearchBar.vue";
@@ -148,6 +180,32 @@ import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const viewType = ref("table");
 const retrievalPopoverVisible = ref(false);
+const input1 = ref("");
+
+const value = ref("");
+
+const options = [
+	{
+		value: "Option1",
+		label: "Option1",
+	},
+	{
+		value: "Option2",
+		label: "Option2",
+	},
+	{
+		value: "Option3",
+		label: "Option3",
+	},
+	{
+		value: "Option4",
+		label: "Option4",
+	},
+	{
+		value: "Option5",
+		label: "Option5",
+	},
+];
 
 const openTableDetailPage = () => {
 	router.push({
@@ -169,7 +227,6 @@ const beanInfo = {};
 
 let {
 	tableLoading,
-	tableMaxHeight,
 	pageParams,
 	tableDataList,
 	handleCurrentPageChange,

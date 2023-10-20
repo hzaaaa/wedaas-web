@@ -1,6 +1,42 @@
+.fold-panel{
+  margin-right: auto;
+}
+.component-title {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+		padding: 6px 4px;
+		border-radius: 4px;
+		background-color: #ccc;
+	}
+	.sub-title {
+		&::before {
+			display: inline-block;
+			margin-right: 5px;
+			border-radius: 2px;
+			width: 2px;
+			height: 12px;
+			background: #e46307;
+			content: "";
+		}
+	}
+	.filter-criteria {
+		display: flex;
+		flex-direction: column;
+		.filter-title {
+			margin-top: 10px;
+		}
+	}
+	.el-divider {
+		margin: 0;
+	}
+	.el-input,
+	.el-select {
+		margin-bottom: 14px;
+	}
 .common-layout-system{
   overflow-x: hidden;
-  margin-left: 6px;
+  margin-left: 10px;
   border-radius: 4px;
   height: auto;
   background-color: #fff;

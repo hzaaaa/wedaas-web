@@ -21,6 +21,7 @@ export const useUserStore = defineStore({
 	getters: {
 		behaviorGet: (state) => state.behavior,
 		userInfoGet: (state) => state.userInfo?.sysUser ?? {},
+		userRoleGet: (state) => state.userInfo?.sysRoleList[0] ?? {},
 	},
 	actions: {
 		setId(id: number) {

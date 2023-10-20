@@ -7,8 +7,8 @@
 		></span>
 		<template #dropdown>
 			<el-dropdown-menu>
-				<el-dropdown-item @click="jumpToBasicInfo">基础信息</el-dropdown-item>
-				<el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+				<el-dropdown-item @click="jumpToPersonalCenter">个人中心</el-dropdown-item>
+				<el-dropdown-item @click="logout">退出系统</el-dropdown-item>
 			</el-dropdown-menu>
 		</template>
 	</el-dropdown>
@@ -44,10 +44,10 @@ const logout = async () => {
 	});
 };
 
-const jumpToBasicInfo = () => {
+const jumpToPersonalCenter = () => {
 	console.log(authStore.activeTopMenuPathGet);
 	authStore.setActiveTopMenu("");
-	router.push({ name: "basicInfo" });
+	router.push({ name: "personalCenter" });
 };
 </script>
 

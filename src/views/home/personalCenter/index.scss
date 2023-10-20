@@ -1,6 +1,42 @@
-.basic-info-card {
-	padding-top: 23px;
+.personal-center-card {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 23px 0 0;
+	height: 0;
+	.personal-info-wrapper{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		.personal-avatar{
+			width: 72px;
+			height: 72px;
+			background-color: var(--el-color-primary);
+			font-size: 32px;
+		}
+		.personal-info{
+			display: flex;
+			align-items: center;
+			div{
+				display: flex;
+				align-items: center;
+			}
+		}
+		.welcome-text{
+			    margin-top: 16px;
+    line-height: 24px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 20px;
+    color: #27272e;
+    letter-spacing: .06em;
+		}
+	}
 	:deep(.el-tabs) {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		height: 0;
 		.el-tabs__item {
 			height: 53px;
 			line-height: 53px;
@@ -21,7 +57,18 @@
 			background-color: #303133;
 		}
 		.el-tabs__content {
-			margin-top: 56px;
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			height: 0;
+			.el-tab-pane{
+				display: flex;
+				flex-direction: column;
+			  flex: 1;
+				height: 0;
+			}
+
+			// margin-top: 56px;
 			.basicInfo-wrapper {
 				// display: flex;
 				// flex-direction: column;

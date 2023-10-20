@@ -1,0 +1,139 @@
+{
+	"code": 1,
+	"data": [
+		{
+			"id": 6,
+			"name": "微言",
+			"createTime": null,
+			"updateTime": null,
+			"childs": [
+				{
+					"id": 11,
+					"name": "123",
+					"rootId": 6,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				}
+			],
+			"count": null
+		},
+		{
+			"id": 4,
+			"name": "教育网数据",
+			"createTime": null,
+			"updateTime": null,
+			"childs": [
+				{
+					"id": 6,
+					"name": "educode",
+					"rootId": 4,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				}
+			],
+			"count": null
+		},
+		{
+			"id": 1,
+			"name": "数据服务测试",
+			"createTime": null,
+			"updateTime": null,
+			"childs": [
+				{
+					"id": 1,
+					"name": "cg",
+					"rootId": 1,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				}
+			],
+			"count": null
+		},
+		{
+			"id": 2,
+			"name": "数据订阅平台",
+			"createTime": null,
+			"updateTime": null,
+			"childs": [
+				{
+					"id": 10,
+					"name": "gpt计费",
+					"rootId": 2,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				},
+				{
+					"id": 4,
+					"name": "审计GPT",
+					"rootId": 2,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				},
+				{
+					"id": 8,
+					"name": "审计日表",
+					"rootId": 2,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				},
+				{
+					"id": 7,
+					"name": "审计次表",
+					"rootId": 2,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				},
+				{
+					"id": 3,
+					"name": "审计通用",
+					"rootId": 2,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				},
+				{
+					"id": 9,
+					"name": "异常数据",
+					"rootId": 2,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				}
+			],
+			"count": null
+		},
+		{
+			"id": 5,
+			"name": "测试",
+			"createTime": null,
+			"updateTime": null,
+			"childs": [],
+			"count": null
+		},
+		{
+			"id": 3,
+			"name": "购号网数据",
+			"createTime": null,
+			"updateTime": null,
+			"childs": [
+				{
+					"id": 5,
+					"name": "phone",
+					"rootId": 3,
+					"createTime": null,
+					"updateTime": null,
+					"count": null
+				}
+			],
+			"count": null
+		}
+	],
+	"action": "success"
+}

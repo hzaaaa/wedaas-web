@@ -1,9 +1,183 @@
 <template>
-  <div class="">explorationConfig</div>
+	<div class="explorationConfig">
+		<div class="exploration-header">
+			<div class="filter-input">
+				<div class="title">正则名称搜索</div>
+				<el-input style="width: auto" placeholder="请输入查询的正则名称" :suffix-icon="Search" />
+			</div>
+			<div class="add-btn">
+				<el-button style="margin-bottom: 0" type="warning" @click="openRegularEditDialogClick">增加配置</el-button>
+			</div>
+		</div>
+		<div class="exploration-table">
+			<el-table
+				class="common-table"
+				v-loading="tableLoading"
+				:data="tableDataList"
+				border
+				style="flex: 1 !important; height: auto"
+				ref="multipleTableRef"
+				:default-sort="{ prop: 'update_time', order: 'descending' }"
+			>
+				<el-table-column label="正则名称" prop="regularName" show-overflow-tooltip> </el-table-column>
+
+				<el-table-column label="正则表达式" prop="regularExpression" show-overflow-tooltip-none> </el-table-column>
+
+				<el-table-column label="描述" prop="regularDescription" show-overflow-tooltip-none> </el-table-column>
+
+				<el-table-column label="创建时间" prop="createTime" show-overflow-tooltip-none> </el-table-column>
+				<el-table-column label="更新时间" prop="updateTime" show-overflow-tooltip-none> </el-table-column>
+
+				<el-table-column label="操作" width="120" header-align="left" align="left" fixed="right">
+					<template #default="scope">
+						<div class="flex-left">
+							<span class="two-word-button">
+								<el-button type="primary" link @click="openRegularEditDialogClick">修改</el-button>
+								<el-button type="info" class="button-hold-position" disabled link>修改</el-button>
+							</span>
+							<span class="two-word-button">
+								<el-button type="primary" link>删除</el-button>
+								<el-button type="info" class="button-hold-position" disabled link>删除</el-button>
+							</span>
+						</div>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
+		<div class="exploration-page">
+			<el-pagination
+				:page-sizes="pageParams.pageSizesList"
+				background
+				layout="total,sizes,prev, pager, next,jumper"
+				@size-change="handleSizeChange"
+				@current-change="handleCurrentPageChange"
+				:current-page="pageParams.pageNum"
+				:page-size="pageParams.pageSize"
+				:total="pageParams.total"
+			/>
+		</div>
+
+		<regularEditDialog ref="regularEditDialogRef" @refreshData=""></regularEditDialog>
+	</div>
 </template>
 
 <script setup lang="ts">
 import {} from "vue";
+import useListPageHook from "@/hooks/listPage";
+import listDataJson from "./listData.json";
+import regularEditDialog from "./components/regularEditDialog.vue";
+import { Search } from "@element-plus/icons-vue";
+let createTableByData = (pageSize: number, pageNum: number) => {
+	let list: any = [];
+
+	while (pageSize--) {
+		list.push({
+			dataName: 0,
+
+			receiptSide: "receiptSide",
+			description: "description",
+			status: "status",
+			notes: "notes" + pageNum,
+		});
+	}
+	list = listDataJson.data.list;
+	list = [...list, ...list];
+	// list = [...list, ...list];
+	// list = [...list, ...list];
+	// list = [...list, ...list];
+	return list;
+};
+const regularEditDialogRef = <any>ref(null);
+const openRegularEditDialogClick = () => {
+	regularEditDialogRef.value.acceptParams({
+		row: {},
+	});
+};
+const getTableListApi = (params: any) => {
+	console.log({ ...params });
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve({
+				data: {
+					total: params.pageSize * 2,
+					list: createTableByData(params.pageSize, params.pageNum),
+				},
+			});
+		}, 500);
+	});
+};
+
+const beanInfo = {};
+const queryFormRaw = {};
+let {
+	tableLoading,
+
+	pageParams,
+	tableDataList,
+	handleCurrentPageChange,
+	handleSizeChange,
+	resetPageToOne,
+	refreshData, //刷新按钮
+
+	drawer,
+	employeeRow,
+	onAddDrawer,
+	onEditDrawer,
+	searchByQueryForm,
+	subData,
+
+	queryForm,
+	doReset,
+} = useListPageHook(
+	// getCompanyListApi,
+	getTableListApi, //temp test
+
+	beanInfo,
+	queryFormRaw
+);
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.explorationConfig {
+	height: 0;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+
+	padding: 24px;
+	background: #fff;
+	border-radius: 4px;
+	.exploration-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-bottom: 16px;
+		border-bottom: 1px solid var(--bc);
+		.filter-input {
+			display: flex;
+			align-items: center;
+			.title {
+				font-weight: 400;
+				font-size: 13px;
+				line-height: 16px;
+				color: rgba(39, 39, 46, 0.7);
+				margin-right: 8px;
+			}
+		}
+	}
+	.exploration-table {
+		width: 100%;
+		margin-top: 16px;
+		flex: 1;
+		height: 0;
+		display: flex;
+		flex-direction: column;
+	}
+	.exploration-page {
+		padding-top: 16px;
+		text-align: right;
+		display: flex;
+		justify-content: flex-end;
+	}
+}
+</style>

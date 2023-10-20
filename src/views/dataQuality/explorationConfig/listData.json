@@ -1,0 +1,24 @@
+{
+	"code": 1,
+	"data": {
+		"total": 1,
+		"curPage": 1,
+		"totalPage": 1,
+		"pageSize": 50,
+		"wheres": null,
+		"list": [
+			{
+				"id": "29b8bfaa-2a1e-4a0a-a226-b192d7ef82fa",
+				"regularName": "testzz",
+				"regularExpression": "testzz",
+				"createBy": "huozhiang",
+				"createTime": 1697611567,
+				"updateTime": 1697611567,
+				"regularDescription": "testzz"
+			}
+		],
+		"pagedBegin": 0,
+		"orderBy": null
+	},
+	"action": "success"
+}

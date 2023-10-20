@@ -88,7 +88,22 @@
 						},
 						{
 							"affix": 0,
-							"childrenList": [],
+							"childrenList": [
+								{
+									"affix": 0,
+									"component": "/dataCatalogMenu/dataCatalog/pages/setChildCatalog",
+									"hidden": 1,
+									"id": 157,
+									"keepAlive": 0,
+									"path": "_1_33_34_35_",
+									"permission": "",
+									"pid": 35,
+									"redirect": "/dataCatalogMenu/labelManage/setLabel",
+									"router": "setLabel",
+									"title": "设置标签",
+									"type": 4
+								}
+							],
 							"component": "/dataCatalogMenu/labelManage/index",
 							"hidden": 0,
 							"icon": "icon-zhongchengduhezuofang",

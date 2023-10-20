@@ -47,26 +47,66 @@
 					<template #default="scope"> {{ scope.row.schema.split(".")[1] }}</template>
 				</el-table-column>
 				<el-table-column prop="description" label="表描述" width="180"> </el-table-column> -->
+
 				<el-table-column label="操作" width="80" header-align="left" align="left" fixed="right">
+					<template #header>
+						<el-checkbox v-model="addCheckedAll" @change="addCheckedAllChange" label="操作" size="large" />
+					</template>
+
 					<template #default="scope">
-						<div class="flex-left">
-							<span class="two-word-button">
-								<el-button type="primary" link>添加</el-button>
-								<el-button type="info" class="button-hold-position" disabled link>添加</el-button>
-							</span>
-						</div>
+						<el-checkbox
+							:key="pageParams.pageNum + scope.$index"
+							@change="itemCheckedChange"
+							v-model="scope.row.checked"
+							label="添加"
+							size="large"
+						/>
 					</template>
 				</el-table-column>
 			</el-table>
 		</div>
-		<div class="footer"></div>
+		<div class="footer">
+			<div class="">
+				<el-button style="margin-right: 28px" @click="router.go(-1)">返回</el-button>
+				<el-button style="margin-right: 28px" type="primary">确定</el-button>
+			</div>
+			<div class="">
+				<el-pagination
+					:page-sizes="pageParams.pageSizesList"
+					background
+					layout="total,sizes,prev, pager, next,jumper"
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentPageChange"
+					:current-page="pageParams.pageNum"
+					:page-size="pageParams.pageSize"
+					:total="pageParams.total"
+				/>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import {} from "vue";
+import { ref, watch } from "vue";
 import useListPageHook from "@/hooks/listPage";
 import listDataJson from "./listData.json";
+const router = useRouter();
+const addCheckedAll = ref(false); //切页时记得修改
+const addCheckedAllChange = (val: any) => {
+	tableDataList.value.forEach((item: any) => {
+		item.checked = val;
+	});
+};
+const itemCheckedChange = (val: any) => {
+	addCheckedAll.value = tableDataList.value.every((item: any) => {
+		return item.checked === true;
+	});
+};
+const multipleSelection = ref<any>([]);
+const handleSelectionChange = (val: []) => {
+	multipleSelection.value = val;
+};
+
 let createTableByData = (pageSize: number, pageNum: number) => {
 	let list: any = [];
 
@@ -80,11 +120,15 @@ let createTableByData = (pageSize: number, pageNum: number) => {
 			notes: "notes" + pageNum,
 		});
 	}
+	listDataJson.data.forEach((item: any) => {
+		item.checked = undefined;
+	});
 	list = listDataJson.data;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
+	// list = [...list, ...list];
+	// list = [...list, ...list];
+	// list = [...list, ...list];
+	// list = [...list, ...list];
+	// return [];
 	return list;
 };
 const getTableListApi = (params: any) => {
@@ -126,7 +170,11 @@ let {
 	getTableListApi, //temp test
 
 	beanInfo,
-	queryFormRaw
+	queryFormRaw,
+	null,
+	() => {
+		console.log("tableDataList", tableDataList.value);
+	}
 );
 </script>
 

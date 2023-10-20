@@ -44,32 +44,22 @@
 				<el-row>
 					<el-col :span="24">
 						<div class="wrap" style="display: flex">
-							<el-form-item label="数据源" style="padding-right: 40px">
-								<el-input v-model="queryForm.name" placeholder="请输入" clearable style="width: 320px"></el-input>
-							</el-form-item>
-							<el-form-item label="搜索表" style="padding-right: 40px">
-								<el-select v-model="queryForm.submitUserIdList" clearable placeholder="请选择" style="width: 320px" filterable>
-									<!-- :remote-method=""
-                :loading="" -->
-									<el-option
-										v-for="item in [
-											{
-												id: '创建时间排序',
-												name: '创建时间排序',
-											},
-											{
-												id: '调用次数排序',
-												name: '调用次数排序',
-											},
-										]"
-										:key="item.id"
-										:label="item.name"
-										:value="item.id"
-									/>
-								</el-select>
-							</el-form-item>
-							<el-button style="margin-right: 28px" type="primary" @click="searchByQueryForm">查询</el-button>
-							<el-button style="margin-right: 28px" type="primary" plain @click="doReset">重置</el-button>
+							<div class="query-bottom">
+								<div class="input-item">
+									<span class="item-label">选择数据库</span>
+									<el-select style="width: auto"></el-select>
+								</div>
+								<div class="input-item">
+									<el-select style="width: auto"></el-select>
+								</div>
+								<div class="input-item ml24">
+									<span class="item-label">搜索表</span>
+									<el-select style="width: auto"></el-select>
+								</div>
+								<div class="input-item ml24" style="flex: 1; margin-right: 0; text-align: right">
+									<el-button style="margin-bottom: 0" type="warning" @click="openFormPageClick('add')">子目录设置</el-button>
+								</div>
+							</div>
 
 							<!-- <el-button style="margin-right: 28px" @click="show_mode = 'list'">列表模式</el-button>
 							<el-button style="margin-right: 0" @click="show_mode = 'card'">卡片模式</el-button> -->
@@ -78,7 +68,6 @@
 				</el-row>
 			</el-form>
 			<div class="operat-buttons">
-				<el-button style="" type="warning" @click="openFormPageClick('add')">子目录设置</el-button>
 				<!-- v-permission="['accessTestApi:add']" -->
 
 				<div class="space"></div>
@@ -412,5 +401,43 @@ let {
 		flex-direction: column;
 	}
 	@import "@/views/dataMarket/index.scss";
+}
+.query-bottom {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	.input-item {
+		font-weight: 400;
+		font-size: 13px;
+		line-height: 16px;
+		margin-right: 8px;
+		color: var(--colormaintext);
+		.item-label {
+			font-weight: 400;
+			font-size: 13px;
+			line-height: 16px;
+			margin-right: 8px;
+			color: var(--colormaintext);
+		}
+	}
+	.checkbox {
+		font-weight: 400;
+		font-size: 13px;
+		line-height: 16px;
+		flex: 1;
+		color: var(--coloroptext);
+		.checkbox-item {
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			min-width: 120px;
+		}
+		.title {
+			margin-left: 2px;
+		}
+	}
 }
 </style>

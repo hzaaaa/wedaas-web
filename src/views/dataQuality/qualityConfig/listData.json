@@ -1,0 +1,145 @@
+{
+	"code": 1,
+	"data": {
+		"total": 19,
+		"curPage": 1,
+		"totalPage": 1,
+		"pageSize": 30,
+		"wheres": null,
+		"list": [
+			{
+				"run_hours": 24,
+				"total": 27,
+				"db_name": "cfx_dingsun",
+				"run_time": "2023-10-13T09:52:47.000+00:00",
+				"run_item": "all",
+				"type": "mysql",
+				"total_run": 4,
+				"data_source_id": "CHDHIVE元数据.cfx_dingsun"
+			},
+			{
+				"total": 8,
+				"db_name": "default",
+				"type": "mysql",
+				"data_source_id": "CHDHIVE元数据.default"
+			},
+			{
+				"run_hours": 24,
+				"total": 6,
+				"db_name": "hotels",
+				"run_time": "2023-10-15T12:52:20.000+00:00",
+				"run_item": "all",
+				"type": "mysql",
+				"total_run": 2,
+				"data_source_id": "CHDHIVE元数据.hotels"
+			},
+			{
+				"total": 2,
+				"db_name": "test01",
+				"type": "mysql",
+				"data_source_id": "CHDHIVE元数据.test01"
+			},
+			{
+				"total": 4,
+				"db_name": "api_platform",
+				"type": "mysql",
+				"data_source_id": "hadoop元数据.api_platform"
+			},
+			{
+				"total": 1,
+				"db_name": "api_platform_test",
+				"type": "mysql",
+				"data_source_id": "hadoop元数据.api_platform_test"
+			},
+			{
+				"total": 20,
+				"db_name": "cfx_dingsun",
+				"type": "mysql",
+				"data_source_id": "hadoop元数据.cfx_dingsun"
+			},
+			{
+				"total": 8,
+				"db_name": "default",
+				"type": "mysql",
+				"data_source_id": "hadoop元数据.default"
+			},
+			{
+				"total": 43,
+				"db_name": "gmall",
+				"type": "mysql",
+				"data_source_id": "hadoop元数据.gmall"
+			},
+			{
+				"total": 46,
+				"db_name": "gmall",
+				"type": "mysql",
+				"data_source_id": "mysql.gmall"
+			},
+			{
+				"total": 2,
+				"db_name": "gouhaowang",
+				"type": "mysql",
+				"data_source_id": "mysql.gouhaowang"
+			},
+			{
+				"total": 1,
+				"db_name": "scrapy",
+				"type": "mysql",
+				"data_source_id": "mysql.scrapy"
+			},
+			{
+				"total": 1,
+				"db_name": "wy",
+				"type": "postgresql",
+				"data_source_id": "postgresql.wy"
+			},
+			{
+				"run_hours": 24,
+				"total": 9,
+				"db_name": "audit_service",
+				"run_time": "2023-10-14T11:14:00.000+00:00",
+				"run_item": "all",
+				"type": "mysql",
+				"total_run": 3,
+				"data_source_id": "数据订阅平台审计数据.audit_service"
+			},
+			{
+				"run_hours": 6,
+				"total": 2,
+				"db_name": "gouhaowang",
+				"run_time": "2023-10-10T12:54:41.000+00:00",
+				"run_item": "all",
+				"type": "mysql",
+				"total_run": 2,
+				"data_source_id": "数据订阅平台审计数据.gouhaowang"
+			},
+			{
+				"total": 6,
+				"db_name": "api_platform_test_cg",
+				"type": "mysql",
+				"data_source_id": "阿里云hive元数据库.api_platform_test_cg"
+			},
+			{
+				"total": 15,
+				"db_name": "api_proxy_server_syslog",
+				"type": "mysql",
+				"data_source_id": "阿里云hive元数据库.api_proxy_server_syslog"
+			},
+			{
+				"total": 3,
+				"db_name": "default",
+				"type": "mysql",
+				"data_source_id": "阿里云hive元数据库.default"
+			},
+			{
+				"total": 1,
+				"db_name": "test01",
+				"type": "mysql",
+				"data_source_id": "阿里云hive元数据库.test01"
+			}
+		],
+		"pagedBegin": 0,
+		"orderBy": null
+	},
+	"action": "success"
+}

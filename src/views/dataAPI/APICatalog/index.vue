@@ -106,7 +106,7 @@
 											<el-dropdown-item>修改</el-dropdown-item>
 											<el-dropdown-item>复制</el-dropdown-item>
 											<el-dropdown-item @click="openGetShareLinkDialogRefClick">分享</el-dropdown-item>
-											<el-dropdown-item>版本切换</el-dropdown-item>
+											<el-dropdown-item @click="openChangeVersionDialogRefClick">版本切换</el-dropdown-item>
 										</el-dropdown-menu>
 									</template>
 								</el-dropdown>
@@ -133,6 +133,7 @@
 		<modiftCatalogDialog ref="modiftCatalogDialogRef" @refreshData=""></modiftCatalogDialog>
 		<apiDetailsDialog ref="apiDetailsDialogRef" @refreshData=""></apiDetailsDialog>
 		<getShareLinkDialog ref="getShareLinkDialogRef" @refreshData=""></getShareLinkDialog>
+		<changeVersionDialog ref="changeVersionDialogRef" @refreshData=""></changeVersionDialog>
 	</div>
 </template>
 
@@ -146,6 +147,7 @@ import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
 import modiftCatalogDialog from "./components/modiftCatalogDialog.vue";
 import apiDetailsDialog from "./components/apiDetailsDialog.vue";
 import getShareLinkDialog from "./components/getShareLinkDialog.vue";
+import changeVersionDialog from "./components/changeVersionDialog.vue";
 import { Search } from "@element-plus/icons-vue";
 import router from "@/routers";
 interface Tree {
@@ -161,6 +163,7 @@ const addChildCatalogDialogRef = <any>ref(null);
 const modiftCatalogDialogRef = <any>ref(null);
 const apiDetailsDialogRef = <any>ref(null);
 const getShareLinkDialogRef = <any>ref(null);
+const changeVersionDialogRef = <any>ref(null);
 const openAddMainCatalogDialogClick = () => {
 	addMainCatalogDialogRef.value.acceptParams({
 		row: {},
@@ -183,6 +186,11 @@ const openApiDetailsDialogRefClick = () => {
 };
 const openGetShareLinkDialogRefClick = () => {
 	getShareLinkDialogRef.value.acceptParams({
+		row: {},
+	});
+};
+const openChangeVersionDialogRefClick = () => {
+	changeVersionDialogRef.value.acceptParams({
 		row: {},
 	});
 };

@@ -270,92 +270,89 @@ let {
 
 <style lang="scss" scoped>
 .left-tree-right-table-layout {
-	display: flex;
 	flex: 1;
-	width: 100%;
 	height: 0;
+	display: flex;
+	width: 100%;
 	.narrower-at-hook {
-		padding: 10px 2px !important;
 		width: 24px !important;
+
+		padding: 10px 2px !important;
 		.action-btn-wrap {
 			justify-content: center !important;
 		}
 	}
+
 	.aside {
-		display: flex;
-		flex-direction: column;
-		box-sizing: border-box;
-		margin-right: 16px;
-		padding: 16px;
-		border-radius: 10px;
+		transition: all 0.3s;
 		width: 240px;
 		height: 100%;
+		margin-right: 16px;
+		border-radius: 10px;
 		background: #fff;
+		padding: 16px;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
 		.tree-wrap {
-			display: flex;
-			flex-direction: column;
 			flex: 1;
 			height: 0;
+			display: flex;
+			flex-direction: column;
 		}
 		.action-btn-wrap {
 			display: flex;
 			justify-content: flex-end;
 		}
 		.market-tabs {
-			display: flex;
 			position: relative;
+			display: flex;
 			justify-content: space-between;
 			padding: 8px 0;
 			.market-tabs-item {
 				flex: 1;
-				opacity: 0.7;
-				line-height: 16px;
 				text-align: center;
-				font-weight: 400;
 				font-size: 13px;
+				line-height: 16px;
 				color: #27272e;
+				opacity: 0.7;
+				font-weight: 400;
 				&:nth-child(1) {
 					border-right: 1px solid #e8e8e8;
 				}
 			}
 			.market-tabs-active {
-				opacity: 1;
-				line-height: 16px;
 				font-weight: 500;
 				font-size: 13px;
+				line-height: 16px;
+				opacity: 1;
 				color: var(--el-color-primary);
 			}
 		}
 		.view-all {
-			margin: 8px 0;
-			padding: 10px 8px;
-			border-radius: 4px;
-			background: #f8f8f8;
-			line-height: 1;
-			font-weight: 500;
 			font-size: 13px;
+			line-height: 1;
 			color: #27272e;
+			font-weight: 500;
+			padding: 10px 8px;
+			background: #f8f8f8;
+			border-radius: 4px;
+			margin: 8px 0;
 		}
 		.tree-class {
-			overflow: auto;
 			flex: 1;
 			height: 0;
-		}
-		.tree-class {
 			overflow: auto;
-			flex: 1;
-			height: 0;
 		}
 	}
 	.content {
+		flex: 1;
+		height: 100%;
+		border-radius: 10px;
+		background: #fff;
 		display: flex;
 		flex-direction: column;
-		flex: 1;
-		border-radius: 10px;
-		height: 100%;
-		background: #fff;
 	}
-
 	@import "./index";
 }
 </style>

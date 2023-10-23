@@ -173,7 +173,7 @@ const pageData = ref([
 ]);
 const currentTab = ref("请求参数");
 const activeTab = ref("API下载");
-const dialogVisible = ref(true);
+const dialogVisible = ref(false);
 const location = <any>window.location;
 const dialogProps = ref<any>();
 

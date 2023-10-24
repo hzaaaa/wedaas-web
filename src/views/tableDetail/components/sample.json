@@ -1,0 +1,36 @@
+{
+	"code": 1,
+	"data": {
+		"ddl": ["id", "activity_name", "activity_type", "activity_desc", "start_time", "end_time", "create_time"],
+		"sample": [
+			{
+				"activity_name": "联想专场",
+				"start_time": "2020-10-21 18:49:12",
+				"create_time": null,
+				"activity_type": "3101",
+				"activity_desc": "联想满减",
+				"end_time": "2020-10-31 18:49:15",
+				"id": 1
+			},
+			{
+				"activity_name": "Apple品牌日",
+				"start_time": "2020-06-10 00:00:00",
+				"create_time": null,
+				"activity_type": "3101",
+				"activity_desc": "Apple品牌日",
+				"end_time": "2020-06-12 00:00:00",
+				"id": 2
+			},
+			{
+				"activity_name": "女神节",
+				"start_time": "2020-03-08 00:00:00",
+				"create_time": null,
+				"activity_type": "3102",
+				"activity_desc": "满件打折",
+				"end_time": "2020-03-09 00:00:00",
+				"id": 3
+			}
+		]
+	},
+	"action": "success"
+}

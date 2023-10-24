@@ -35,10 +35,16 @@
 			</div>
 		</fold-panel>
 		<div class="tab-block-wrapper">
-			<el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-				<el-tab-pane label="表信息" name="first">User</el-tab-pane>
-				<el-tab-pane label="数据样本" name="second">Config</el-tab-pane>
-				<el-tab-pane label="数据探查" name="third">Role</el-tab-pane>
+			<el-tabs v-model="activeName" class="full-content-tabs" @tab-click="handleClick">
+				<el-tab-pane label="表信息" name="first">
+					<tableInfo></tableInfo>
+				</el-tab-pane>
+				<el-tab-pane label="数据样本" name="second">
+					<dataSample></dataSample>
+				</el-tab-pane>
+				<el-tab-pane label="数据探查" name="third">
+					<dataExploration></dataExploration>
+				</el-tab-pane>
 			</el-tabs>
 		</div>
 		<BasicInfoEditDialog ref="editBasicInfoDialogRef" />
@@ -50,6 +56,9 @@ import { ref } from "vue";
 import useListPageHook from "@/hooks/listPage";
 import { getAdvancedSearchListApi } from "@/api/modules/mock/mock";
 import BasicInfoEditDialog from "./components/BasicInfoEditDialog.vue";
+import tableInfo from "./components/tableInfo.vue";
+import dataSample from "./components/dataSample.vue";
+import dataExploration from "./components/dataExploration.vue";
 import { useRoute, useRouter } from "vue-router";
 import type { TabsPaneContext } from "element-plus";
 const tableFollow = ref(false);

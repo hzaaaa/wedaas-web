@@ -87,6 +87,16 @@ export const userAccountRouter = [
 			isAffix: 0,
 		},
 	},
+	{
+		path: "/home/approvalCenter",
+		name: "approvalCenter",
+		component: () => import("@/views/home/approvalCenter/index.vue"),
+		meta: {
+			title: "审批中心",
+			isHide: 1,
+			isAffix: 0,
+		},
+	},
 ];
 export const errorRoutes = [
 	{

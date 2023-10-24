@@ -31,6 +31,9 @@
 					<div class="table-detail-info"><span>备注:</span><span>暂无</span></div>
 					<div class="table-detail-info"><span>标签:</span><span>暂无</span></div>
 					<div class="table-detail-info"><span>已关注的用户:</span><span>暂无</span></div>
+					<div class="table-permission-application-icon">
+						<el-button type="primary" @click="openTablePerAppDialog(basicInfo)">申请表权限</el-button>
+					</div>
 				</div>
 			</div>
 		</fold-panel>
@@ -42,6 +45,7 @@
 			</el-tabs>
 		</div>
 		<BasicInfoEditDialog ref="editBasicInfoDialogRef" />
+		<TablePerAppDialog ref="tablePerAppDialogRef" />
 	</div>
 </template>
 
@@ -50,6 +54,7 @@ import { ref } from "vue";
 import useListPageHook from "@/hooks/listPage";
 import { getAdvancedSearchListApi } from "@/api/modules/mock/mock";
 import BasicInfoEditDialog from "./components/BasicInfoEditDialog.vue";
+import TablePerAppDialog from "@/components/TableAPIPerAppDialog/index.vue";
 import { useRoute, useRouter } from "vue-router";
 import type { TabsPaneContext } from "element-plus";
 const tableFollow = ref(false);
@@ -68,6 +73,15 @@ const openEditBasicInfoDialog = (info: any) => {
 		info: info,
 	};
 	editBasicInfoDialogRef.value?.acceptParams(params);
+};
+
+// 申请权限弹窗
+const tablePerAppDialogRef = ref<InstanceType<typeof TablePerAppDialog> | null>(null);
+const openTablePerAppDialog = (info: any) => {
+	const params = {
+		info: info,
+	};
+	tablePerAppDialogRef.value?.acceptParams(params);
 };
 const queryFormRaw = {
 	// name: "",

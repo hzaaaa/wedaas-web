@@ -59,6 +59,8 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/svgIcon/index.vue')['default']
+    TableAPIPerAppDialog: typeof import('./src/components/TableAPIPerAppDialog/index.vue')['default']
+    TablePerAppDialog: typeof import('./src/components/TableAPIPerAppDialog/TablePerAppDialog.vue')['default']
     Tihuan: typeof import('./src/components/svgIcon/tihuan.vue')['default']
     TooltipWrap: typeof import('./src/components/tooltipWrap.vue')['default']
     TreeFilter: typeof import('./src/components/TreeFilter/index.vue')['default']

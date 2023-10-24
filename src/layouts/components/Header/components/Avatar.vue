@@ -8,6 +8,7 @@
 		<template #dropdown>
 			<el-dropdown-menu>
 				<el-dropdown-item @click="jumpToPersonalCenter">个人中心</el-dropdown-item>
+				<el-dropdown-item @click="jumpToApprovalCenter">审批中心</el-dropdown-item>
 				<el-dropdown-item @click="logout">退出系统</el-dropdown-item>
 			</el-dropdown-menu>
 		</template>
@@ -48,6 +49,10 @@ const jumpToPersonalCenter = () => {
 	console.log(authStore.activeTopMenuPathGet);
 	authStore.setActiveTopMenu("");
 	router.push({ name: "personalCenter" });
+};
+
+const jumpToApprovalCenter = () => {
+	router.push({ name: "approvalCenter" });
 };
 </script>
 

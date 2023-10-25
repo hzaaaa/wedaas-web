@@ -4,6 +4,21 @@
 			z-index: 1;
 		}
 	}
+	.filter-criteria {
+		display: flex;
+		flex-direction: column;
+		.table-detail-info {
+			margin-top: 10px;
+		}
+		.table-permission-application-icon{
+			.el-button {
+				width: 100%;
+			}
+		}
+	}
+	.el-divider {
+		margin: 0;
+	}
 }
 .sub-title {
 	&::before {
@@ -15,13 +30,7 @@
 		background: #e46307;
 		content: "";
 	}
-}
-.filter-criteria {
-	display: flex;
-	flex-direction: column;
-	.table-detail-info {
-		margin-top: 10px;
-	}
+
 }
 .el-divider {
 	margin: 0;

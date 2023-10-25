@@ -1,3 +1,4 @@
+import { ElMessage } from "element-plus";
 /**
  * @description 处理后端返回的菜单
  * @param {Array} originMenuList 原始菜单列表
@@ -90,7 +91,8 @@ const getRedirect = (menuList: OriginMenu.OriginMenuOptions[] = []): string => {
 	let redirect = "";
 	if (menuList.length) {
 		// if (menuList[0].redirect) {
-		if (menuList[0].redirect && menuList[0].hidden === 0) {// && menuList[0].hidden === 0 解决隐藏子菜单不能为第一个child
+		if (menuList[0].redirect && menuList[0].hidden === 0) {
+			// && menuList[0].hidden === 0 解决隐藏子菜单不能为第一个child
 			redirect = menuList[0].redirect;
 		} else if (menuList[0].childrenList?.length) {
 			//
@@ -188,4 +190,21 @@ export const ImgToBase64 = (file: any, callBack: Function) => {
 		}
 	};
 	// return imgBase64;
+};
+
+// **工具方法** 复制内容到剪贴板
+export const copyTextToClipboard = (copyContent: string) => {
+	if (navigator.clipboard) {
+		// 新api，安全限制较多，https 或 localhost 才可用
+		navigator.clipboard.writeText(copyContent);
+	} else {
+		// 传统api，随时可能会废弃
+		const tempInput = document.createElement("input");
+		tempInput.setAttribute("value", copyContent);
+		document.body.append(tempInput);
+		tempInput.select();
+		document.execCommand("copy");
+		tempInput.remove();
+	}
+	ElMessage.success("复制成功");
 };

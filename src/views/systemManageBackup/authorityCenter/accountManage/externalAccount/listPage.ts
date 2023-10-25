@@ -15,9 +15,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 	const tableDataList = ref<any>([]);
 	const tableLoading = ref<boolean>(false);
 
-	onMounted(() => {
-
-	});
+	onMounted(() => {});
 	const handleCurrentPageChange = (pageNum: number) => {
 		let params = {
 			pageNum: pageNum,

@@ -1,0 +1,12 @@
+.common-layout-system {
+  .el-form {
+    margin-bottom: 10px;
+		.wrap {
+      justify-content: space-between;
+			.el-button {
+        width: auto;
+			}
+		}
+
+  }
+}

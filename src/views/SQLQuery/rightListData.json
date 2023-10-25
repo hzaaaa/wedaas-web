@@ -1,0 +1,48 @@
+{
+	"code": 1,
+	"data": [
+		{
+			"colName": "dt",
+			"colType": "string",
+			"description": "渠道公司主体表",
+			"colDesp": null
+		},
+		{
+			"colName": "add_time",
+			"colType": "int",
+			"description": "渠道公司主体表",
+			"colDesp": "添加时间"
+		},
+		{
+			"colName": "company_name",
+			"colType": "varchar(255)",
+			"description": "渠道公司主体表",
+			"colDesp": "渠道公司名称"
+		},
+		{
+			"colName": "company_short_name",
+			"colType": "varchar(255)",
+			"description": "渠道公司主体表",
+			"colDesp": "公司简称"
+		},
+		{
+			"colName": "id",
+			"colType": "int",
+			"description": "渠道公司主体表",
+			"colDesp": null
+		},
+		{
+			"colName": "sign_pwd",
+			"colType": "varchar(50)",
+			"description": "渠道公司主体表",
+			"colDesp": "签约密码"
+		},
+		{
+			"colName": "sign_type",
+			"colType": "tinyint",
+			"description": "渠道公司主体表",
+			"colDesp": "0密码签约1经办人手机签约"
+		}
+	],
+	"action": "success"
+}

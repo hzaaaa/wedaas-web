@@ -6,7 +6,7 @@
 				<el-icon v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
 			</div>
 			<Transition>
-				<div class="tree-wrap" v-if="asideClass === 'wider-at-hook'">
+				<div class="tree-wrap" v-show="asideClass === 'wider-at-hook'">
 					<div class="market-tabs">
 						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
 						<div class="market-tabs-item pointer">我的空间</div>
@@ -170,12 +170,12 @@ const changeLabelName = (list: any) => {
 };
 changeLabelName(treeDataJson.data);
 const treeData = ref(treeDataJson.data);
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
+// treeData.value = [...treeData.value, ...treeData.value];
+// treeData.value = [...treeData.value, ...treeData.value];
+// treeData.value = [...treeData.value, ...treeData.value];
+// treeData.value = [...treeData.value, ...treeData.value];
+// treeData.value = [...treeData.value, ...treeData.value];
+// treeData.value = [...treeData.value, ...treeData.value];
 const handleNodeClick = (data: Tree) => {
 	console.log(data);
 };
@@ -278,8 +278,8 @@ let {
 		width: 24px !important;
 
 		padding: 10px 2px !important;
+		padding-right: 4px !important;
 		.action-btn-wrap {
-			justify-content: center !important;
 		}
 	}
 

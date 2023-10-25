@@ -6,7 +6,7 @@
 				<el-icon v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
 			</div> -->
 			<Transition>
-				<div class="tree-wrap" v-if="asideClass === 'wider-at-hook'">
+				<div class="tree-wrap" v-show="asideClass === 'wider-at-hook'">
 					<div class="view-all">
 						<span>标签</span>
 						<el-icon @click="openAddMainCatalogDialogClick"><Plus /></el-icon>
@@ -291,8 +291,8 @@ let {
 		width: 24px !important;
 
 		padding: 10px 2px !important;
+		padding-right: 4px !important;
 		.action-btn-wrap {
-			justify-content: center !important;
 		}
 	}
 

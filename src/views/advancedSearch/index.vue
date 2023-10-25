@@ -61,7 +61,7 @@
 				</div>
 			</div>
 
-			<div class="table-wrapper" style="display: none" v-show="viewType == 'table'">
+			<div class="table-wrapper" v-show="viewType == 'table'">
 				<el-table
 					v-loading="tableLoading"
 					:data="tableDataList"

@@ -1,0 +1,32 @@
+.el-dialog.table-per-app-dialog {
+	background-color: #f1f1f1;
+	.el-form {
+		.table-info-detail {
+			display: flex;
+			> * {
+				flex: 1;
+			}
+			.table-desc {
+				margin-right: 20px;
+				padding: 20px;
+				border: 1px solid var(--bc);
+				border-radius: 4px;
+				background: #fff;
+				background-color: #fff;
+			}
+		}
+		.applicant-info {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 16px;
+			padding: 16px;
+			border-radius: 4px;
+			background-color: #f7fafc;
+		}
+		.el-form-item {
+			padding: 16px;
+			background-color: #f7fafc;
+		}
+	}
+}

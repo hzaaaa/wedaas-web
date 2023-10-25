@@ -7,11 +7,15 @@
 		></span>
 		<template #dropdown>
 			<el-dropdown-menu>
-				<el-dropdown-item @click="jumpToBasicInfo">基础信息</el-dropdown-item>
-				<el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+				<el-dropdown-item @click="jumpToPersonalCenter">个人中心</el-dropdown-item>
+				<el-dropdown-item @click="jumpToApprovalCenter">审批中心</el-dropdown-item>
+				<el-dropdown-item>帮助支持</el-dropdown-item>
+				<el-dropdown-item @click="openAboutUsDialog">关于我们</el-dropdown-item>
+				<el-dropdown-item @click="logout">退出系统</el-dropdown-item>
 			</el-dropdown-menu>
 		</template>
 	</el-dropdown>
+	<AboutUsDialog ref="aboutUsDialogRef" />
 </template>
 
 <script setup lang="ts">
@@ -23,6 +27,7 @@ import { useRouter } from "vue-router";
 import { LOGIN_URL } from "@/config/config";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { AuthStore } from "@/stores/modules/auth";
+import AboutUsDialog from "./AboutUsDialog.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -44,10 +49,22 @@ const logout = async () => {
 	});
 };
 
-const jumpToBasicInfo = () => {
+const jumpToPersonalCenter = () => {
 	console.log(authStore.activeTopMenuPathGet);
 	authStore.setActiveTopMenu("");
-	router.push({ name: "basicInfo" });
+	router.push({ name: "personalCenter" });
+};
+
+const jumpToApprovalCenter = () => {
+	router.push({ name: "approvalCenter" });
+};
+
+const aboutUsDialogRef = ref<InstanceType<typeof AboutUsDialog> | null>(null);
+const openAboutUsDialog = (info: any) => {
+	const params = {
+		info: info,
+	};
+	aboutUsDialogRef.value?.acceptParams(params);
 };
 </script>
 

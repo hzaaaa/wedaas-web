@@ -67,9 +67,9 @@ export const staticRouter: RouteRecordRaw[] = [
 
 export const userAccountRouter = [
 	{
-		path: "/userAccount",
-		name: "userAccount",
-		redirect: "/userAccount/basicInfo",
+		path: "/home",
+		name: "home",
+		redirect: "/home/personalCenter",
 		meta: {
 			title: "用户账户",
 			isHide: 1,
@@ -78,11 +78,21 @@ export const userAccountRouter = [
 	},
 
 	{
-		path: "/userAccount/basicInfo",
-		name: "basicInfo",
-		component: () => import("@/views/userAccount/basicInfo/index.vue"),
+		path: "/home/personalCenter",
+		name: "personalCenter",
+		component: () => import("@/views/home/personalCenter/index.vue"),
 		meta: {
-			title: "用户基本信息",
+			title: "个人中心",
+			isHide: 1,
+			isAffix: 0,
+		},
+	},
+	{
+		path: "/home/approvalCenter",
+		name: "approvalCenter",
+		component: () => import("@/views/home/approvalCenter/index.vue"),
+		meta: {
+			title: "审批中心",
 			isHide: 1,
 			isAffix: 0,
 		},

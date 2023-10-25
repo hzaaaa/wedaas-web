@@ -287,6 +287,83 @@
 					"sort": 1,
 					"title": "表详情",
 					"type": 1
+				}				,{
+					"affix": 0,
+					"childrenList": [
+						{
+							"affix": 0,
+							"childrenList": [
+								{
+									"affix": 0,
+									"component": "/systemManage/accountManage/index",
+									"hidden": 1,
+									"id": 157,
+									"keepAlive": 0,
+									"path": "_1_33_34_35_",
+									"permission": "",
+									"pid": 35,
+									"redirect": "/systemManage/accountManage",
+									"router": "accountManage",
+									"title": "用户管理",
+									"type": 2
+								}
+							],
+							"component": "/systemManage/informationAudit/index",
+							"hidden": 1,
+							"icon": "icon-zhongchengduhezuofang",
+							"id": 65,
+							"keepAlive": 1,
+							"path": "_1_64_",
+							"pid": 64,
+							"redirect": "/systemManage/informationAudit",
+							"router": "informationAudit",
+							"sort": 1,
+							"title": "信息审计",
+							"type": 2
+						},
+						{
+							"affix": 0,
+							"childrenList": [],
+							"component": "/systemManage/authorityManage/index",
+							"hidden": 1,
+							"icon": "icon-zhongchengduhezuofang",
+							"id": 65,
+							"keepAlive": 1,
+							"path": "_1_64_",
+							"pid": 64,
+							"redirect": "/systemManage/authorityManage",
+							"router": "authorityManage",
+							"sort": 1,
+							"title": "权限管理",
+							"type": 2
+						},
+									{
+							"affix": 0,
+							"childrenList": [],
+							"component": "/systemManage/dataConfig/index",
+							"hidden": 1,
+							"icon": "icon-zhongchengduhezuofang",
+							"id": 65,
+							"keepAlive": 1,
+							"path": "_1_64_",
+							"pid": 64,
+							"redirect": "/systemManage/dataConfig",
+							"router": "dataConfig",
+							"sort": 1,
+							"title": "数据配置",
+							"type": 2
+						}
+					],
+					"hidden": 1,
+					"id": 64,
+					"keepAlive": 1,
+					"path": "_1_",
+					"pid": 1,
+					"redirect": "/systemManage",
+					"router": "systemManage",
+					"sort": 2,
+					"title": "系统管理",
+					"type": 1
 				}
 			],
 			"sysRoleList": [

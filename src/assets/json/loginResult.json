@@ -21,6 +21,20 @@
 							"router": "marketDetails",
 							"title": "详情",
 							"type": 4
+						},
+						{
+							"affix": 0,
+							"component": "/dataMarket/pages/test",
+							"hidden": 1,
+							"id": 157,
+							"keepAlive": 0,
+							"path": "_1_33_34_35_",
+							"permission": "",
+							"pid": 35,
+							"redirect": "/dataMarket/test",
+							"router": "test",
+							"title": "test",
+							"type": 4
 						}
 					],
 					"component": "/dataMarket/index",
@@ -302,7 +316,8 @@
 					"sort": 1,
 					"title": "表详情",
 					"type": 1
-				}				,{
+				},
+				{
 					"affix": 0,
 					"childrenList": [
 						{
@@ -352,7 +367,7 @@
 							"title": "权限管理",
 							"type": 2
 						},
-									{
+						{
 							"affix": 0,
 							"childrenList": [],
 							"component": "/systemManage/dataConfig/index",

@@ -1,6 +1,6 @@
 import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 import { ElDrawer, ElMessage, ElMessageBox } from "element-plus";
-import { uploadPartnerFileApi } from "@/api/biz/collaborators";
+// import { uploadPartnerFileApi } from "@/api/biz/collaborators";
 export default (fileList: any) => {
 	return new Promise((resolve, reject) => {
 		let params = new FormData();
@@ -20,13 +20,13 @@ export default (fileList: any) => {
 			resolve([]);
 			return;
 		}
-		uploadPartnerFileApi(params)
-			.then((res: any) => {
-				resolve(res.data);
-			})
-			.catch((e: any) => {
-				reject(e);
-			});
+		// uploadPartnerFileApi(params)
+		// 	.then((res: any) => {
+		// 		resolve(res.data);
+		// 	})
+		// 	.catch((e: any) => {
+		// 		reject(e);
+		// 	});
 	});
 };
 export const validateFile = (file: any, fileList: any) => {

@@ -18,7 +18,7 @@ const config = {
 	timeout: ResultEnum.TIMEOUT as number,
 };
 const noAbortControllerUrl = <any>{
-	"/api-proxy-manage/biz/dict/list": true,
+
 	//待添加
 };
 class RequestHttp {

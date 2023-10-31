@@ -4,12 +4,12 @@
  */
 // export const AUTHPORT = "/auth";
 
-export const AUTHPORT = "/api-proxy-manage/auth";
+export const AUTHPORT = "";
 
 /**
  * @name 业务
  */
-export const PORTBiz = "/api-proxy-manage/biz";
+export const PORTBiz = "";
 
 // /**
 //  * @name 表格数据mock

@@ -3,7 +3,7 @@
  * @description：请求配置
  */
 export enum ResultEnum {
-	SUCCESS = 200,
+	SUCCESS = 1,
 	ERROR = 500,
 	OVERDUE = 415,
 	TIMEOUT = 30000,

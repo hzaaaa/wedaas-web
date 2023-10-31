@@ -35,9 +35,9 @@ export default defineConfig(({ mode }) => {
 			https:
 				env.VITE_USER_NODE_ENV === "development_https"
 					? {
-							cert: fs.readFileSync("keys/cert.crt"),
-							key: fs.readFileSync("keys/cert.key"),
-					  }
+						cert: fs.readFileSync("keys/cert.crt"),
+						key: fs.readFileSync("keys/cert.key"),
+					}
 					: false,
 			port: viteEnv.VITE_PORT,
 			open: viteEnv.VITE_OPEN,
@@ -54,7 +54,8 @@ export default defineConfig(({ mode }) => {
 				// 	rewrite: (path) => path.replace(/^\/api/, ""),
 				// },
 				"/api": {
-					target: "https://mock.mengxuegu.com/mock/65276a3a82cf7920095762b0/wedaas-web/mock",
+					// target: "https://mock.mengxuegu.com/mock/65276a3a82cf7920095762b0/wedaas-web/mock",
+					target: "http://172.16.1.78:8083",
 					// target: "http://172.16.1.44:9057",
 					changeOrigin: true,
 					rewrite: (path) => path.replace(/^\/api/, ""),
@@ -65,13 +66,13 @@ export default defineConfig(({ mode }) => {
 			vue(),
 			// gzip压缩 生产环境生成 .gz 文件
 			viteEnv.VITE_BUILD_GZIP &&
-				viteCompression({
-					verbose: true,
-					disable: false,
-					threshold: 10240,
-					algorithm: "gzip",
-					ext: ".gz",
-				}),
+			viteCompression({
+				verbose: true,
+				disable: false,
+				threshold: 10240,
+				algorithm: "gzip",
+				ext: ".gz",
+			}),
 			AutoImport({
 				imports: [
 					"vue",

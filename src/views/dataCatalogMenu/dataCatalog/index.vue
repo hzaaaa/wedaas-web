@@ -14,19 +14,28 @@
 					<div class="aside-input">
 						<el-input placeholder="请输入关键字" :suffix-icon="Search" />
 					</div>
-					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick">
+					<el-tree
+						class="tree-class thin-scrollbar"
+						node-key="id"
+						:current-node-key="'All'"
+						:data="treeData"
+						:props="defaultProps"
+						@node-click="handleNodeClick"
+					>
 						<template #default="{ node, data }">
 							<div class="custom-tree-node">
 								<div class="custom-node-name mod-ellipsis">{{ node.label }}</div>
 								<div class="custom-node-num ml8">
 									{{ data.count }}
 								</div>
-								<div class="node-more mr8">
+								<div class="node-more mr8" v-if="data.id !== 'All'">
 									<el-dropdown>
 										<el-icon><MoreFilled /></el-icon>
 										<template #dropdown>
 											<el-dropdown-menu>
-												<el-dropdown-item @click="openAddChildCatalogDialogRefClick">添加</el-dropdown-item>
+												<el-dropdown-item v-if="!data.rootId" @click="openAddChildCatalogDialogRefClick(data.name)"
+													>添加</el-dropdown-item
+												>
 												<el-dropdown-item @click="openModiftCatalogDialogRefClick">修改</el-dropdown-item>
 												<el-dropdown-item>删除</el-dropdown-item>
 											</el-dropdown-menu>
@@ -46,15 +55,19 @@
 						<div class="wrap" style="display: flex">
 							<div class="query-bottom">
 								<div class="input-item">
-									<span class="item-label">选择数据库</span>
-									<el-select style="width: auto"></el-select>
+									<span class="item-label">选择数据源</span>
+									<el-select style="width: auto" v-model="queryForm.dsName" @change="dsNameChange" clearable>
+										<el-option v-for="item in dataSourceOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
+									</el-select>
 								</div>
 								<div class="input-item">
-									<el-select style="width: auto"></el-select>
+									<el-select style="width: auto" v-model="queryForm.dbName" @change="searchByQueryForm" clearable>
+										<el-option v-for="item in dataBaseOptions" :key="item.c" :label="item.c" :value="item.c" />
+									</el-select>
 								</div>
 								<div class="input-item ml24">
 									<span class="item-label">搜索表</span>
-									<el-select style="width: auto"></el-select>
+									<el-input style="width: auto" v-model="queryForm.tableName" @input="searchByQueryForm"></el-input>
 								</div>
 								<div class="input-item ml24" style="flex: 1; margin-right: 0; text-align: right">
 									<el-button style="margin-bottom: 0" type="warning" @click="openFormPageClick('add')">子目录设置</el-button>
@@ -98,11 +111,18 @@
 							<template #default="scope"> {{ scope.row.schema.split(".")[1] }}</template>
 						</el-table-column>
 						<el-table-column prop="description" label="表描述" width="180"> </el-table-column>
-						<el-table-column label="操作" width="80" header-align="left" align="left" fixed="right">
+						<el-table-column
+							v-if="queryForm.type !== 'All' && queryForm.childId"
+							label="操作"
+							width="80"
+							header-align="left"
+							align="left"
+							fixed="right"
+						>
 							<template #default="scope">
 								<div class="flex-left">
 									<span class="two-word-button">
-										<el-button type="primary" link>删除</el-button>
+										<el-button type="primary" @click="deleteRowData(scope.row)" link>删除</el-button>
 										<el-button type="info" class="button-hold-position" disabled link>删除</el-button>
 									</span>
 								</div>
@@ -131,15 +151,16 @@
 </template>
 
 <script setup lang="ts">
-import treeDataJson from "./treeData.json";
-import listDataJson from "./listData.json";
-import useListPageHook from "@/hooks/listPage";
+import useListPageHook from "./hooks/listPage";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import addMainCatalogDialog from "./components/addMainCatalogDialog.vue";
 import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
 import modiftCatalogDialog from "./components/modiftCatalogDialog.vue";
 import { Search } from "@element-plus/icons-vue";
+import { getCatalogListApi, getDSSelectorApi, getDBSelectorApi } from "@/api/modules/dataCatalog/dataCatalog";
+import { getCatalogInfoApi, findTablesApi, deleteTableApi } from "@/api/modules/dataCatalog/dataCatalog";
 import router from "@/routers";
+
 interface Tree {
 	label: string;
 	children?: Tree[];
@@ -156,9 +177,12 @@ const openAddMainCatalogDialogClick = () => {
 		row: {},
 	});
 };
-const openAddChildCatalogDialogRefClick = () => {
+const openAddChildCatalogDialogRefClick = (name: any) => {
 	addChildCatalogDialogRef.value.acceptParams({
-		row: {},
+		row: {
+			list: treeDataJson.data,
+			name,
+		},
 	});
 };
 const openModiftCatalogDialogRefClick = () => {
@@ -167,32 +191,42 @@ const openModiftCatalogDialogRefClick = () => {
 	});
 };
 const show_mode = ref("list");
-const changeLabelName = (list: any) => {
-	list.forEach((item: any) => {
-		item.labelName = item.childName || item.rootName;
-		console.log("item.labelName", item.labelName);
-		if (item.childTuple) {
-			changeLabelName(item.childTuple);
-		}
+let treeDataJson = <any>{ data: [] };
+const getCatalogInfo = () => {
+	getCatalogInfoApi({}).then((res: any) => {
+		treeDataJson = res;
+
+		treeData.value = [
+			{
+				name: "All",
+				count: allTypeNumber.value,
+				id: "All",
+			},
+			...treeDataJson.data,
+		];
 	});
 };
-changeLabelName(treeDataJson.data);
+getCatalogInfo();
+
 const treeData = <any>ref(treeDataJson.data);
-treeData.value = [
-	{
-		name: "All",
-		count: 101,
-	},
-	...treeData.value,
-	...treeData.value,
-];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-const handleNodeClick = (data: Tree) => {
+
+const handleNodeClick = (data: any) => {
 	console.log(data);
+	if (data.name === "All") {
+		queryForm.value.type = "All";
+		searchByQueryForm();
+	} else {
+		queryForm.value.type = "Catalog";
+		// queryForm.value.childId = "Catalog";
+		if (data.rootId) {
+			queryForm.value.childId = data.id;
+			delete queryForm.value.rootId;
+		} else {
+			queryForm.value.rootId = data.id;
+			delete queryForm.value.childId;
+		}
+		searchByQueryForm();
+	}
 };
 
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
@@ -209,44 +243,80 @@ const gotoDetails = (row: any) => {
 		// name: "setChildCatalog",
 	});
 };
-//#region 表格 查 相关
 
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
+// 合作方远程加载
+const dataSourceOptions = ref<any[]>([]);
 
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
+const getDataSourceOptionMethod = () => {
+	let api = <any>getDSSelectorApi;
 
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	list = listDataJson.data.list;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
+	api().then((res: any) => {
+		dataSourceOptions.value = res.data || [];
+	});
 };
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
+getDataSourceOptionMethod();
+const dsNameChange = (value: any) => {
+	queryForm.value.dbName = "";
+	dataBaseOptions.value = [];
+	searchByQueryForm();
+	if (value) {
+		let obj = dataSourceOptions.value.find((item: any) => {
+			return item.dsName === value;
+		});
+		getDataBaseOptionsMethod(obj);
+	}
+};
+
+const dataBaseOptions = ref<any[]>([]);
+
+const getDataBaseOptionsMethod = (obj: any) => {
+	let api = <any>getDBSelectorApi;
+
+	api({ ...obj }).then((res: any) => {
+		dataBaseOptions.value = res.data || [];
 	});
 };
 
+const deleteRowData = (row: any) => {
+	console.log("delete", row);
+	ElMessageBox.confirm("此操作将移除表, 是否继续?", `移除表-${row.tableName}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			let deleteApi = null;
+			let api = deleteTableApi;
+			//文件
+			deleteApi = api;
+
+			//待续未完
+			deleteApi({
+				tableId: row.tableId,
+				childId: queryForm.value.childId,
+			}).then(() => {
+				console.log("delete success", row);
+				ElMessage({
+					type: "success",
+					message: "删除成功",
+				});
+				refreshData();
+				getCatalogInfo();
+			});
+		})
+		.catch(() => {});
+};
+
+//#region 表格 查 相关
+
 const beanInfo = {};
-const queryFormRaw = {};
+const queryFormRaw = {
+	dsName: "",
+	dbName: "",
+	tableName: "",
+	type: "All", //All or Catalog
+};
 let {
 	tableLoading,
 
@@ -266,18 +336,28 @@ let {
 
 	queryForm,
 	doReset,
-} = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
-
-	beanInfo,
-	queryFormRaw
-);
+	allTypeNumber,
+} = useListPageHook(getCatalogListApi, findTablesApi, beanInfo, queryFormRaw, null, () => {
+	treeData.value[0].count = allTypeNumber.value;
+});
 
 //#endregion
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-tree-node.is-current > .el-tree-node__content) {
+	background-color: var(--el-color-primary-light-9) !important;
+	border-radius: 4px;
+	.custom-node-name {
+		color: var(--el-color-primary) !important;
+	}
+	.custom-node-num {
+		color: var(--el-color-primary) !important;
+	}
+}
+:deep(.el-tree-node__content) {
+	height: 30px;
+}
 .left-tree-right-table-layout {
 	flex: 1;
 	height: 0;
@@ -388,6 +468,9 @@ let {
 					flex: 1;
 					text-align: right;
 					display: none;
+					align-items: center;
+					// display: flex;
+					justify-content: flex-end;
 				}
 			}
 		}

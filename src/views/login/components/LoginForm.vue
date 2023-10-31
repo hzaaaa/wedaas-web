@@ -14,15 +14,8 @@
 		<el-form-item label="密码" prop="password">
 			<el-input v-model="loginForm.password" placeholder="" type="password"></el-input>
 		</el-form-item>
-		<el-form-item label="验证码" prop="code" class="captcha">
-			<!-- <el-col :span="16">
-				<el-input v-model="loginForm.code" placeholder="请输入验证码"></el-input>
-			</el-col>
-			<el-col :span="8">
-				<el-tooltip effect="dark" content="点击刷新验证码" placement="right" transition="fade-in-linear"
-					><img class="login-captcha" :src="captcha.img" @click="getCaptcha()" />
-				</el-tooltip>
-			</el-col> -->
+		<!-- <el-form-item label="验证码" prop="code" class="captcha">
+			 
 
 			<el-input v-model="loginForm.code" placeholder="请输入验证码">
 				<template #append>
@@ -31,7 +24,7 @@
 					</el-tooltip>
 				</template>
 			</el-input>
-		</el-form-item>
+		</el-form-item> -->
 	</el-form>
 	<div class="login-btn">
 		<el-button @click="login(loginFormRef)" type="primary">登录</el-button>
@@ -50,6 +43,8 @@ import { HOME_URL } from "@/config/config";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
 // import { Base64 } from "js-base64";
+import loginResult from "@/assets/json/loginResult.json";
+import Cookie from "js-cookie";
 
 const authStore = AuthStore();
 const router = useRouter();
@@ -59,7 +54,7 @@ const loginFormRef = ref<FormInstance>();
 const loginForm = reactive<Login.ReqLoginForm>({
 	username: "",
 	password: "",
-	type: 2,
+	type: 1,
 	captchaId: "",
 	code: "",
 });
@@ -105,17 +100,22 @@ const login = async (formEl: FormInstance | undefined) => {
 		try {
 			const { data } = await (<any>loginApi(loginForm));
 			console.log(data);
+			// debugger;
+			data.menuVoList = loginResult.data.userInfoVo.menuVoList;
 			// userStore.setToken(Base64.encode(data.token));
 			userStore.setToken(data.token);
-			userStore.setUserInfo(data.userInfoVo);
-			userStore.setId(data.userInfoVo.sysUser.id);
-			userStore.setUserName(data.userInfoVo.sysUser.username);
-			authStore.setAuthOriginMenuList(data.userInfoVo.menuVoList);
+			userStore.setUserInfo(data);
+			userStore.setId(data.id);
+			userStore.setUserName(data.username);
+			// debugger;
+			authStore.setAuthOriginMenuList(data.menuVoList);
 
+			// debugger;
 			// 检查ip
 			await initDynamicRouter();
 			// await authStore.getAuthButtonList();//temp test
 			router.push({ path: HOME_URL });
+
 			// router.push({ path: '/userAccount/basicInfo' });
 		} catch (err) {
 			console.warn(err);

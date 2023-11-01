@@ -38,6 +38,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		let result = checkedConfig.map((checkedConfigItem: any) => {
 			const addCheckedAll = ref(false);//在模版中使用需要解构出来
 			const checkedAllSet = new Set();
+			const setSize = ref(0);
 			const addCheckedAllChange = (val: any) => {
 				tableDataList.value.forEach((item: any) => {
 					item[checkedConfigItem.checkedBy] = val;
@@ -47,6 +48,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 						checkedAllSet.delete(item[checkedConfigItem.key])
 					}
 				});
+				setSize.value = checkedAllSet.size;
 
 			};
 			const itemCheckedChange = (val: any, row: any) => {
@@ -59,6 +61,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				} else {
 					checkedAllSet.delete(row[checkedConfigItem.key])
 				}
+				setSize.value = checkedAllSet.size;
 			};
 			const restoreCheckedAfterQuery = () => {
 				tableDataList.value.forEach((item: any) => {
@@ -69,6 +72,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				addCheckedAll.value = tableDataList.value.every((item: any) => {
 					return item[checkedConfigItem.checkedBy] === true;
 				});
+				setSize.value = checkedAllSet.size;
 			}
 			const resetChecked = () => {
 				checkedAllSet.clear();
@@ -76,10 +80,12 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				tableDataList.value.forEach((item: any) => {
 					item[checkedConfigItem.checkedBy] = false
 				})
+				setSize.value = checkedAllSet.size;
 			}
 			return {
 				addCheckedAll,
 				checkedAllSet,
+				setSize,
 				addCheckedAllChange,
 				itemCheckedChange,
 				restoreCheckedAfterQuery,

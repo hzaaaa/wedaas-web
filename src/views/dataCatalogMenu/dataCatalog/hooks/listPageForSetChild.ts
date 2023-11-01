@@ -2,9 +2,9 @@ import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 import { useUserStoreSessionStorage } from "@/stores/user";
 import Cookie from "js-cookie";
 
-export default (getListApi: Function, findTablesApi: Function, beanInfo: any, queryFormRaw: any, getUseQueryParamsByForm?: any, queryCallBack?: any, checkedConfig?: any) => {
+export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQueryParamsByForm?: any, queryCallBack?: any, checkedConfig?: any) => {
 	const queryForm = ref(JSON.parse(JSON.stringify(queryFormRaw)));
-	const allTypeNumber = ref(0);
+
 	const pageParams = reactive({
 		pageNum: 1,
 		pageSize: 10,
@@ -40,6 +40,7 @@ export default (getListApi: Function, findTablesApi: Function, beanInfo: any, qu
 			const checkedAllSet = new Set();
 			const setSize = ref(0);
 			const addCheckedAllChange = (val: any) => {
+
 				tableDataList.value.forEach((item: any) => {
 					item[checkedConfigItem.checkedBy] = val;
 					if (val) {
@@ -49,7 +50,7 @@ export default (getListApi: Function, findTablesApi: Function, beanInfo: any, qu
 					}
 				});
 				setSize.value = checkedAllSet.size;
-
+				// console.log('addCheckedAllChange', val)
 			};
 			const itemCheckedChange = (val: any, row: any) => {
 
@@ -76,7 +77,11 @@ export default (getListApi: Function, findTablesApi: Function, beanInfo: any, qu
 			}
 			const resetChecked = () => {
 				checkedAllSet.clear();
-				addCheckedAll.value = false;
+				// debugger
+				nextTick(() => {
+					addCheckedAll.value = false;
+
+				})
 				tableDataList.value.forEach((item: any) => {
 					item[checkedConfigItem.checkedBy] = false
 				})
@@ -100,32 +105,22 @@ export default (getListApi: Function, findTablesApi: Function, beanInfo: any, qu
 	onMounted(() => { });
 	const handleCurrentPageChange = (pageNum: number) => {
 		let params = {
-			pageNum: pageNum,
-			pageNo: pageNum,
-			pageSize: pageParams.pageSize,
+			// pageNum: pageNum,
+			// pageNo: pageNum,
+			// pageSize: pageParams.pageSize,
 			...useQueryParams,
 		};
 		tableLoading.value = true;
 		console.log("params", params);
 		const cookieToken = Cookie.get("token");
 		console.log('cookieToken', cookieToken)
-		let api = null;
-		if (queryForm.value.type === 'All') {
-			api = getListApi
-		} else {
-			api = findTablesApi
-
-		}
-		api(params)
+		getListApi(params)
 			.then((res: any) => {
-				tableDataList.value = res?.data?.records || res?.data?.list || [];
-				pageParams.total = res.data.total;
-				// debugger
-				pageParams.pageNum = pageNum;
+				tableDataList.value = res.data;
+				// pageParams.total = res.data.total;
+				// // debugger
+				// pageParams.pageNum = pageNum;
 				tableLoading.value = false;
-				if (queryForm.value.type === 'All') {
-					allTypeNumber.value = res.data.total;
-				}
 				nextTick(() => {
 					queryCallBack && queryCallBack();
 					checkedParamList.forEach((item: any) => {
@@ -146,24 +141,14 @@ export default (getListApi: Function, findTablesApi: Function, beanInfo: any, qu
 		};
 		tableLoading.value = true;
 		console.log("params", params);
-		let api = null;
-		if (queryForm.value.type === 'All') {
-			api = getListApi
-		} else {
-			api = findTablesApi
-
-		}
-		api(params)
+		getListApi(params)
 			.then((res: any) => {
 				// debugger
-				tableDataList.value = res?.data?.records || res?.data?.list || [];
-				pageParams.total = res.data.total;
-				pageParams.pageSize = pageSize;
-				pageParams.pageNum = 1;
+				tableDataList.value = res.data;
+				// pageParams.total = res.data.total;
+				// pageParams.pageSize = pageSize;
+				// pageParams.pageNum = 1;
 				tableLoading.value = false;
-				if (queryForm.value.type === 'All') {
-					allTypeNumber.value = res.data.total;
-				}
 				nextTick(() => {
 					queryCallBack && queryCallBack();
 					checkedParamList.forEach((item: any) => {
@@ -294,6 +279,5 @@ export default (getListApi: Function, findTablesApi: Function, beanInfo: any, qu
 
 
 		checkedParamList,
-		allTypeNumber,
 	};
 };

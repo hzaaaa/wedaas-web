@@ -36,8 +36,8 @@
 												<el-dropdown-item v-if="!data.rootId" @click="openAddChildCatalogDialogRefClick(data.name)"
 													>添加</el-dropdown-item
 												>
-												<el-dropdown-item @click="openModiftCatalogDialogRefClick">修改</el-dropdown-item>
-												<el-dropdown-item>删除</el-dropdown-item>
+												<el-dropdown-item @click="openModiftCatalogDialogRefClick(data)">修改</el-dropdown-item>
+												<el-dropdown-item @click="removeCatalogClick(data)">删除</el-dropdown-item>
 											</el-dropdown-menu>
 										</template>
 									</el-dropdown>
@@ -70,7 +70,13 @@
 									<el-input style="width: auto" v-model="queryForm.tableName" @input="searchByQueryForm"></el-input>
 								</div>
 								<div class="input-item ml24" style="flex: 1; margin-right: 0; text-align: right">
-									<el-button style="margin-bottom: 0" type="warning" @click="openFormPageClick('add')">子目录设置</el-button>
+									<el-button
+										:disabled="!queryForm.childId"
+										style="margin-bottom: 0"
+										type="warning"
+										@click="openFormPageClick('add')"
+										>子目录设置</el-button
+									>
 								</div>
 							</div>
 
@@ -144,21 +150,28 @@
 				/>
 			</div>
 		</div>
-		<addMainCatalogDialog ref="addMainCatalogDialogRef" @refreshData=""></addMainCatalogDialog>
-		<addChildCatalogDialog ref="addChildCatalogDialogRef" @refreshData=""></addChildCatalogDialog>
-		<modiftCatalogDialog ref="modiftCatalogDialogRef" @refreshData=""></modiftCatalogDialog>
+		<addMainCatalogDialog ref="addMainCatalogDialogRef" @refreshData="getCatalogInfo"></addMainCatalogDialog>
+		<addChildCatalogDialog ref="addChildCatalogDialogRef" @refreshData="getCatalogInfo"></addChildCatalogDialog>
+		<modiftCatalogDialog ref="modiftCatalogDialogRef" @modifyName="modifyName"></modiftCatalogDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
 import useListPageHook from "./hooks/listPage";
+import useOptionsHook from "./hooks/optionsHook";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import addMainCatalogDialog from "./components/addMainCatalogDialog.vue";
 import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
 import modiftCatalogDialog from "./components/modiftCatalogDialog.vue";
 import { Search } from "@element-plus/icons-vue";
 import { getCatalogListApi, getDSSelectorApi, getDBSelectorApi } from "@/api/modules/dataCatalog/dataCatalog";
-import { getCatalogInfoApi, findTablesApi, deleteTableApi } from "@/api/modules/dataCatalog/dataCatalog";
+import {
+	getCatalogInfoApi,
+	findTablesApi,
+	deleteTableApi,
+	delRootCatalogApi,
+	delChildCatalogApi,
+} from "@/api/modules/dataCatalog/dataCatalog";
 import router from "@/routers";
 
 interface Tree {
@@ -177,6 +190,9 @@ const openAddMainCatalogDialogClick = () => {
 		row: {},
 	});
 };
+// const refreshInfo =()=>{
+// 	getCatalogInfo()
+// }
 const openAddChildCatalogDialogRefClick = (name: any) => {
 	addChildCatalogDialogRef.value.acceptParams({
 		row: {
@@ -185,11 +201,58 @@ const openAddChildCatalogDialogRefClick = (name: any) => {
 		},
 	});
 };
-const openModiftCatalogDialogRefClick = () => {
+let modifyTempData = <any>null;
+const openModiftCatalogDialogRefClick = (data: any) => {
+	// debugger;
+	modifyTempData = data;
 	modiftCatalogDialogRef.value.acceptParams({
-		row: {},
+		row: data,
 	});
 };
+const modifyName = (name: any) => {
+	modifyTempData.name = name;
+};
+const removeCatalogClick = (row: any) => {
+	// debugger;
+	console.log("removeCatalogClick", row);
+	let title1 = "";
+	let title2 = "";
+	let deleteApi = <any>null;
+	if (row.rootId) {
+		//child
+		title1 = "此操作将永久删除该二级目录";
+		title2 = "二级目录";
+		deleteApi = delChildCatalogApi;
+	} else {
+		title1 = "此操作将永久删除该一级目录及其所有二级目录";
+		title2 = "一级目录";
+		deleteApi = delRootCatalogApi;
+	}
+	ElMessageBox.confirm(`${title1}, 是否继续?`, `移除${title2}-${row.name}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			//待续未完
+			deleteApi({
+				id: row.id,
+			}).then(() => {
+				console.log("delete success", row);
+				ElMessage({
+					type: "success",
+					message: "删除成功",
+				});
+				queryForm.value.type = "All";
+				searchByQueryForm();
+
+				getCatalogInfo();
+			});
+		})
+		.catch(() => {});
+};
+
 const show_mode = ref("list");
 let treeDataJson = <any>{ data: [] };
 const getCatalogInfo = () => {
@@ -210,10 +273,13 @@ getCatalogInfo();
 
 const treeData = <any>ref(treeDataJson.data);
 
+let tempChildData = <any>null;
 const handleNodeClick = (data: any) => {
 	console.log(data);
 	if (data.name === "All") {
 		queryForm.value.type = "All";
+		delete queryForm.value.rootId;
+		delete queryForm.value.childId;
 		searchByQueryForm();
 	} else {
 		queryForm.value.type = "Catalog";
@@ -221,6 +287,8 @@ const handleNodeClick = (data: any) => {
 		if (data.rootId) {
 			queryForm.value.childId = data.id;
 			delete queryForm.value.rootId;
+
+			tempChildData = data;
 		} else {
 			queryForm.value.rootId = data.id;
 			delete queryForm.value.childId;
@@ -236,6 +304,9 @@ const openFormPageClick = (status: any, row?: any) => {
 	// userStore.setBehavior(status);
 	router.push({
 		name: "setChildCatalog",
+		state: {
+			params: { ...tempChildData },
+		},
 	});
 };
 const gotoDetails = (row: any) => {
@@ -243,39 +314,40 @@ const gotoDetails = (row: any) => {
 		// name: "setChildCatalog",
 	});
 };
+//#region options
+// const dataSourceOptions = ref<any[]>([]);
 
-// 合作方远程加载
-const dataSourceOptions = ref<any[]>([]);
+// const getDataSourceOptionMethod = () => {
+// 	let api = <any>getDSSelectorApi;
 
-const getDataSourceOptionMethod = () => {
-	let api = <any>getDSSelectorApi;
+// 	api().then((res: any) => {
+// 		dataSourceOptions.value = res.data || [];
+// 	});
+// };
+// getDataSourceOptionMethod();
+// const dsNameChange = (value: any) => {
+// 	queryForm.value.dbName = "";
+// 	dataBaseOptions.value = [];
+// 	searchByQueryForm();
+// 	if (value) {
+// 		let obj = dataSourceOptions.value.find((item: any) => {
+// 			return item.dsName === value;
+// 		});
+// 		getDataBaseOptionsMethod(obj);
+// 	}
+// };
 
-	api().then((res: any) => {
-		dataSourceOptions.value = res.data || [];
-	});
-};
-getDataSourceOptionMethod();
-const dsNameChange = (value: any) => {
-	queryForm.value.dbName = "";
-	dataBaseOptions.value = [];
-	searchByQueryForm();
-	if (value) {
-		let obj = dataSourceOptions.value.find((item: any) => {
-			return item.dsName === value;
-		});
-		getDataBaseOptionsMethod(obj);
-	}
-};
+// const dataBaseOptions = ref<any[]>([]);
 
-const dataBaseOptions = ref<any[]>([]);
+// const getDataBaseOptionsMethod = (obj: any) => {
+// 	let api = <any>getDBSelectorApi;
 
-const getDataBaseOptionsMethod = (obj: any) => {
-	let api = <any>getDBSelectorApi;
+// 	api({ ...obj }).then((res: any) => {
+// 		dataBaseOptions.value = res.data || [];
+// 	});
+// };
 
-	api({ ...obj }).then((res: any) => {
-		dataBaseOptions.value = res.data || [];
-	});
-};
+//#endregion
 
 const deleteRowData = (row: any) => {
 	console.log("delete", row);
@@ -341,6 +413,7 @@ let {
 	treeData.value[0].count = allTypeNumber.value;
 });
 
+let { dataSourceOptions, dataBaseOptions, dsNameChange } = useOptionsHook(queryForm, searchByQueryForm);
 //#endregion
 </script>
 

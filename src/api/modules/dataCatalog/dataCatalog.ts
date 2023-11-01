@@ -38,6 +38,10 @@ export const deleteTableApi = (params: any) => {
 export const editMultiTableApi = (params: any) => {
   return http.post<any>(AUTHPORT + `/catalog/editMultiTable`, params);
 };
+// **  查找未分配目录的table list
+export const getTableByDataSourceIdAndchildIdApi = (params: any) => {
+  return http.post<any>(AUTHPORT + `/database/getTableByDataSourceIdAndchildId`, params);
+};
 
 
 

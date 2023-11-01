@@ -1,23 +1,28 @@
 <template>
 	<div class="top-query-bottom-table">
 		<div class="query-block">
-			<div class="query-top">设置表到 「testc」</div>
+			<div class="query-top">设置表到 「{{ childData.name }}」</div>
 			<div class="query-bottom">
 				<div class="input-item">
-					<span class="item-label">选择数据库</span>
-					<el-select></el-select>
+					<span class="item-label">选择数据源</span>
+					<el-select style="width: auto" v-model="queryForm.dsName" @change="dsNameChange">
+						<el-option v-for="item in dataSourceOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
+					</el-select>
 				</div>
 				<div class="input-item">
-					<el-select></el-select>
+					<el-select style="width: auto" v-model="queryForm.dbName" @change="searchByQueryForm">
+						<el-option v-for="item in dataBaseOptions" :key="item.c" :label="item.c" :value="item.c" />
+					</el-select>
 				</div>
 				<div class="input-item ml24">
 					<span class="item-label">搜索表</span>
-					<el-select></el-select>
+					<el-input style="width: auto" v-model="queryForm.tableName" @input=""></el-input>
 				</div>
 				<div class="input-item ml24 checkbox">
 					<div class="checkbox-item">
-						<input type="checkbox" />
-						<span class="title">查看已勾选( 0 )</span>
+						<el-checkbox @change="viewCheckedChange" v-model="viewChecked" :label="`查看已勾选( ${setSize0} )`" />
+						<!-- <input type="checkbox" />
+						<span class="title">查看已勾选( 0 )</span> -->
 					</div>
 				</div>
 			</div>
@@ -26,7 +31,7 @@
 			<el-table
 				class="common-table"
 				v-loading="tableLoading"
-				:data="tableDataList"
+				:data="filteredTableDataList"
 				border
 				style="flex: 1 !important; height: auto"
 				ref="multipleTableRef"
@@ -39,14 +44,6 @@
 				</el-table-column>
 				<el-table-column label="数据库" prop="dn" show-overflow-tooltip> </el-table-column>
 
-				<!-- <el-table-column label="数据源" prop="" show-overflow-tooltip>
-					<template #default="scope"> {{ scope.row.schema.split(".")[0] }}</template>
-				</el-table-column>
-
-				<el-table-column label="数据库" prop=" " show-overflow-tooltip-none>
-					<template #default="scope"> {{ scope.row.schema.split(".")[1] }}</template>
-				</el-table-column>
-				<el-table-column prop="description" label="表描述" width="180"> </el-table-column> -->
 				<el-table-column label="操作" width="80" header-align="left" align="left" fixed="right">
 					<template #header>
 						<el-checkbox v-model="addCheckedAll0" @change="checkedParamList[0].addCheckedAllChange" label="操作" size="large" />
@@ -54,7 +51,7 @@
 
 					<template #default="scope">
 						<el-checkbox
-							:key="pageParams.pageNum + scope.$index"
+							:key="scope.row.ti"
 							@change="(value:any)=>checkedParamList[0].itemCheckedChange(value,scope.row)"
 							v-model="scope.row.checked0"
 							label="添加"
@@ -67,9 +64,9 @@
 		<div class="footer">
 			<div class="">
 				<el-button style="margin-right: 28px" @click="router.go(-1)">返回</el-button>
-				<el-button style="margin-right: 28px" type="primary">确定</el-button>
+				<el-button v-if="setSize0" style="margin-right: 28px" @click="setTableClick" type="primary">确定</el-button>
 			</div>
-			<div class="">
+			<!-- <div class="">
 				<el-pagination
 					:page-sizes="pageParams.pageSizesList"
 					background
@@ -80,56 +77,35 @@
 					:page-size="pageParams.pageSize"
 					:total="pageParams.total"
 				/>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import useListPageHook from "@/hooks/listPage";
+import useListPageHook from "../hooks/listPageForSetChild";
+import useOptionsHook from "../hooks/optionsHook";
 import listDataJson from "./listData.json";
+import { getTableByDataSourceIdAndchildIdApi, editMultiTableApi } from "@/api/modules/dataCatalog/dataCatalog";
+import { getCatalogListApi, getDSSelectorApi, getDBSelectorApi } from "@/api/modules/dataCatalog/dataCatalog";
 const router = useRouter();
 
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
+let childData = ref<any>({ ...history.state.params });
+console.log("childData", childData.value);
 
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
+const viewChecked = ref(false);
+const viewCheckedChange = (value: any) => {
+	console.log("viewCheckedChange", value);
+};
 
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	listDataJson.data.forEach((item: any) => {
-		item.checked = undefined;
-	});
-	list = listDataJson.data;
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	// return [];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
 const beanInfo = {};
-const queryFormRaw = {};
+const queryFormRaw = {
+	dsName: "",
+	dbName: "",
+	tableName: "",
+	childId: childData.value.id,
+};
 let {
 	tableLoading,
 
@@ -152,12 +128,17 @@ let {
 
 	checkedParamList,
 } = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
+	getTableByDataSourceIdAndchildIdApi,
 
 	beanInfo,
 	queryFormRaw,
-	null,
+	(obj: any) => {
+		let target = { ...obj };
+		target.datasourceId = target.dsName + "." + target.dbName;
+		// debugger;
+		delete target.dsName;
+		return target;
+	},
 	() => {
 		console.log("tableDataList", tableDataList.value);
 	},
@@ -169,6 +150,80 @@ let {
 	]
 );
 let addCheckedAll0 = checkedParamList[0].addCheckedAll;
+let setSize0 = checkedParamList[0].setSize;
+
+const filteredTableDataList = computed(() => {
+	if (!viewChecked.value) {
+		return tableDataList.value.filter((item: any) => {
+			return item.tn.indexOf(queryForm.value.tableName) !== -1;
+		});
+	} else {
+		return tableDataList.value.filter((item: any) => {
+			return item.tn.indexOf(queryForm.value.tableName) !== -1 && item.checked0;
+		});
+	}
+});
+
+const dataSourceOptions = ref<any[]>([]);
+
+const getDataSourceOptionMethod = () => {
+	let api = <any>getDSSelectorApi;
+
+	getDSSelectorApi({}).then((res: any) => {
+		dataSourceOptions.value = res.data || [];
+		queryForm.value.dsName = dataSourceOptions.value[0].dsName;
+		dsNameChange(queryForm.value.dsName);
+	});
+};
+getDataSourceOptionMethod();
+const dsNameChange = (value: any) => {
+	queryForm.value.dbName = "";
+	dataBaseOptions.value = [];
+
+	if (value) {
+		let obj = dataSourceOptions.value.find((item: any) => {
+			return item.dsName === value;
+		});
+		getDataBaseOptionsMethod(obj);
+	}
+};
+
+const dataBaseOptions = ref<any[]>([]);
+
+const getDataBaseOptionsMethod = (obj: any) => {
+	getDBSelectorApi({ ...obj }).then((res: any) => {
+		dataBaseOptions.value = res.data || [];
+		queryForm.value.dbName = dataBaseOptions.value[0].c;
+		searchByQueryForm();
+	});
+};
+
+const setTableClick = () => {
+	let tableIdList = [...checkedParamList[0].checkedAllSet];
+	let tableNameList = [];
+	for (let i = 0; i < tableIdList.length; i++) {
+		let checkedItemId = tableIdList[i];
+		for (let j = 0; j < tableDataList.value.length; j++) {
+			let tableItem = tableDataList.value[j];
+			if (checkedItemId === tableItem.ti) {
+				tableNameList.push(tableItem.tn);
+				break;
+			}
+		}
+	}
+	console.log("tableIdList", tableIdList);
+	console.log("tableNameList", tableNameList);
+	editMultiTableApi({
+		tableIds: tableIdList.toString(),
+		tableNames: tableNameList.toString(),
+		childId: childData.value.id,
+	}).then((res: any) => {
+		//添加成功
+		ElMessage.success("添加成功！");
+		searchByQueryForm();
+		checkedParamList[0].resetChecked();
+	});
+};
 </script>
 
 <style lang="scss" scoped>

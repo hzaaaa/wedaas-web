@@ -169,7 +169,7 @@ const applicantFilterArr = computed(() => {
 });
 
 const handleFiltersChange = (value: any, row: any, column: any) => {
-	// console.log(value, row, column);
+	console.log(value, row, column);
 	return value == row.tableName;
 };
 

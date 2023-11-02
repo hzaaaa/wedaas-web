@@ -338,7 +338,25 @@
 						},
 						{
 							"affix": 0,
-							"childrenList": [],
+							"childrenList": [
+												{
+							"affix": 0,
+							"childrenList": [
+							],
+							"component": "/systemManage/authorityManage/embeddedPages/perGroupAddEdit/index",
+							"hidden": 1,
+							"icon": "icon-zhongchengduhezuofang",
+							"id": 65,
+							"keepAlive": 1,
+							"path": "_1_64_",
+							"pid": 64,
+							"redirect": "/systemManage/authorityManage/embeddedPages/perGroupAddEdit",
+							"router": "perGroupAddEdit",
+							"sort": 1,
+							"title": "权限组编辑新增",
+							"type": 3
+						}
+							],
 							"component": "/systemManage/authorityManage/index",
 							"hidden": 1,
 							"icon": "icon-zhongchengduhezuofang",

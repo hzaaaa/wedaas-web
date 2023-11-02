@@ -7,3 +7,7 @@ export const getAdvancedSearchListApi = () => {
 export const getMySaveListApi = () => {
 	return http.get<any>(`/advancedSearch/mySave`);
 };
+
+export const getAPIConfigAPi = () => {
+	return http.get<any>(`/advancedSearch/apiConfig`);
+};

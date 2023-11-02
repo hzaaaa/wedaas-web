@@ -1,0 +1,49 @@
+.per-group-card{
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 0;
+	height: 0;
+  	:deep(.el-tabs) {
+		display: flex;
+		flex: 1;
+		.el-tabs__item {
+			justify-content: center;
+			width: 160px;
+
+		}
+		.el-tabs__header {
+			.el-tabs__nav-wrap{
+				.el-tabs__nav-scroll{
+					padding: 32px 4px;
+					.el-tabs__nav{
+						.el-tabs__active-bar{
+							right: -4px;
+						}
+						.el-tabs__item{
+							margin-bottom: 10px;
+							&:hover{
+								background-color: #eaeaea;
+							}
+						}
+					}
+				}
+			}
+
+
+			}
+			.el-tabs__content{
+				display: flex;
+				flex: 1;
+				.el-tab-pane{
+					display: flex;
+					flex: 1;
+					> * {
+						flex: 1;
+					}
+				}
+			}
+
+
+	}
+}

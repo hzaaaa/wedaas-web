@@ -1,10 +1,6 @@
 <template>
 	<div class="left-tree-right-table-layout">
 		<div class="aside" :class="asideClass">
-			<!-- <div class="action-btn-wrap">
-				<el-icon v-if="asideClass === 'wider-at-hook'" @click="foldClick"><Fold /></el-icon>
-				<el-icon v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
-			</div> -->
 			<Transition>
 				<div class="tree-wrap" v-show="asideClass === 'wider-at-hook'">
 					<div class="view-all">
@@ -12,9 +8,18 @@
 						<el-icon @click="openAddMainCatalogDialogClick"><Plus /></el-icon>
 					</div>
 					<div class="aside-input">
-						<el-input placeholder="请输入关键字" :suffix-icon="Search" />
+						<el-input placeholder="请输入关键字" v-model="filterText" :suffix-icon="Search" />
 					</div>
-					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick">
+					<el-tree
+						ref="treeRef"
+						class="tree-class thin-scrollbar"
+						node-key="rootId"
+						:data="treeData"
+						:current-node-key="currentNodeKey"
+						:props="defaultProps"
+						@node-click="handleNodeClick"
+						:filter-node-method="filterNode"
+					>
 						<template #default="{ node, data }">
 							<div class="custom-tree-node">
 								<div class="custom-node-name mod-ellipsis">{{ node.label }}</div>
@@ -26,9 +31,8 @@
 										<el-icon><MoreFilled /></el-icon>
 										<template #dropdown>
 											<el-dropdown-menu>
-												<el-dropdown-item @click="openAddChildCatalogDialogRefClick">添加</el-dropdown-item>
-												<el-dropdown-item @click="openModiftCatalogDialogRefClick">修改</el-dropdown-item>
-												<el-dropdown-item>删除</el-dropdown-item>
+												<el-dropdown-item @click="openModiftCatalogDialogRefClick(data)">修改</el-dropdown-item>
+												<el-dropdown-item @click="removeCatalogClick(data)">删除</el-dropdown-item>
 											</el-dropdown-menu>
 										</template>
 									</el-dropdown>
@@ -44,32 +48,26 @@
 				<el-row>
 					<el-col :span="24">
 						<div class="wrap" style="display: flex">
-							<el-form-item label="数据源" style="padding-right: 40px">
-								<el-input v-model="queryForm.name" placeholder="请输入" clearable style="width: 320px"></el-input>
-							</el-form-item>
-							<el-form-item label="搜索表" style="padding-right: 40px">
-								<el-select v-model="queryForm.submitUserIdList" clearable placeholder="请选择" style="width: 320px" filterable>
-									<!-- :remote-method=""
-                :loading="" -->
-									<el-option
-										v-for="item in [
-											{
-												id: '创建时间排序',
-												name: '创建时间排序',
-											},
-											{
-												id: '调用次数排序',
-												name: '调用次数排序',
-											},
-										]"
-										:key="item.id"
-										:label="item.name"
-										:value="item.id"
-									/>
-								</el-select>
-							</el-form-item>
-							<el-button style="margin-right: 28px" type="primary" @click="searchByQueryForm">查询</el-button>
-							<el-button style="margin-right: 28px" type="primary" plain @click="doReset">重置</el-button>
+							<div class="query-bottom">
+								<div class="input-item">
+									<span class="item-label">数据源</span>
+									<el-select style="width: auto" v-model="queryForm.dsName" @change="dsNameChange" clearable>
+										<el-option v-for="item in dataSourceOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
+									</el-select>
+								</div>
+								<div class="input-item">
+									<el-select style="width: auto" v-model="queryForm.dbName" @change="searchByQueryForm" clearable>
+										<el-option v-for="item in dataBaseOptions" :key="item.c" :label="item.c" :value="item.c" />
+									</el-select>
+								</div>
+								<div class="input-item ml24">
+									<span class="item-label">搜索表</span>
+									<el-input style="width: auto" v-model="queryForm.tableName" @input="searchByQueryForm"></el-input>
+								</div>
+								<div class="input-item ml24" style="flex: 1; margin-right: 0; text-align: right">
+									<el-button style="margin-bottom: 0" type="warning" @click="openFormPageClick('add')">标签设置</el-button>
+								</div>
+							</div>
 
 							<!-- <el-button style="margin-right: 28px" @click="show_mode = 'list'">列表模式</el-button>
 							<el-button style="margin-right: 0" @click="show_mode = 'card'">卡片模式</el-button> -->
@@ -78,7 +76,6 @@
 				</el-row>
 			</el-form>
 			<div class="operat-buttons">
-				<el-button style="" type="warning" @click="openFormPageClick('add')">标签设置</el-button>
 				<!-- v-permission="['accessTestApi:add']" -->
 
 				<div class="space"></div>
@@ -102,18 +99,18 @@
 						</el-table-column>
 
 						<el-table-column label="数据源" prop="" show-overflow-tooltip>
-							<template #default="scope"> {{ scope.row.schema.split(".")[0] }}</template>
+							<template #default="scope"> {{ scope.row.datasourceId.split(".")[0] }}</template>
 						</el-table-column>
 
-						<el-table-column label="数据库" prop=" " show-overflow-tooltip-none>
-							<template #default="scope"> {{ scope.row.schema.split(".")[1] }}</template>
+						<el-table-column label="数据库" prop="dbName" show-overflow-tooltip-none>
+							<template #default="scope"> {{ scope.row.dbName }}</template>
 						</el-table-column>
-						<el-table-column prop="description" label="表描述" width="180"> </el-table-column>
+						<el-table-column prop="tableDesription" label="表描述" width="180"> </el-table-column>
 						<el-table-column label="操作" width="80" header-align="left" align="left" fixed="right">
 							<template #default="scope">
 								<div class="flex-left">
 									<span class="two-word-button">
-										<el-button type="primary" link>删除</el-button>
+										<el-button type="primary" @click="deleteRowData(scope.row)" link>删除</el-button>
 										<el-button type="info" class="button-hold-position" disabled link>删除</el-button>
 									</span>
 								</div>
@@ -135,22 +132,27 @@
 				/>
 			</div>
 		</div>
-		<addMainCatalogDialog ref="addMainCatalogDialogRef" @refreshData=""></addMainCatalogDialog>
-		<addChildCatalogDialog ref="addChildCatalogDialogRef" @refreshData=""></addChildCatalogDialog>
-		<modiftCatalogDialog ref="modiftCatalogDialogRef" @refreshData=""></modiftCatalogDialog>
+		<addMainCatalogDialog ref="addMainCatalogDialogRef" @refreshData="getCatalogInfo"></addMainCatalogDialog>
+
+		<modiftCatalogDialog ref="modiftCatalogDialogRef" @modifyName="modifyName"></modiftCatalogDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
-import treeDataJson from "./treeData.json";
-import listDataJson from "./listData.json";
 import useListPageHook from "@/hooks/listPage";
+import useOptionsHook from "@/views/dataCatalogMenu/dataCatalog/hooks/optionsHook";
+import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
+
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import addMainCatalogDialog from "./components/addMainCatalogDialog.vue";
-import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
+
 import modiftCatalogDialog from "./components/modiftCatalogDialog.vue";
 import { Search } from "@element-plus/icons-vue";
+
+import { selectListByLableIdApi } from "@/api/modules/dataCatalog/labelManage";
+import { getLabelListApi, deleteEditLabelInfoApi, deleteLabelApi } from "@/api/modules/dataCatalog/labelManage";
 import router from "@/routers";
+
 interface Tree {
 	label: string;
 	children?: Tree[];
@@ -159,53 +161,106 @@ const defaultProps = {
 	children: "childs",
 	label: "rootName",
 };
+const currentNodeKey = <any>ref(null);
+const treeRef = ref<any>(null);
+let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
+
 const addMainCatalogDialogRef = <any>ref(null);
-const addChildCatalogDialogRef = <any>ref(null);
+
 const modiftCatalogDialogRef = <any>ref(null);
 const openAddMainCatalogDialogClick = () => {
 	addMainCatalogDialogRef.value.acceptParams({
 		row: {},
 	});
 };
-const openAddChildCatalogDialogRefClick = () => {
-	addChildCatalogDialogRef.value.acceptParams({
-		row: {},
-	});
-};
-const openModiftCatalogDialogRefClick = () => {
+
+let modifyTempData = <any>null; //tree node data ref
+const openModiftCatalogDialogRefClick = (data: any) => {
+	// debugger;
+	modifyTempData = data;
 	modiftCatalogDialogRef.value.acceptParams({
-		row: {},
+		row: data,
 	});
 };
+const modifyName = (name: any) => {
+	modifyTempData.rootName = name;
+};
+const removeCatalogClick = (row: any) => {
+	// debugger;
+	console.log("removeCatalogClick", row);
+	let title1 = "";
+	let title2 = "";
+	let deleteApi = <any>deleteLabelApi;
+
+	title1 = "此操作将永久删除该标签";
+	title2 = "";
+
+	ElMessageBox.confirm(`${title1}, 是否继续?`, `移除${title2}-${row.rootName}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			//待续未完
+			deleteApi({
+				id: row.rootId,
+			}).then(() => {
+				console.log("delete success", row);
+				ElMessage({
+					type: "success",
+					message: "删除成功",
+				});
+
+				getCatalogInfo();
+			});
+		})
+		.catch(() => {});
+};
+
 const show_mode = ref("list");
-const changeLabelName = (list: any) => {
-	list.forEach((item: any) => {
-		item.labelName = item.childName || item.rootName;
-		console.log("item.labelName", item.labelName);
-		if (item.childTuple) {
-			changeLabelName(item.childTuple);
+let treeDataJson = <any>{ data: [] };
+const getCatalogInfo = (callBack?: any) => {
+	getLabelListApi({}).then((res: any) => {
+		treeDataJson = res;
+
+		treeData.value = [...treeDataJson.data];
+
+		// callBack && callBack();
+		if (callBack) {
+			callBack();
+		} else {
+			queryForm.value.id = treeData.value[0].rootId;
+			currentNodeKey.value = treeData.value[0].rootId;
+			console.log("rootId", treeData.value[0].rootId);
+			nextTick(() => {
+				treeRef.value.setCurrentKey(treeData.value[0].rootId + "");
+			});
+			searchByQueryForm();
 		}
 	});
 };
-changeLabelName(treeDataJson.data);
+getCatalogInfo();
+
 const treeData = <any>ref(treeDataJson.data);
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-treeData.value = [...treeData.value, ...treeData.value];
-const handleNodeClick = (data: Tree) => {
+
+const handleNodeClick = (data: any) => {
 	console.log(data);
+
+	queryForm.value.id = data.rootId;
+	searchByQueryForm();
 };
 
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 // debugger;
 const openFormPageClick = (status: any, row?: any) => {
-	// let pathName = pageName + "Api";
-	// userStore.setBehavior(status);
+	let node = treeRef.value.getCurrentNode();
+
 	router.push({
 		name: "setLabel",
+		state: {
+			params: { ...node },
+		},
 	});
 };
 const gotoDetails = (row: any) => {
@@ -213,44 +268,56 @@ const gotoDetails = (row: any) => {
 		// name: "setChildCatalog",
 	});
 };
+
+const deleteRowData = (row: any) => {
+	console.log("delete", row);
+	ElMessageBox.confirm("此操作将移除表, 是否继续?", `移除表-${row.tableName}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			//待续未完
+			// debugger;
+			let label = treeData.value.find((item: any) => {
+				return item.rootId === queryForm.value.id;
+			}).rootName;
+			// debugger;
+			deleteEditLabelInfoApi({
+				id: queryForm.value.id,
+				label,
+				table_list: row.tableId,
+			}).then(() => {
+				console.log("delete success", row);
+				ElMessage({
+					type: "success",
+					message: "删除成功",
+				});
+				refreshData();
+				// getCatalogInfo();
+				//更新并选中树节点
+				let key = treeRef.value.getCurrentKey();
+				getCatalogInfo(() => {
+					// 更新并选中树节点
+					nextTick(() => {
+						treeRef.value.setCurrentKey(key);
+					});
+				});
+			});
+		})
+		.catch(() => {});
+};
+
 //#region 表格 查 相关
 
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
-
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	list = listDataJson.data.list;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
-
 const beanInfo = {};
-const queryFormRaw = {};
+const queryFormRaw = {
+	dsName: "",
+	dbName: "",
+	tableName: "",
+	id: null, //
+};
 let {
 	tableLoading,
 
@@ -270,18 +337,26 @@ let {
 
 	queryForm,
 	doReset,
-} = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
+} = useListPageHook(selectListByLableIdApi, beanInfo, queryFormRaw, null, null);
 
-	beanInfo,
-	queryFormRaw
-);
-
+let { dataSourceOptions, dataBaseOptions, dsNameChange } = useOptionsHook(queryForm, searchByQueryForm);
 //#endregion
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-tree-node.is-current > .el-tree-node__content) {
+	background-color: var(--el-color-primary-light-9) !important;
+	border-radius: 4px;
+	.custom-node-name {
+		color: var(--el-color-primary) !important;
+	}
+	.custom-node-num {
+		color: var(--el-color-primary) !important;
+	}
+}
+:deep(.el-tree-node__content) {
+	height: 30px;
+}
 .left-tree-right-table-layout {
 	flex: 1;
 	height: 0;
@@ -392,6 +467,9 @@ let {
 					flex: 1;
 					text-align: right;
 					display: none;
+					align-items: center;
+					// display: flex;
+					justify-content: flex-end;
 				}
 			}
 		}
@@ -405,5 +483,43 @@ let {
 		flex-direction: column;
 	}
 	@import "@/views/dataMarket/index.scss";
+}
+.query-bottom {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	.input-item {
+		font-weight: 400;
+		font-size: 13px;
+		line-height: 16px;
+		margin-right: 8px;
+		color: var(--colormaintext);
+		.item-label {
+			font-weight: 400;
+			font-size: 13px;
+			line-height: 16px;
+			margin-right: 8px;
+			color: var(--colormaintext);
+		}
+	}
+	.checkbox {
+		font-weight: 400;
+		font-size: 13px;
+		line-height: 16px;
+		flex: 1;
+		color: var(--coloroptext);
+		.checkbox-item {
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			min-width: 120px;
+		}
+		.title {
+			margin-left: 2px;
+		}
+	}
 }
 </style>

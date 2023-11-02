@@ -1,7 +1,7 @@
 <template>
 	<div class="top-query-bottom-table">
 		<div class="query-block">
-			<div class="query-top">设置表到 「{{ childData.name }}」</div>
+			<div class="query-top">设置表到 「{{ childData.rootName }}」</div>
 			<div class="query-bottom">
 				<div class="input-item">
 					<span class="item-label">选择数据源</span>
@@ -84,11 +84,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import useListPageHook from "../hooks/listPageForSetChild";
-import useOptionsHook from "../hooks/optionsHook";
+import useListPageHook from "../../dataCatalog/hooks/listPageForSetChild";
 
-import { getTableByDataSourceIdAndchildIdApi, editMultiTableApi } from "@/api/modules/dataCatalog/dataCatalog";
-import { getCatalogListApi, getDSSelectorApi, getDBSelectorApi } from "@/api/modules/dataCatalog/dataCatalog";
+import { getTableByDataSourceIdandLabelIdApi, setTableFromLabelApi } from "@/api/modules/dataCatalog/labelManage";
+import { getCatalogListApi, getDSSelectorApi, getDBSelectorApi /* 待修改 */ } from "@/api/modules/dataCatalog/dataCatalog";
 const router = useRouter();
 
 let childData = ref<any>({ ...history.state.params });
@@ -104,7 +103,7 @@ const queryFormRaw = {
 	dsName: "",
 	dbName: "",
 	tableName: "",
-	childId: childData.value.id,
+	labelId: childData.value.rootId,
 };
 let {
 	tableLoading,
@@ -128,14 +127,17 @@ let {
 
 	checkedParamList,
 } = useListPageHook(
-	getTableByDataSourceIdAndchildIdApi,
+	getTableByDataSourceIdandLabelIdApi,
 
 	beanInfo,
 	queryFormRaw,
 	(obj: any) => {
 		let target = { ...obj };
+
 		target.datasourceId = target.dsName + "." + target.dbName;
-		// debugger;
+
+		target.labelId = childData.value.rootId;
+
 		delete target.dsName;
 		return target;
 	},
@@ -200,23 +202,23 @@ const getDataBaseOptionsMethod = (obj: any) => {
 
 const setTableClick = () => {
 	let tableIdList = [...checkedParamList[0].checkedAllSet];
-	let tableNameList = [];
-	for (let i = 0; i < tableIdList.length; i++) {
-		let checkedItemId = tableIdList[i];
-		for (let j = 0; j < tableDataList.value.length; j++) {
-			let tableItem = tableDataList.value[j];
-			if (checkedItemId === tableItem.ti) {
-				tableNameList.push(tableItem.tn);
-				break;
-			}
-		}
-	}
+	// let tableNameList = [];
+	// for (let i = 0; i < tableIdList.length; i++) {
+	// 	let checkedItemId = tableIdList[i];
+	// 	for (let j = 0; j < tableDataList.value.length; j++) {
+	// 		let tableItem = tableDataList.value[j];
+	// 		if (checkedItemId === tableItem.ti) {
+	// 			tableNameList.push(tableItem.tn);
+	// 			break;
+	// 		}
+	// 	}
+	// }
 	console.log("tableIdList", tableIdList);
-	console.log("tableNameList", tableNameList);
-	editMultiTableApi({
-		tableIds: tableIdList.toString(),
-		tableNames: tableNameList.toString(),
-		childId: childData.value.id,
+	// console.log("tableNameList", tableNameList);
+	setTableFromLabelApi({
+		tableIds: tableIdList,
+		// tableNames: tableNameList.toString(),
+		labelId: childData.value.rootId,
 	}).then((res: any) => {
 		//添加成功
 		ElMessage.success("添加成功！");

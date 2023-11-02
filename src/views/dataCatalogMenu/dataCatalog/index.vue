@@ -12,15 +12,17 @@
 						<el-icon @click="openAddMainCatalogDialogClick"><Plus /></el-icon>
 					</div>
 					<div class="aside-input">
-						<el-input placeholder="请输入关键字" :suffix-icon="Search" />
+						<el-input placeholder="请输入关键字" v-model="filterText" :suffix-icon="Search" />
 					</div>
 					<el-tree
+						ref="treeRef"
 						class="tree-class thin-scrollbar"
-						node-key="id"
+						node-key="key"
 						:current-node-key="'All'"
 						:data="treeData"
 						:props="defaultProps"
 						@node-click="handleNodeClick"
+						:filter-node-method="filterNode"
 					>
 						<template #default="{ node, data }">
 							<div class="custom-tree-node">
@@ -55,7 +57,7 @@
 						<div class="wrap" style="display: flex">
 							<div class="query-bottom">
 								<div class="input-item">
-									<span class="item-label">选择数据源</span>
+									<span class="item-label">数据源</span>
 									<el-select style="width: auto" v-model="queryForm.dsName" @change="dsNameChange" clearable>
 										<el-option v-for="item in dataSourceOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
 									</el-select>
@@ -159,6 +161,7 @@
 <script setup lang="ts">
 import useListPageHook from "./hooks/listPage";
 import useOptionsHook from "./hooks/optionsHook";
+import useTreeFilterHook from "./hooks/treeFilterHook";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import addMainCatalogDialog from "./components/addMainCatalogDialog.vue";
 import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
@@ -182,6 +185,10 @@ const defaultProps = {
 	children: "childs",
 	label: "name",
 };
+
+const treeRef = ref<any>(null);
+let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
+
 const addMainCatalogDialogRef = <any>ref(null);
 const addChildCatalogDialogRef = <any>ref(null);
 const modiftCatalogDialogRef = <any>ref(null);
@@ -190,9 +197,7 @@ const openAddMainCatalogDialogClick = () => {
 		row: {},
 	});
 };
-// const refreshInfo =()=>{
-// 	getCatalogInfo()
-// }
+
 const openAddChildCatalogDialogRefClick = (name: any) => {
 	addChildCatalogDialogRef.value.acceptParams({
 		row: {
@@ -201,7 +206,7 @@ const openAddChildCatalogDialogRefClick = (name: any) => {
 		},
 	});
 };
-let modifyTempData = <any>null;
+let modifyTempData = <any>null; //tree node data ref
 const openModiftCatalogDialogRefClick = (data: any) => {
 	// debugger;
 	modifyTempData = data;
@@ -255,7 +260,7 @@ const removeCatalogClick = (row: any) => {
 
 const show_mode = ref("list");
 let treeDataJson = <any>{ data: [] };
-const getCatalogInfo = () => {
+const getCatalogInfo = (callBack?: any) => {
 	getCatalogInfoApi({}).then((res: any) => {
 		treeDataJson = res;
 
@@ -267,13 +272,21 @@ const getCatalogInfo = () => {
 			},
 			...treeDataJson.data,
 		];
+		treeData.value.forEach((element: any) => {
+			element.key = element.id;
+			if (element.childs) {
+				element.childs.forEach((item: any) => {
+					item.key = item.rootId + "" + item.id;
+				});
+			}
+		});
+		callBack && callBack();
 	});
 };
 getCatalogInfo();
 
 const treeData = <any>ref(treeDataJson.data);
 
-let tempChildData = <any>null;
 const handleNodeClick = (data: any) => {
 	console.log(data);
 	if (data.name === "All") {
@@ -287,8 +300,6 @@ const handleNodeClick = (data: any) => {
 		if (data.rootId) {
 			queryForm.value.childId = data.id;
 			delete queryForm.value.rootId;
-
-			tempChildData = data;
 		} else {
 			queryForm.value.rootId = data.id;
 			delete queryForm.value.childId;
@@ -300,12 +311,11 @@ const handleNodeClick = (data: any) => {
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 // debugger;
 const openFormPageClick = (status: any, row?: any) => {
-	// let pathName = pageName + "Api";
-	// userStore.setBehavior(status);
+	let node = treeRef.value.getCurrentNode();
 	router.push({
 		name: "setChildCatalog",
 		state: {
-			params: { ...tempChildData },
+			params: { ...node },
 		},
 	});
 };
@@ -374,7 +384,13 @@ const deleteRowData = (row: any) => {
 					message: "删除成功",
 				});
 				refreshData();
-				getCatalogInfo();
+				let key = treeRef.value.getCurrentKey();
+				getCatalogInfo(() => {
+					// 更新并选中树节点
+					nextTick(() => {
+						treeRef.value.setCurrentKey(key);
+					});
+				});
 			});
 		})
 		.catch(() => {});

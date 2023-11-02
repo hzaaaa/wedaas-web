@@ -105,7 +105,7 @@
 							"childrenList": [
 								{
 									"affix": 0,
-									"component": "/dataCatalogMenu/dataCatalog/pages/setChildCatalog",
+									"component": "/dataCatalogMenu/labelManage/pages/setChildCatalog",
 									"hidden": 1,
 									"id": 157,
 									"keepAlive": 0,

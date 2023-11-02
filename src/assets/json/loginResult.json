@@ -38,7 +38,9 @@
 				},
 				{
 					"affix": 0,
-					"childrenList": [],
+					"childrenList": [
+
+					],
 					"component": "/advancedSearch/index",
 					"hidden": 0,
 					"id": 66,
@@ -289,7 +291,25 @@
 				},
 				{
 					"affix": 0,
-					"childrenList": [],
+					"childrenList": [
+						{
+							"affix": 0,
+							"childrenList": [
+							],
+							"component": "/tableDetail/embeddedPages/explorationSetting/index",
+							"hidden": 1,
+							"icon": "icon-zhongchengduhezuofang",
+							"id": 65,
+							"keepAlive": 1,
+							"path": "_1_64_",
+							"pid": 64,
+							"redirect": "/tableDetail/embeddedPages/explorationSetting",
+							"router": "explorationSetting",
+							"sort": 1,
+							"title": "探查设置",
+							"type": 3
+						}
+					],
 					"component": "/tableDetail/index",
 					"hidden": 1,
 					"id": 66,

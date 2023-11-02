@@ -1,0 +1,18 @@
+.exploration-setting-wrapper{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  .basic-setting-wrapper{
+    padding: 10px;
+    background-color: #fff;
+    .header{
+      display: flex;
+    }
+  }
+  .advanced-setting-wrapper{
+    flex: 1;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff;
+  }
+}

@@ -278,7 +278,6 @@ const deleteRowData = (row: any) => {
 		// type: "warning",
 	})
 		.then(() => {
-			//待续未完
 			// debugger;
 			let label = treeData.value.find((item: any) => {
 				return item.rootId === queryForm.value.id;

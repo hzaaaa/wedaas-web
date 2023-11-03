@@ -1,6 +1,13 @@
 <template>
 	<div class="">
-		<el-dialog v-model="dialogVisible" title="添加主目录" @open="getLabelInfo" width="530px" class="common-dialog">
+		<el-dialog
+			:destroy-on-close="true"
+			v-model="dialogVisible"
+			title="添加主目录"
+			@open="getLabelInfo"
+			width="530px"
+			class="common-dialog"
+		>
 			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
 				<el-form-item label="主目录名称" prop="rootName">
 					<el-input v-model="inputInfo.rootName" maxlength="16" show-word-limit placeholder="" />

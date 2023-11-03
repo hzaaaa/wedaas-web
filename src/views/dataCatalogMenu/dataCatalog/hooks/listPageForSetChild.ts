@@ -40,6 +40,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 			const checkedAllSet = new Set();
 			const setSize = ref(0);
 			const addCheckedAllChange = (val: any) => {
+
 				tableDataList.value.forEach((item: any) => {
 					item[checkedConfigItem.checkedBy] = val;
 					if (val) {
@@ -49,7 +50,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 					}
 				});
 				setSize.value = checkedAllSet.size;
-
+				// console.log('addCheckedAllChange', val)
 			};
 			const itemCheckedChange = (val: any, row: any) => {
 
@@ -76,7 +77,11 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 			}
 			const resetChecked = () => {
 				checkedAllSet.clear();
-				addCheckedAll.value = false;
+				// debugger
+				nextTick(() => {
+					addCheckedAll.value = false;
+
+				})
 				tableDataList.value.forEach((item: any) => {
 					item[checkedConfigItem.checkedBy] = false
 				})
@@ -100,9 +105,9 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 	onMounted(() => { });
 	const handleCurrentPageChange = (pageNum: number) => {
 		let params = {
-			pageNum: pageNum,
-			pageNo: pageNum,
-			pageSize: pageParams.pageSize,
+			// pageNum: pageNum,
+			// pageNo: pageNum,
+			// pageSize: pageParams.pageSize,
 			...useQueryParams,
 		};
 		tableLoading.value = true;
@@ -111,10 +116,10 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		console.log('cookieToken', cookieToken)
 		getListApi(params)
 			.then((res: any) => {
-				tableDataList.value = res?.data?.records || res?.data?.list || [];
-				pageParams.total = res.data.total;
-				// debugger
-				pageParams.pageNum = pageNum;
+				tableDataList.value = res.data;
+				// pageParams.total = res.data.total;
+				// // debugger
+				// pageParams.pageNum = pageNum;
 				tableLoading.value = false;
 				nextTick(() => {
 					queryCallBack && queryCallBack();
@@ -139,10 +144,10 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		getListApi(params)
 			.then((res: any) => {
 				// debugger
-				tableDataList.value = res?.data?.records || res?.data?.list || [];
-				pageParams.total = res.data.total;
-				pageParams.pageSize = pageSize;
-				pageParams.pageNum = 1;
+				tableDataList.value = res.data;
+				// pageParams.total = res.data.total;
+				// pageParams.pageSize = pageSize;
+				// pageParams.pageNum = 1;
 				tableLoading.value = false;
 				nextTick(() => {
 					queryCallBack && queryCallBack();

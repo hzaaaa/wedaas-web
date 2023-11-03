@@ -2,9 +2,9 @@ import { ref, reactive, computed, watch, onMounted, nextTick } from "vue";
 import { useUserStoreSessionStorage } from "@/stores/user";
 import Cookie from "js-cookie";
 
-export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQueryParamsByForm?: any, queryCallBack?: any, checkedConfig?: any) => {
+export default (getListApi: Function, findTablesApi: Function, beanInfo: any, queryFormRaw: any, getUseQueryParamsByForm?: any, queryCallBack?: any, checkedConfig?: any) => {
 	const queryForm = ref(JSON.parse(JSON.stringify(queryFormRaw)));
-
+	const allTypeNumber = ref(0);
 	const pageParams = reactive({
 		pageNum: 1,
 		pageSize: 10,
@@ -109,13 +109,23 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		console.log("params", params);
 		const cookieToken = Cookie.get("token");
 		console.log('cookieToken', cookieToken)
-		getListApi(params)
+		let api = null;
+		if (queryForm.value.type === 'All') {
+			api = getListApi
+		} else {
+			api = findTablesApi
+
+		}
+		api(params)
 			.then((res: any) => {
 				tableDataList.value = res?.data?.records || res?.data?.list || [];
 				pageParams.total = res.data.total;
 				// debugger
 				pageParams.pageNum = pageNum;
 				tableLoading.value = false;
+				if (queryForm.value.type === 'All') {
+					allTypeNumber.value = res.data.total;
+				}
 				nextTick(() => {
 					queryCallBack && queryCallBack();
 					checkedParamList.forEach((item: any) => {
@@ -136,7 +146,14 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		};
 		tableLoading.value = true;
 		console.log("params", params);
-		getListApi(params)
+		let api = null;
+		if (queryForm.value.type === 'All') {
+			api = getListApi
+		} else {
+			api = findTablesApi
+
+		}
+		api(params)
 			.then((res: any) => {
 				// debugger
 				tableDataList.value = res?.data?.records || res?.data?.list || [];
@@ -144,6 +161,9 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 				pageParams.pageSize = pageSize;
 				pageParams.pageNum = 1;
 				tableLoading.value = false;
+				if (queryForm.value.type === 'All') {
+					allTypeNumber.value = res.data.total;
+				}
 				nextTick(() => {
 					queryCallBack && queryCallBack();
 					checkedParamList.forEach((item: any) => {
@@ -274,5 +294,6 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 
 
 		checkedParamList,
+		allTypeNumber,
 	};
 };

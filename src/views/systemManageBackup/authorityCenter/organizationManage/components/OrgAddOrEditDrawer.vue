@@ -1,11 +1,6 @@
 <template>
-	<el-drawer
-		v-model="drawerVisible"
-		:title="`${drawerProps.title}`"
-		:close-on-click-modal="false"
-		@open="getpartnerList"
-		@close="closeResetDrawer"
-	>
+	<el-drawer v-model="drawerVisible" :title="`${drawerProps.title}`" :close-on-click-modal="false" @close="closeResetDrawer">
+		<!-- @open="getpartnerList" -->
 		<el-form ref="orgFormRef" :model="drawerProps.row" :rules="orgFormRules" label-width="80px">
 			<el-form-item label="合作方" prop="partnerId">
 				<el-select
@@ -90,7 +85,7 @@
 <script setup lang="ts">
 import { ref, reactive, nextTick } from "vue";
 import { ElMessage, FormInstance, FormRules } from "element-plus";
-import { getPartnerSelectorApi } from "@/api/biz/collaborators";
+
 import { getOrganizationPartnerApi, addOrganizationApi, editOrganizationApi } from "@/api/modules/systemManage/authorityCenter";
 // import { SystemManage } from "@/api/interface/index";
 import { validateOrgName, validateOrgDescription, validateIPAddress } from "@/utils/validator";
@@ -138,26 +133,26 @@ const partnerList = ref<{ [key: string]: any }[]>([]);
 const orgPartnerList = ref([]);
 
 // 获取合作方选择框列表
-const getpartnerList = async () => {
-	try {
-		const partnerSelector = <any>await getPartnerSelectorApi("", true);
-		partnerList.value = partnerSelector.data;
-		const { data } = await getOrganizationPartnerApi();
-		orgPartnerList.value = data;
-		console.log(orgPartnerList.value);
-		partnerList.value.forEach((item: any) => {
-			const findItem = orgPartnerList.value.find((element: any) => element == item.id);
-			if (findItem) {
-				item["disabled"] = true;
-			}
-		});
-		console.log(partnerList.value);
-	} catch (err) {
-		console.log(err);
-	} finally {
-		if (drawerProps.value.row.partnerId) partnerSelectorChange(drawerProps.value.row.partnerId);
-	}
-};
+// const getpartnerList = async () => {
+// 	try {
+// 		const partnerSelector = <any>await getPartnerSelectorApi("", true);
+// 		partnerList.value = partnerSelector.data;
+// 		const { data } = await getOrganizationPartnerApi();
+// 		orgPartnerList.value = data;
+// 		console.log(orgPartnerList.value);
+// 		partnerList.value.forEach((item: any) => {
+// 			const findItem = orgPartnerList.value.find((element: any) => element == item.id);
+// 			if (findItem) {
+// 				item["disabled"] = true;
+// 			}
+// 		});
+// 		console.log(partnerList.value);
+// 	} catch (err) {
+// 		console.log(err);
+// 	} finally {
+// 		if (drawerProps.value.row.partnerId) partnerSelectorChange(drawerProps.value.row.partnerId);
+// 	}
+// };
 
 const partnerSelectorChange = (val: any) => {
 	console.log(val);

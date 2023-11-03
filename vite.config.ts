@@ -54,8 +54,9 @@ export default defineConfig(({ mode }) => {
 				// 	rewrite: (path) => path.replace(/^\/api/, ""),
 				// },
 				"/api": {
-					target: "https://mock.mengxuegu.com/mock/65276a3a82cf7920095762b0/wedaas-web/mock",
-					// target: "http://172.16.1.78:8083",
+					// target: "https://mock.mengxuegu.com/mock/65276a3a82cf7920095762b0/wedaas-web/mock",
+					target: "http://172.16.1.78:8083",
+					// target: "http://172.16.1.44:9057",
 					changeOrigin: true,
 					rewrite: (path) => path.replace(/^\/api/, ""),
 				},

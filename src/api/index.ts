@@ -18,9 +18,11 @@ const config = {
 	timeout: ResultEnum.TIMEOUT as number,
 };
 const noAbortControllerUrl = <any>{
-	"/api-proxy-manage/biz/dict/list": true,
+
 	//待添加
 };
+axios.defaults.withCredentials = true
+
 class RequestHttp {
 	service: AxiosInstance;
 	public constructor(config: AxiosRequestConfig) {
@@ -44,7 +46,7 @@ class RequestHttp {
 					// const token: string = Base64.decode(userStore.token);
 					const token: string = userStore.token;
 					if (config.headers && typeof config.headers?.set === "function") {
-						config.headers.set("Authorization", `Bearer ${token}`);
+						config.headers.set("Token", `${token}`);
 					}
 				}
 				// get请求 序列化

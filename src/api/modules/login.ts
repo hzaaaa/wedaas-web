@@ -7,10 +7,11 @@ import http from "@/api";
  * @name 登录模块
  */
 export const loginApi = (params: Login.ReqLoginForm) => {
-	return new Promise((resolve) => {
-		resolve(loginResult);
-	});
-	return http.post<Login.ResLogin>(AUTHPORT + `/auth/login`, params);
+	return http.post<any>(AUTHPORT + `/user/login`, params);
+	// return new Promise((resolve) => {
+	// 	resolve(loginResult);
+	// });
+	// return http.post<Login.ResLogin>(AUTHPORT + `/auth/login`, params);
 };
 /**
  * @name 获取验证码模块

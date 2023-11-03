@@ -308,8 +308,8 @@ let {
 		width: 24px !important;
 
 		padding: 10px 2px !important;
+		padding-right: 4px !important;
 		.action-btn-wrap {
-			justify-content: center !important;
 		}
 	}
 

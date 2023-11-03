@@ -1,0 +1,114 @@
+{
+	"code": 1,
+	"data": [
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_admin_company_full",
+			"b": "ods_cfx_admin_company_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_admin_full",
+			"b": "ods_cfx_admin_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_admin_log_full",
+			"b": "ods_cfx_admin_log_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_admin_role_full",
+			"b": "ods_cfx_admin_role_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_agent_full",
+			"b": "ods_cfx_agent_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_area_full",
+			"b": "ods_cfx_area_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_car_damage_full",
+			"b": "ods_cfx_car_damage_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_car_full",
+			"b": "ods_cfx_car_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_car_parts_full",
+			"b": "ods_cfx_car_parts_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_car_third_full",
+			"b": "ods_cfx_car_third_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_claims_full",
+			"b": "ods_cfx_claims_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_customer_full",
+			"b": "ods_cfx_customer_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_customer_test_full",
+			"b": "ods_cfx_customer_test_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_deputy_full",
+			"b": "ods_cfx_deputy_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_insurance_full",
+			"b": "ods_cfx_insurance_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_menu_full",
+			"b": "ods_cfx_menu_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_notify_log_full",
+			"b": "ods_cfx_notify_log_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_order_full",
+			"b": "ods_cfx_order_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_order_insurance_full",
+			"b": "ods_cfx_order_insurance_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_order_log_full",
+			"b": "ods_cfx_order_log_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_reparation_full",
+			"b": "ods_cfx_reparation_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_setting_full",
+			"b": "ods_cfx_setting_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_sms_log_full",
+			"b": "ods_cfx_sms_log_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_system_full",
+			"b": "ods_cfx_system_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_user_full",
+			"b": "ods_cfx_user_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_cfx_xmdata_full",
+			"b": "ods_cfx_xmdata_full"
+		},
+		{
+			"a": "CDH_hive.cfx_dingsun.ods_test_full",
+			"b": "ods_test_full"
+		}
+	],
+	"action": "success"
+}

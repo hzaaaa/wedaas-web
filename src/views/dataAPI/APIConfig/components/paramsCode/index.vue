@@ -26,8 +26,6 @@
 		<div class="center-block">
 			<div class="left-btns">
 				<el-button :icon="CaretRight" circle />
-				<el-button :icon="Folder" circle />
-				<el-button :icon="Document" circle />
 			</div>
 			<div class="right-block">
 				<div class="exec-time">执行时间 : 0s</div>
@@ -54,29 +52,17 @@
 				</div>
 				<div class="sql-result">
 					<div class="abs-btn-wrap">
-						<el-icon><Download /></el-icon>
+						<!-- <el-icon><Download /></el-icon> -->
 					</div>
 					<div class="res-types-title">
 						<div class="res-title" @click="activeTab = 'col1Show'" :class="activeTab === 'col1Show' ? 'res-title-active' : ''">
-							<span> 结果(0) </span>
-							<el-icon @click="fullScreenShow = true"><Rank /></el-icon>
+							<span> 请求参数</span>
 						</div>
 						<div class="res-title" @click="activeTab = 'col2Show'" :class="activeTab === 'col2Show' ? 'res-title-active' : ''">
-							<span>历史查询</span>
-							<el-icon :class="col2ShowInput && activeTab === 'col2Show' ? 'show' : ''" @click="col2ShowInput = !col2ShowInput"
-								><Search
-							/></el-icon>
-							<input v-show="activeTab === 'col2Show' && col2ShowInput" />
+							<span>返回参数</span>
 						</div>
 						<div class="res-title" @click="activeTab = 'col3Show'" :class="activeTab === 'col3Show' ? 'res-title-active' : ''">
-							<span>保存的查询</span>
-							<el-icon :class="activeTab === 'col3Show' && col3ShowInput ? 'show' : ''" @click="col3ShowInput = !col3ShowInput"
-								><Search
-							/></el-icon>
-							<input v-show="activeTab === 'col3Show' && col3ShowInput" />
-						</div>
-						<div class="res-title" @click="activeTab = 'col4Show'" :class="activeTab === 'col4Show' ? 'res-title-active' : ''">
-							<span>历史导出</span><el-icon><Refresh /></el-icon>
+							<span> 结果(0)</span>
 						</div>
 					</div>
 					<div class="table-wrap">
@@ -115,7 +101,8 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
+						<div class="pagination-block" style="display: flex; justify-content: space-between; margin-top: 16px">
+							<el-button type="primary">辅助抽取参数</el-button>
 							<el-pagination
 								:page-sizes="pageParams.pageSizesList"
 								background
@@ -372,12 +359,13 @@ let {
 		width: 300px;
 		height: 100%;
 		margin-right: 16px;
-		border-radius: 10px;
+		// border-radius: 10px;
 		background: #fff;
 		padding: 16px;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
+		border-right: 1px solid var(--bc);
 		.tree-wrap {
 			flex: 1;
 			height: 0;
@@ -600,12 +588,13 @@ let {
 		height: 100%;
 
 		// margin-left: 16px;
-		border-radius: 10px;
+		// border-radius: 10px;
 		background: #fff;
 		padding: 16px;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
+		border-left: 1px solid var(--bc);
 		.content-wrap {
 			flex: 1;
 			height: 0;

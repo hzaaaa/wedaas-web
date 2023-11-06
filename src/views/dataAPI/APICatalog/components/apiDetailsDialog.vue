@@ -8,7 +8,7 @@
 							<div class="title">API名称：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.name }}</div>
 								</div>
 								<div class="edit-icon pointer">
 									<el-icon><EditPen /></el-icon>
@@ -21,29 +21,18 @@
 							<div class="title">目录：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<!-- <div class="desc mod-ellipsis">{{ detailsInfo?.name }}</div> -->
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
 						</div>
 					</el-col>
-					<el-col :span="6">
+					<el-col :span="12">
 						<div class="cell">
 							<div class="title">描述：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
-								</div>
-								<div class="edit-icon pointer"></div>
-							</div>
-						</div>
-					</el-col>
-					<el-col :span="6">
-						<div class="cell">
-							<div class="title">API名称：</div>
-							<div class="content">
-								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.description }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -56,7 +45,7 @@
 							<div class="title">数据源：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.datasourceId && detailsInfo?.datasourceId.split(".")[0] }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -67,7 +56,7 @@
 							<div class="title">数据库：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.datasourceId && detailsInfo?.datasourceId.split(".")[1] }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -78,7 +67,7 @@
 							<div class="title">返回类型：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.responseType }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -89,7 +78,7 @@
 							<div class="title">请求方式</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.requestMethod }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -102,7 +91,7 @@
 							<div class="title">表名</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.tablesName }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -113,7 +102,7 @@
 							<div class="title">路径：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.path }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -124,7 +113,7 @@
 							<div class="title">分时限流：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<!-- <div class="desc mod-ellipsis">{{ detailsInfo?.requestMethod }}</div> -->
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -135,7 +124,7 @@
 							<div class="title">版本：</div>
 							<div class="content">
 								<div class="content-left">
-									<div class="desc mod-ellipsis">test_api_add</div>
+									<div class="desc mod-ellipsis">{{ detailsInfo?.version }}</div>
 								</div>
 								<div class="edit-icon pointer"></div>
 							</div>
@@ -158,7 +147,7 @@
 				<el-table
 					v-if="currentTab === '请求参数'"
 					class="common-table"
-					:data="tableDataList"
+					:data="paramInTableList"
 					border
 					style="flex: 1 !important; height: auto"
 					ref="multipleTableRef"
@@ -166,16 +155,16 @@
 				>
 					<el-table-column label="字段名" prop="name" show-overflow-tooltip> </el-table-column>
 
-					<el-table-column label="描述" prop="description" show-overflow-tooltip> </el-table-column>
+					<el-table-column label="描述" prop="colDescription" show-overflow-tooltip> </el-table-column>
 
-					<el-table-column label="类型" prop="createBy" show-overflow-tooltip-none></el-table-column>
-					<el-table-column label="默认值" prop="createTime" show-overflow-tooltip-none> </el-table-column>
-					<el-table-column label="必填" prop="status" show-overflow-tooltip-none> </el-table-column>
+					<el-table-column label="类型" prop="columnType" show-overflow-tooltip-none></el-table-column>
+					<el-table-column label="默认值" prop="defaultValue" show-overflow-tooltip-none> </el-table-column>
+					<el-table-column label="必填" prop="required" show-overflow-tooltip-none> </el-table-column>
 				</el-table>
 				<el-table
 					v-if="currentTab === '返回参数'"
 					class="common-table"
-					:data="tableDataList"
+					:data="paramOutTableList"
 					border
 					style="flex: 1 !important; height: auto"
 					ref="multipleTableRef"
@@ -183,27 +172,28 @@
 				>
 					<el-table-column label="字段名" prop="name" show-overflow-tooltip> </el-table-column>
 
-					<el-table-column label="描述" prop="description" show-overflow-tooltip> </el-table-column>
+					<el-table-column label="描述" prop="colDescription" show-overflow-tooltip> </el-table-column>
 
-					<el-table-column label="类型" prop="createBy" show-overflow-tooltip-none></el-table-column>
+					<el-table-column label="类型" prop="columnType" show-overflow-tooltip-none></el-table-column>
 				</el-table>
 				<el-table
 					v-if="currentTab === '分享记录'"
 					class="common-table"
-					:data="tableDataList"
+					:data="shareRecordTableList"
 					border
 					style="flex: 1 !important; height: auto"
 					ref="multipleTableRef"
 					:default-sort="{ prop: 'update_time', order: 'descending' }"
 				>
-					<el-table-column label="API链接" prop="name" show-overflow-tooltip> </el-table-column>
+					<!-- 待修改 -->
+					<el-table-column label="id" prop="name" show-overflow-tooltip> </el-table-column>
 
-					<el-table-column label="SQL" prop="description" show-overflow-tooltip> </el-table-column>
+					<el-table-column label="SQL" prop="excuteSql" show-overflow-tooltip> </el-table-column>
 
-					<el-table-column label="提取码" prop="createBy" show-overflow-tooltip-none></el-table-column>
-					<el-table-column label="允许次数" prop="createTime" show-overflow-tooltip-none> </el-table-column>
-					<el-table-column label="下载次数" prop="status" show-overflow-tooltip-none> </el-table-column>
-					<el-table-column label="最近下载时间" prop="status" show-overflow-tooltip-none> </el-table-column>
+					<el-table-column label="提取码" prop="extractionCode" show-overflow-tooltip-none></el-table-column>
+					<el-table-column label="允许次数" prop="times" show-overflow-tooltip-none> </el-table-column>
+					<el-table-column label="下载次数" prop="callTotal" show-overflow-tooltip-none> </el-table-column>
+					<el-table-column label="最近下载时间" prop="recentTime" show-overflow-tooltip-none> </el-table-column>
 				</el-table>
 			</div>
 			<template #footer>
@@ -295,12 +285,14 @@ import { ref } from "vue";
 import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
 import listDataJson from "../listData.json";
 import useListPageHook from "@/hooks/listPage";
+import { getApiDetailsApi, getApiShareRecordApi } from "@/api/modules/dataApi/apiCatalog";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 const currentTab = ref("请求参数");
 const inputInfo = ref({
 	name: "",
 });
+const detailsInfo = <any>ref({});
 const rulesForm = reactive<any>({
 	name: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
 });
@@ -313,10 +305,23 @@ const dialogProps = ref<any>({
 		status: 0,
 	},
 });
-
+const paramInTableList = <any>ref([]);
+const paramOutTableList = <any>ref([]);
+const shareRecordTableList = <any>ref([]);
 const acceptParams = (params: any) => {
 	dialogProps.value = params;
 	dialogVisible_details.value = true;
+
+	getApiDetailsApi({ id: params.row.id }).then((res: any) => {
+		// debugger;
+		detailsInfo.value = res.data.apiBase;
+		paramInTableList.value = res.data.paramIn;
+		paramOutTableList.value = res.data.paramOut;
+		// detailsInfo.value = res.data.apiBase;
+	});
+	getApiShareRecordApi({ id: params.row.id }).then((res: any) => {
+		shareRecordTableList.value = res.data;
+	});
 };
 
 const inputInfoRef = <any>ref(null);

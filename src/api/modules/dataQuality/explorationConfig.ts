@@ -12,7 +12,7 @@ export const insertUserRegularApi = (params: any) => {
 };
 // **  删除用户自定义探查
 export const deleteUserRegularApi = (params: any) => {
-  return http.post<any>(PORTBiz + `/exploration/deleteUserRegular`, params);
+  return http.get<any>(PORTBiz + `/exploration/deleteUserRegular`, params);
 };
 // **  修改用户自定义探查项
 export const updateUserRegularApi = (params: any) => {

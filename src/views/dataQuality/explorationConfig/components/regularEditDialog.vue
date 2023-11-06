@@ -7,7 +7,14 @@
 			width="530px"
 			class="common-dialog"
 		>
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left" label-width="auto">
+			<el-form
+				ref="inputInfoRef"
+				:model="inputInfo"
+				@keyup.enter="submit"
+				:rules="rulesForm"
+				label-position="left"
+				label-width="auto"
+			>
 				<el-form-item label="正则名称" prop="regularName">
 					<el-input v-model="inputInfo.regularName" placeholder="请输入" />
 				</el-form-item>

@@ -30,7 +30,7 @@
 					</div>
 				</div>
 				<div class="input-info">
-					<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="top">
+					<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="top">
 						<el-form-item label="申请原因" prop="reason">
 							<el-input v-model="inputInfo.reason" type="textarea" maxlength="500" show-word-limit rows="5" placeholder="" />
 						</el-form-item>

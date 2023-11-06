@@ -8,7 +8,7 @@
 			width="530px"
 			class="common-dialog"
 		>
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
+			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="left">
 				<el-form-item label="主目录名称" prop="rootName">
 					<el-select v-model="inputInfo.rootName" style="width: 100%">
 						<el-option v-for="item in mainCatalogOptions" :key="item.id" :label="item.name" :value="item.name"></el-option>
@@ -52,6 +52,7 @@ const mainCatalogOptions = <any>ref([]);
 const acceptParams = (params: any) => {
 	dialogProps.value = params;
 	dialogVisible.value = true;
+
 	mainCatalogOptions.value = params.row.list;
 	inputInfo.value.rootName = params.row.name;
 	inputInfo.value.childName = "";

@@ -8,7 +8,7 @@
 			width="530px"
 			class="common-dialog"
 		>
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
+			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="left">
 				<el-form-item label="标签名称" prop="labelName">
 					<el-input v-model="inputInfo.labelName" maxlength="16" show-word-limit placeholder="" />
 				</el-form-item>

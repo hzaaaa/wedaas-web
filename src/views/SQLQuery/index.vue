@@ -13,13 +13,23 @@
 						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
 						<div class="market-tabs-item pointer">我的空间</div>
 					</div> -->
-					<el-select class="mt16"></el-select>
-					<el-input class="mt16" placeholder="请输入关键字" :suffix-icon="Search" />
+					<el-select class="mt16" v-model="queryForm.dsName" @change="dsNameChange">
+						<el-option v-for="item in dsOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
+					</el-select>
+
+					<el-input class="mt16" placeholder="请输入关键字" v-model="filterText" :suffix-icon="Search" />
 					<div class="view-all">
 						<span>表({{ treeData.length }})</span>
 						<el-icon><RefreshRight /></el-icon>
 					</div>
-					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
+					<el-tree
+						ref="treeRef"
+						class="tree-class thin-scrollbar"
+						:data="treeData"
+						:props="defaultProps"
+						@node-click="handleNodeClick"
+						:filter-node-method="filterNode"
+					/>
 				</div>
 			</Transition>
 		</div>
@@ -37,7 +47,9 @@
 				</div> -->
 				<div class="top-info">
 					<span class="key">Database</span>
-					<el-select></el-select>
+					<el-select style="width: auto" value-key="datasourceId" v-model="queryForm.dbObj" @change="dbChange" clearable>
+						<el-option v-for="item in dataBaseOptions" :key="item.datasourceId" :label="item.database" :value="item" />
+					</el-select>
 				</div>
 				<div class="sql-input">
 					<codemirror
@@ -88,7 +100,6 @@
 							style="flex: 1 !important; height: auto"
 							ref="multipleTableRef"
 							:default-sort="{ prop: 'update_time', order: 'descending' }"
-							@row-click="gotoDetails"
 						>
 							<el-table-column label="API名称" prop="name" min-width="180" show-overflow-tooltip>
 								<template #default="scope">
@@ -138,9 +149,9 @@
 			</div>
 			<Transition>
 				<div class="content-wrap" v-show="asideClassRight === 'wider-at-hook'">
-					<div class="title">渠道公司主体表</div>
+					<div class="title">{{ (colInfoList[0] && colInfoList[0].description) || "字段列表" }}</div>
 					<div class="details">
-						<div class="mt10" v-for="item in rightListDataJson.data">
+						<div class="mt10" v-for="item in colInfoList">
 							<div class="row1">
 								<tooltipWrap :content="item.colName" class="row1-left" type="x"></tooltipWrap>
 								<tooltipWrap :content="item.colType" class="row1-right" type="x"></tooltipWrap>
@@ -165,7 +176,6 @@
 					style="flex: 1 !important; height: auto"
 					ref="multipleTableRef"
 					:default-sort="{ prop: 'update_time', order: 'descending' }"
-					@row-click="gotoDetails"
 				>
 					<el-table-column label="API名称" prop="name" min-width="180" show-overflow-tooltip>
 						<template #default="scope">
@@ -210,7 +220,6 @@
 </template>
 
 <script setup lang="ts">
-import treeDataJson from "./treeData.json";
 import listDataJson from "./listData.json";
 import { Codemirror } from "vue-codemirror";
 import { xml as XML } from "@codemirror/lang-xml";
@@ -220,7 +229,11 @@ import rightListDataJson from "./rightListData.json";
 import useListPageHook from "@/hooks/listPage";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import { Search, CaretRight, Folder, Document } from "@element-plus/icons-vue";
+import { connectDsNameQueryApi, getDBSelectorApi } from "@/api/modules/sqlQuery/index";
+import { discardSqlApi, getRealtimetablesApi, getColsInfoRealtimeApi } from "@/api/modules/sqlQuery/index";
 import router from "@/routers";
+import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
+
 let stringInput = ref("");
 const extensionsOpt = <any>ref([JSON()]);
 interface Tree {
@@ -231,6 +244,7 @@ const defaultProps = {
 	children: "childTuple",
 	label: "b",
 };
+const colInfoList = <any>ref([]);
 const fullScreenShow = ref(false);
 const activeTab = ref("col1Show");
 
@@ -238,48 +252,17 @@ const col2ShowInput = ref(false);
 const col3ShowInput = ref(false);
 
 const show_mode = ref("list");
-const changeLabelName = (list: any) => {
-	list.forEach((item: any) => {
-		item.labelName = item.childName || item.rootName;
-		console.log("item.labelName", item.labelName);
-		if (item.childTuple) {
-			changeLabelName(item.childTuple);
-		}
-	});
-};
-changeLabelName(treeDataJson.data);
-const treeData = ref(treeDataJson.data);
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-const handleNodeClick = (data: Tree) => {
-	console.log(data);
+
+const treeData = ref([]);
+
+const handleNodeClick = (data: any) => {
+	// console.log(data);
+	tableChange(data);
 };
 
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 let { asideClass: asideClassRight, foldClick: foldClickRight, expandClick: expandClickRight } = useFoldOrExpandHook();
-// debugger;
-const openFormPageClick = (status: any, row?: any) => {
-	// let pathName = pageName + "Api";
-	// userStore.setBehavior(status);
-	router.push({
-		// name: pathName,
-		// state: {
-		// 	// params: { ...employeeRow.value },
-		// },
-		// query: {
-		// 	id: row?.id,
-		// },
-	});
-};
-const gotoDetails = (row: any) => {
-	router.push({
-		name: "marketDetails",
-	});
-};
+
 //#region 表格 查 相关
 
 let createTableByData = (pageSize: number, pageNum: number) => {
@@ -344,7 +327,64 @@ let {
 	beanInfo,
 	queryFormRaw
 );
+let treeRef = <any>ref(null);
+let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
+const dsOptions = ref<any>([]);
+const dataBaseOptions = ref<any>([]);
+connectDsNameQueryApi({}).then((res: any) => {
+	dsOptions.value = res.data;
+	queryForm.value.dsName = res.data[0].dsName;
+	dsNameChange(queryForm.value.dsName);
+});
+const dsNameChange = (value: any) => {
+	queryForm.value.dbObj = null;
+	dataBaseOptions.value = [];
+	// searchByQueryForm();
+	if (value) {
+		let obj = dsOptions.value.find((item: any) => {
+			return item.dsName === value;
+		});
+		getDataBaseOptionsMethod(obj);
+	}
+};
+const getDataBaseOptionsMethod = (obj: any) => {
+	let api = <any>getDBSelectorApi;
 
+	api({ ...obj }).then((res: any) => {
+		dataBaseOptions.value = res.data || [];
+		queryForm.value.dbObj = res.data[0];
+		dbChange(queryForm.value.dbObj);
+	});
+};
+let linkType = <any>null;
+const dbChange = async (value: any) => {
+	linkType = linkType || value.type;
+
+	discardSqlApi({
+		uuid: "9" + new Date().getTime(),
+		linkType,
+	}).then((res: any) => {});
+	let params = {
+		dbID: value.datasourceId,
+		type: value.type,
+	};
+	let RealtimetablesRes = await getRealtimetablesApi(params);
+	treeData.value = RealtimetablesRes.data;
+
+	tableChange(RealtimetablesRes.data[0]);
+};
+const tableChange = (data: any) => {
+	let value = queryForm.value.dbObj;
+	getColsInfoRealtimeApi({
+		dbID: value.datasourceId,
+		type: value.type,
+		tableId: data.a,
+		tableName: data.b,
+	}).then((res: any) => {
+		console.log("getColsInfoRealtimeApi", res);
+		colInfoList.value = res.data;
+	});
+};
 //#endregion
 </script>
 

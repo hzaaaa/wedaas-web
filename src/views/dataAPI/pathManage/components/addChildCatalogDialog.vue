@@ -1,26 +1,26 @@
 <template>
 	<div class="">
-		<el-dialog v-model="dialogVisible" title="添加API路径" @open="getLabelInfo" width="530px" class="common-dialog">
+		<el-dialog
+			:destroy-on-close="true"
+			v-model="dialogVisible"
+			title="添加子目录"
+			@open="getLabelInfo"
+			width="530px"
+			class="common-dialog"
+		>
 			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="left">
-				<el-form-item label="主路径名称" prop="mainName">
-					<!-- <el-input v-model="inputInfo.mainName" maxlength="16" show-word-limit placeholder="" /> -->
-					<!-- <el-select ></el-select> -->
-					<el-select v-model="inputInfo.mainName" style="width: 100%">
+				<el-form-item label="主目录名称" prop="pathRoot">
+					<el-select v-model="inputInfo.pathRoot" style="width: 100%" :disabled="true">
 						<el-option
-							v-for="item in [
-								{
-									name: 'name',
-									id: '1',
-								},
-							]"
-							:key="item.id"
-							:label="item.name"
-							:value="item.id"
+							v-for="item in mainCatalogOptions"
+							:key="item.labelName"
+							:label="item.labelName"
+							:value="item.labelName"
 						></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="子路径名称" prop="childName">
-					<el-input v-model="inputInfo.childName" placeholder="" />
+				<el-form-item label="子目录名称" prop="pathSecond">
+					<el-input v-model="inputInfo.pathSecond" maxlength="16" show-word-limit placeholder="" />
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -36,26 +36,32 @@
 import { ref, reactive } from "vue";
 import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
 
+import { addApiPathApi } from "@/api/modules/dataApi/pathManage";
 const inputInfo = ref({
-	mainName: "",
-	childName: "",
+	pathRoot: "",
+	pathSecond: "",
 });
 const rulesForm = reactive<any>({
-	mainName: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
-	childName: [{ required: true, message: "请输入子目录名称!", trigger: "blur" }],
+	pathRoot: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
+	pathSecond: [{ required: true, message: "请输入子目录名称!", trigger: "blur" }],
 });
 
 const dialogVisible = ref(false);
 
 const dialogProps = <any>ref({
 	row: {
-		status: 0,
+		list: [],
 	},
 });
 
+const mainCatalogOptions = <any>ref([]);
 const acceptParams = (params: any) => {
 	dialogProps.value = params;
 	dialogVisible.value = true;
+	// debugger;
+	mainCatalogOptions.value = params.row.list;
+	inputInfo.value.pathRoot = params.row.name;
+	inputInfo.value.pathSecond = "";
 };
 
 const inputInfoRef = <any>ref(null);
@@ -65,6 +71,11 @@ const submit = async () => {
 	if (!formEl) return;
 	formEl.validate(async (valid, fields) => {
 		if (valid) {
+			addApiPathApi({ ...inputInfo.value }).then((res: any) => {
+				ElMessage.success("添加成功！");
+				dialogVisible.value = false;
+				emit("refreshData");
+			});
 		} else {
 			console.log("error", fields);
 		}

@@ -75,7 +75,7 @@
 					</el-col>
 					<el-col :span="6">
 						<div class="cell">
-							<div class="title">请求方式</div>
+							<div class="title">请求方式：</div>
 							<div class="content">
 								<div class="content-left">
 									<div class="desc mod-ellipsis">{{ detailsInfo?.requestMethod }}</div>
@@ -88,7 +88,7 @@
 				<el-row>
 					<el-col :span="6">
 						<div class="cell">
-							<div class="title">表名</div>
+							<div class="title">表名：</div>
 							<div class="content">
 								<div class="content-left">
 									<div class="desc mod-ellipsis">{{ detailsInfo?.tablesName }}</div>
@@ -198,7 +198,7 @@
 			</div>
 			<template #footer>
 				<el-button @click="dialogVisible_details = false">取消</el-button>
-				<el-button type="primary" @click="submit">进入调用页面</el-button>
+				<el-button type="primary" @click="nextPage">进入调用页面</el-button>
 				<!-- <el-button @click="check">check</el-button> -->
 			</template>
 		</el-dialog>
@@ -232,7 +232,7 @@
 						</el-table>
 					</div>
 					<div class="btn-block">
-						<el-button @click="dialogVisible_invoking_interface = false">上一步</el-button>
+						<el-button @click="prePage">上一步</el-button>
 						<el-button type="primary" @click="submit">开始测试</el-button>
 					</div>
 				</div>
@@ -288,6 +288,15 @@ import useListPageHook from "@/hooks/listPage";
 import { getApiDetailsApi, getApiShareRecordApi } from "@/api/modules/dataApi/apiCatalog";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
+
+const nextPage = () => {
+	dialogVisible_details.value = false;
+	dialogVisible_invoking_interface.value = true;
+};
+const prePage = () => {
+	dialogVisible_details.value = true;
+	dialogVisible_invoking_interface.value = false;
+};
 const currentTab = ref("请求参数");
 const inputInfo = ref({
 	name: "",

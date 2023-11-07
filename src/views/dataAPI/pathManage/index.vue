@@ -6,29 +6,42 @@
 				<el-icon v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
 			</div> -->
 			<Transition>
-				<div class="tree-wrap" v-if="asideClass === 'wider-at-hook'">
+				<div class="tree-wrap" v-show="asideClass === 'wider-at-hook'">
 					<div class="view-all">
 						<span>路径管理</span>
 						<el-icon @click="openAddMainCatalogDialogClick"><Plus /></el-icon>
 					</div>
 					<div class="aside-input">
-						<el-input placeholder="请输入关键字" :suffix-icon="Search" />
+						<el-input placeholder="请输入关键字" v-model="filterText" :suffix-icon="Search" />
 					</div>
-					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick">
+					<el-tree
+						ref="treeRef"
+						class="tree-class thin-scrollbar"
+						node-key="key"
+						:data="treeData"
+						:props="defaultProps"
+						@node-click="handleNodeClick"
+						:filter-node-method="filterNode"
+					>
 						<template #default="{ node, data }">
 							<div class="custom-tree-node">
 								<div class="custom-node-name mod-ellipsis">{{ node.label }}</div>
 								<div class="custom-node-num ml8">
-									{{ data.total || data.rootTotal }}
+									{{ data.total }}
 								</div>
 								<div class="node-more mr8">
 									<el-dropdown>
 										<el-icon><MoreFilled /></el-icon>
 										<template #dropdown>
 											<el-dropdown-menu>
-												<el-dropdown-item @click="openAddChildCatalogDialogRefClick">添加</el-dropdown-item>
-												<!-- <el-dropdown-item @click="openModiftCatalogDialogRefClick">修改</el-dropdown-item> -->
-												<el-dropdown-item>删除</el-dropdown-item>
+												<el-dropdown-item
+													:key="data.key + '-add'"
+													v-if="!data.childName"
+													@click="openAddChildCatalogDialogRefClick(data.labelName)"
+													>添加</el-dropdown-item
+												>
+
+												<el-dropdown-item :key="data.key + '-delete'" @click="removeCatalogClick(data)">删除</el-dropdown-item>
 											</el-dropdown-menu>
 										</template>
 									</el-dropdown>
@@ -51,21 +64,39 @@
 						ref="multipleTableRef"
 						:default-sort="{ prop: 'update_time', order: 'descending' }"
 					>
-						<el-table-column label="API名称" prop="name" show-overflow-tooltip>
+						<el-table-column show-overflow-tooltip label="API名称" prop="name">
 							<template #default="scope">
 								<span :key="scope.row.id" :underline="false" class="blue-link">{{ scope.row.name }}</span>
 							</template>
 						</el-table-column>
 
-						<el-table-column prop="description" label="描述"> </el-table-column>
-						<el-table-column prop="createBy" label="创建人"> </el-table-column>
-						<el-table-column prop="createTime" label="创建时间"> </el-table-column>
-						<el-table-column prop="status" label="状态"> </el-table-column>
+						<el-table-column show-overflow-tooltip prop="description" label="描述"> </el-table-column>
+						<el-table-column show-overflow-tooltip prop="createBy" label="创建人"> </el-table-column>
+						<el-table-column show-overflow-tooltip prop="createTime" label="创建时间">
+							<template #default="scope">
+								{{ momentC(scope.row.createTime * 1000).format("YYYY-MM-DD") }}
+							</template>
+						</el-table-column>
+						<el-table-column show-overflow-tooltip prop="status" label="状态">
+							<template #default="scope">
+								<span
+									:style="
+										scope.row.status
+											? {
+													color: '#5dd8a2',
+											  }
+											: { color: '#ff6464' }
+									"
+								>
+									{{ scope.row.status ? "已发布" : "未发布" }}
+								</span>
+							</template>
+						</el-table-column>
 					</el-table>
 				</div>
 			</div>
 			<div class="pagination-block">
-				<el-pagination
+				<!-- <el-pagination
 					:page-sizes="pageParams.pageSizesList"
 					background
 					layout="total,sizes,prev, pager, next,jumper"
@@ -74,129 +105,148 @@
 					:current-page="pageParams.pageNum"
 					:page-size="pageParams.pageSize"
 					:total="pageParams.total"
-				/>
+				/> -->
 			</div>
 		</div>
-		<addMainCatalogDialog ref="addMainCatalogDialogRef" @refreshData=""></addMainCatalogDialog>
-		<addChildCatalogDialog ref="addChildCatalogDialogRef" @refreshData=""></addChildCatalogDialog>
-		<modiftCatalogDialog ref="modiftCatalogDialogRef" @refreshData=""></modiftCatalogDialog>
+		<addMainCatalogDialog ref="addMainCatalogDialogRef" @refreshData="getCatalogInfo"></addMainCatalogDialog>
+		<addChildCatalogDialog ref="addChildCatalogDialogRef" @refreshData="getCatalogInfo"></addChildCatalogDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
-import treeDataJson from "./treeData.json";
-import listDataJson from "./listData.json";
-import useListPageHook from "@/hooks/listPage";
+import useListPageHook from "../APICatalog/listPage";
+
+import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
+import useIndexCatalogHook from "@/views/dataCatalogMenu/dataCatalog/hooks/indexCatalogHook";
+
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import addMainCatalogDialog from "./components/addMainCatalogDialog.vue";
+
 import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
-import modiftCatalogDialog from "./components/modiftCatalogDialog.vue";
+
 import { Search } from "@element-plus/icons-vue";
+
+import { getApiListByPathApi } from "@/api/modules/dataApi/pathManage";
+import { getApiPathListApi, delApiPathApi } from "@/api/modules/dataApi/pathManage";
 import router from "@/routers";
-interface Tree {
-	label: string;
-	children?: Tree[];
-}
+
 const defaultProps = {
 	children: "childTuple",
 	label: "labelName",
 };
-const addMainCatalogDialogRef = <any>ref(null);
-const addChildCatalogDialogRef = <any>ref(null);
-const modiftCatalogDialogRef = <any>ref(null);
-const openAddMainCatalogDialogClick = () => {
-	addMainCatalogDialogRef.value.acceptParams({
-		row: {},
-	});
-};
-const openAddChildCatalogDialogRefClick = () => {
-	addChildCatalogDialogRef.value.acceptParams({
-		row: {},
-	});
-};
-const openModiftCatalogDialogRefClick = () => {
-	modiftCatalogDialogRef.value.acceptParams({
-		row: {},
-	});
-};
+let momentC = moment;
 const show_mode = ref("list");
-const changeLabelName = (list: any) => {
-	list.forEach((item: any) => {
-		item.labelName = item.childName || item.rootName;
-		console.log("item.labelName", item.labelName);
-		if (item.childTuple) {
-			changeLabelName(item.childTuple);
+let treeDataJson = <any>ref({ data: [] });
+const getCatalogInfo = (callBack?: any) => {
+	getApiPathListApi({}).then((res: any) => {
+		treeDataJson.value = res;
+
+		treeData.value = [...treeDataJson.value.data];
+		treeData.value.forEach((element: any) => {
+			element.key = "/" + element.rootName + "";
+			element.labelName = element.childName || element.rootName;
+			element.total = element.total || element.rootTotal || 0;
+			if (element.childTuple) {
+				element.childTuple.forEach((item: any) => {
+					item.key = "/" + item.rootName + "/" + item.childName;
+					item.labelName = item.childName || item.rootName;
+					item.total = item.total || item.rootTotal || 0;
+				});
+			}
+		});
+
+		// callBack && callBack();
+		if (callBack) {
+			callBack();
+		} else {
+			let data = treeData.value[0];
+
+			queryForm.value.path = data.key;
+
+			nextTick(() => {
+				// nextTick(() => {
+				treeRef.value.setCurrentKey(treeData.value[0].key + "");
+				// });
+				// debugger;
+			});
+			searchByQueryForm();
 		}
 	});
 };
-changeLabelName(treeDataJson.data);
-const treeData = <any>ref(treeDataJson.data);
-// treeData.value = [
+getCatalogInfo();
 
-// 	...treeData.value,
-// 	...treeData.value,
-// ];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-const handleNodeClick = (data: Tree) => {
+const treeData = <any>ref([]);
+
+const handleNodeClick = (data: any) => {
 	console.log(data);
+
+	queryForm.value.path = data.key;
+
+	searchByQueryForm();
 };
 
+const removeCatalogClick = (row: any) => {
+	// debugger;
+	console.log("removeCatalogClick", row);
+	let title1 = "";
+	let title2 = "";
+	let deleteApi = <any>delApiPathApi;
+
+	//child
+	title1 = "此操作将永久删除路径,是否继续?此路径下创建的API不受影响";
+	title2 = "路径";
+
+	ElMessageBox.confirm(`${title1} `, `移除${title2}-${row.labelName}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			//待续未完
+			deleteApi({
+				pathRoot: row.rootName,
+				pathSecond: row.childName,
+			}).then(() => {
+				console.log("delete success", row);
+				ElMessage({
+					type: "success",
+					message: "删除成功",
+				});
+
+				getCatalogInfo();
+			});
+		})
+		.catch(() => {});
+};
+let {
+	treeRef,
+	addMainCatalogDialogRef,
+	addChildCatalogDialogRef,
+
+	openAddMainCatalogDialogClick,
+	openAddChildCatalogDialogRefClick,
+} = useIndexCatalogHook(treeDataJson, delApiPathApi, delApiPathApi, getCatalogInfo);
+let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 // debugger;
 const openFormPageClick = (status: any, row?: any) => {
-	// let pathName = pageName + "Api";
-	// userStore.setBehavior(status);
+	let node = treeRef.value.getCurrentNode();
+
 	router.push({
-		name: "setChildCatalog",
+		name: "setLabel",
+		state: {
+			params: { ...node },
+		},
 	});
 };
-const gotoDetails = (row: any) => {
-	router.push({
-		// name: "setChildCatalog",
-	});
-};
+
 //#region 表格 查 相关
 
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
-
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	list = listDataJson.data.list;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
-
 const beanInfo = {};
-const queryFormRaw = {};
+const queryFormRaw = {
+	path: "",
+};
 let {
 	tableLoading,
 
@@ -217,17 +267,39 @@ let {
 	queryForm,
 	doReset,
 } = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
-
+	getApiListByPathApi,
 	beanInfo,
-	queryFormRaw
+	queryFormRaw,
+	(obj1: any) => {
+		let obj = { ...obj1 };
+
+		let target = { wheres: { ...obj } };
+		return target;
+	},
+	null
 );
 
 //#endregion
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-table.common-table.el-table--border .el-table__cell) {
+	// box-sizing: border-box;
+	// height: 56px;
+}
+:deep(.el-tree-node.is-current > .el-tree-node__content) {
+	background-color: var(--el-color-primary-light-9) !important;
+	border-radius: 4px;
+	.custom-node-name {
+		color: var(--el-color-primary) !important;
+	}
+	.custom-node-num {
+		color: var(--el-color-primary) !important;
+	}
+}
+:deep(.el-tree-node__content) {
+	height: 30px;
+}
 .left-tree-right-table-layout {
 	flex: 1;
 	height: 0;
@@ -338,6 +410,9 @@ let {
 					flex: 1;
 					text-align: right;
 					display: none;
+					align-items: center;
+					// display: flex;
+					justify-content: flex-end;
 				}
 			}
 		}

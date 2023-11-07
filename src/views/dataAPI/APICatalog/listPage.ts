@@ -95,7 +95,7 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		return result;
 	}
 	const checkedParamList = buildCheckedParams();
-
+	// let isfirst =true;//第一次调用时取消
 	//#endregion
 	onMounted(() => { });
 	const handleCurrentPageChange = (pageNum: number) => {
@@ -234,12 +234,18 @@ export default (getListApi: Function, beanInfo: any, queryFormRaw: any, getUseQu
 		resetPageToOne();
 	};
 	onMounted(() => {
-		searchByQueryForm();
+		// searchByQueryForm();//若加入keep-alive 则注意 生命周期 初始化   onActivated 调用 list
 	});
+	let isfirst = true;
 	onActivated(() => {
 		// 调用时机为首次挂载
 		// 以及每次从缓存中被重新插入时
-		refreshData();
+		if (!isfirst) {
+
+			refreshData();
+		} else {
+			isfirst = false
+		}
 		// handleCurrentPageChange_refresh
 	});
 	// // 抽屉修改或新增事件完成后重新调用查询接口刷新父组件

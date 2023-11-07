@@ -206,7 +206,7 @@
 </template>
 <script setup lang="ts">
 import useListPageHook from "./listPage";
-import useOptionsHook from "@/views/dataCatalogMenu/dataCatalog/hooks/optionsHook";
+
 import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
 import useIndexCatalogHook from "@/views/dataCatalogMenu/dataCatalog/hooks/indexCatalogHook";
 

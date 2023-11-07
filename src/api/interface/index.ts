@@ -52,16 +52,16 @@ export namespace TableMock {
 	}
 }
 
-export namespace User {
-	export interface ReqAvatarEdition {
-		url: string;
-	}
+// export namespace User {
+// 	export interface ReqAvatarEdition {
+// 		url: string;
+// 	}
 
-	export interface ReqPwdEditon {
-		oldPwd: string;
-		newPwd: string;
-	}
-}
+// 	export interface ReqPwdEditon {
+// 		oldPwd: string;
+// 		newPwd: string;
+// 	}
+// }
 
 // * 系统管理
 export namespace SystemManage {
@@ -781,3 +781,124 @@ export namespace DataAssetsManage {
 		}
 	}
 }
+
+//#region
+// * 数据服务平台
+export namespace AdvancedSearch {
+	export namespace SearchFilter {
+		// 数据源选择框列表
+		export interface ResDataSourceNameList {
+			dsName: string;
+			metastoreId: string;
+			metastoreType: number;
+			type: string;
+		}
+
+		// 数据库选择框列表
+		export interface ReqDatabaseList {
+			dsName: string;
+			metastoreType: number;
+		}
+
+		export interface ResDatabaseList {
+			a: string;
+			b: string;
+			c: string;
+			d: string;
+			e: string;
+		}
+
+		// 数据目录列表
+		export interface ResCatalogList {
+			a: number;
+			b: string;
+		}
+
+		// 数据标签列表
+		export interface ResLabelList {
+			a: number;
+			b: string;
+		}
+	}
+
+	// 列表
+	export interface ReqAdvancedSearchList {
+		catalog_root_id: number;
+		database_id: string;
+		term: string;
+		tags_id: string;
+	}
+
+	export interface ResAdvancedSearchList {
+		data_list: Array<AdvancedSearchListDataList>;
+		total_count: number;
+	}
+
+	interface AdvancedSearchListDataList {
+		tn: string;
+		sc: string;
+		td: string;
+		ds: string;
+		ct: string;
+		bf: number;
+		ti: string;
+	}
+}
+
+export namespace TableInfo {
+	// 列表详情
+	export interface ReqTableInfo {
+		tableId: string;
+	}
+
+	// 属性编辑
+	export interface ReqTableInfoUpdate {
+		tableDesp: string;
+		businessDefine: string;
+		comment: string;
+		itOwner: string;
+		tag: string;
+		tableId: string;
+		businessDepartment: string;
+		labelList: Array<any>;
+	}
+
+	// 标签添加
+
+	export interface ReqLabelAddition {
+		label: string;
+		table_list: string;
+	}
+}
+
+export namespace User {
+	// 获取用户信息
+	export interface ReqUserInfo {
+		id: number;
+	}
+	// 关注列表
+	export interface ReqUserFavorInfoList {
+		id: number;
+	}
+
+	export interface ResUserFavorInfoList {
+		tableId: string;
+		tableName: string;
+	}
+
+	// 添加关注
+
+	export interface ReqFavoriteAddition {
+		tableid: string;
+		tablename: string;
+		userid: string;
+		username: string;
+	}
+
+	// 取消关注
+	export interface ReqFavoriteDeletion {
+		tableId: string;
+		userId: string;
+	}
+}
+//#endregion

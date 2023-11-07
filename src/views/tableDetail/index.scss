@@ -1,3 +1,4 @@
+
 .search-form-wrapper {
 	> div {
 		div {
@@ -9,6 +10,30 @@
 		flex-direction: column;
 		.table-detail-info {
 			margin-top: 10px;
+			&.follow-item{
+				display: flex;
+				.follow-wrapper{
+					display: flex;
+					.tooltip-content{
+						position: relative;
+						width: 18px;
+						height: 18px;
+						span{
+							position: absolute;
+left: 50%;
+top: 50%;
+							font-size: 12px;
+color: #fff;
+transform: translate(-50%, -50%);
+						}
+					}
+				}
+			}
+		}
+		.tags-wrapper{
+			.el-tag{
+				margin-right: 5px;
+			}
 		}
 		.table-permission-application-icon{
 			.el-button {
@@ -37,6 +62,7 @@
 }
 .tab-block-wrapper {
 	display: flex;
+		overflow-x: hidden;
 	flex-direction: column;
 	flex: 1;
 	margin-left: 10px;
@@ -45,5 +71,6 @@
 	background-color: #fff;
 	.el-tabs {
 		flex: 1;
+
 	}
 }

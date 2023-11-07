@@ -1,7 +1,7 @@
 <template>
 	<div class="card approval-center-card">
 		<div class="approval-center-list-operator">
-			<el-checkbox v-model="checked1" label="已驳回"></el-checkbox
+			<el-checkbox v-model="checked1" label="已驳回" @change="check"></el-checkbox
 			><el-dropdown>
 				<span class="el-dropdown-link">
 					<span>{{ filterTypeDropDownText }}</span>

@@ -45,7 +45,7 @@
 					</div>
 				</div>
 				<div class="btn-wrap">
-					<el-button class="mb16" type="primary"> 探查设置 </el-button>
+					<el-button class="mb16" type="primary" @click="openExplorationConfigPage"> 探查设置 </el-button>
 				</div>
 			</div>
 		</div>
@@ -54,6 +54,20 @@
 
 <script setup lang="ts">
 import {} from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const openExplorationConfigPage = () => {
+	router.push({
+		name: "explorationSetting",
+		// state: {
+		// 	// params: { ...employeeRow.value },
+		// },
+		// query: {
+		// 	id: row?.id,
+		// },
+	});
+};
 </script>
 
 <style lang="scss" scoped>
@@ -68,18 +82,18 @@ import {} from "vue";
 	// height: 32px;
 }
 .dataExploration {
+	display: flex;
+	overflow: auto;
+	flex-direction: column;
 	flex: 1;
 	height: 0;
-	display: flex;
-	flex-direction: column;
-	overflow: auto;
 	.dataExploration-title {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		line-height: 16px;
 		font-weight: 500;
 		font-size: 14px;
-		line-height: 16px;
 		color: var(--colormaintext);
 	}
 	.result-block {
@@ -88,9 +102,9 @@ import {} from "vue";
 			padding-top: 16px;
 			border-bottom: 1px dashed var(--bc);
 			.item-header {
+				line-height: 16px;
 				font-weight: 400;
 				font-size: 13px;
-				line-height: 16px;
 				.key {
 					color: var(--colormaintext);
 				}
@@ -105,29 +119,27 @@ import {} from "vue";
 				}
 			}
 			.item-title {
+				margin: 8px 0;
+				line-height: 16px;
 				font-weight: 400;
 				font-size: 13px;
-				line-height: 16px;
 				color: var(--colormaintext);
-				margin: 8px 0 8px;
 			}
 			.content-box {
-				width: 99%;
 				display: flex;
 				position: relative;
 				flex-wrap: wrap;
+				width: 99%;
 				.item-box {
 					position: relative;
+					margin-right: 20px;
+					margin-bottom: 10px;
+					padding: 16px 24px;
+					border: 1px solid var(--bc);
+					border-radius: 8px;
 					width: 256px;
 					height: 176px;
 					background: #fff;
-					border-radius: 8px;
-					border: 1px solid var(--bc);
-					margin-right: 20px;
-
-					padding: 16px 24px;
-					margin-bottom: 10px;
-
 					color: #777;
 					.item-title {
 						display: flex;
@@ -135,12 +147,11 @@ import {} from "vue";
 						align-items: center;
 					}
 					.show-data-box {
+						display: flex;
+						overflow: hidden auto;
 						position: relative;
 						width: 100%;
 						height: 108px;
-						overflow: hidden auto;
-						display: flex;
-
 						.show-data-left {
 							width: 50%;
 							text-align: left;
@@ -158,26 +169,26 @@ import {} from "vue";
 					}
 					.fiel-value {
 						position: absolute;
-						bottom: 32px;
 						right: 18px;
+						bottom: 32px;
 						.nullvalspan {
 							font-size: 12px;
 						}
 					}
 					.progressbar {
 						position: absolute;
+						left: 8%;
+						top: 85%;
+						align-items: flex-start;
+						padding: 0;
 						width: 84%;
 						height: 16%;
-						padding: 0;
-						top: 85%;
-						left: 8%;
-						align-items: flex-start;
 					}
 				}
 			}
 			.btn-wrap {
-				text-align: right;
 				padding: 0 32px;
+				text-align: right;
 			}
 		}
 	}

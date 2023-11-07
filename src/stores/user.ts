@@ -20,7 +20,7 @@ export const useUserStore = defineStore({
 	}),
 	getters: {
 		behaviorGet: (state) => state.behavior,
-		userInfoGet: (state) => state.userInfo?.sysUser ?? {},
+		userInfoGet: (state) => state.userInfo ?? {},
 		userRoleGet: (state) => state.userInfo?.sysRoleList[0] ?? {},
 	},
 	actions: {

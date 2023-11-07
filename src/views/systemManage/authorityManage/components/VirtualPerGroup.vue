@@ -9,66 +9,15 @@
 				class="common-table"
 				border
 			>
-				<el-table-column label="申请人" prop="tableName" :filters="[]" filter-placement="bottom-end" />
-				<el-table-column
-					label="分类"
-					prop="dataBaseName"
-					:filters="[
-						{ text: '表权限', value: '' },
-						{ text: 'API权限', value: '' },
-					]"
-					filter-placement="bottom-end"
-				>
-				</el-table-column>
-				<el-table-column label="申请时间" prop="dataCatalog" :filters="[]" filter-placement="bottom-end" />
-				<el-table-column label="申请内容" prop="dataCatalog" show-overflow-tooltip>
-					<template #default="scope">
-						<div class="api-app-content" v-if="scope.row.follow">
-							<div class="app-content-detail">
-								<el-icon color="blue"><Document /></el-icon><span>{{ scope.row.desc }}</span>
-							</div>
-							<div class="app-content-detail">
-								<span>创建人：{{ scope.row.desc }}</span>
-							</div>
-							<div class="app-content-detail">
-								<span>发布状态：{{ scope.row.dataCatalog }}</span>
-							</div>
-						</div>
-						<div class="table-app-content" v-else>
-							<div class="app-content-detail">
-								<span>数据源</span><span> : </span><span>{{ scope.row.desc }}</span>
-							</div>
-							<div class="app-content-detail">
-								<span>数据库</span><span> : </span><span>{{ scope.row.desc }}</span>
-							</div>
-							<div class="app-content-detail">
-								<span>表名</span><span> : </span><span class="table-name">{{ scope.row.dataCatalog }}</span>
-							</div>
-							<div class="app-content-detail">
-								<span>权限</span><span> : </span><span>{{ scope.row.dataCatalog }}</span>
-							</div>
-						</div>
-					</template>
-				</el-table-column>
-				<el-table-column label="申请原因" prop="dataCatalog" />
-				<el-table-column
-					label="审批状态"
-					prop="dataCatalog"
-					:filters="[
-						{ text: '待审批', value: '' },
-						{ text: '无需审批', value: '' },
-						{ text: '已批准', value: '' },
-						{ text: '已驳回', value: '' },
-					]"
-					filter-placement="bottom-end"
-				/>
-				<el-table-column label="操作时间" prop="dataCatalog" />
+				<el-table-column label="群组" prop="tableName" :filters="[]" filter-placement="bottom-end" />
+				<el-table-column label="描述" prop="desc"> </el-table-column>
+				<el-table-column label="人员" prop="dataCatalog" :filters="[]" filter-placement="bottom-end" />
+				<el-table-column label="人员总数" prop="dataCatalog" show-overflow-tooltip> </el-table-column>
+
 				<el-table-column label="操作" fixed="right" width="200px">
 					<template #default="scope">
-						<el-button type="primary" link>批准</el-button>
-						<el-button type="primary" link>驳回</el-button>
-						<el-button type="primary" link>撤销</el-button>
-						<el-button type="primary" link @click="openEditBasicInfoDialog(scope.row)">查看</el-button>
+						<el-button type="primary" icon="Edit" link></el-button>
+						<el-button type="primary" icon="Delete" link></el-button>
 					</template>
 				</el-table-column>
 			</el-table>

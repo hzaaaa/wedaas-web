@@ -60,6 +60,39 @@
 			}
 		}
 	}
+		.el-form.table-header-form {
+		display: flex;
+		flex-wrap: wrap;
+
+		// align-items: center;
+		margin-bottom: 3px;
+				.el-form-item {
+				margin-right: 40px;
+				margin-bottom: 20px;
+				.el-input {
+					width: 180px;
+					height: 32px;
+				}
+				.el-date-editor {
+					width: 300px;
+					height: 32px;
+				}
+			}
+			.header-form-btn-group {
+				margin-bottom: 20px;
+			.el-button {
+				margin-left: 10px;
+
+				// margin-bottom: 32px;
+				width: 72px;
+				height: 32px;
+				&:first-of-type {
+					margin-left: 0;
+				}
+			}
+			}
+
+	}
 	.el-select {
 		width: 100%;
 	}
@@ -145,72 +178,61 @@
 		}
 	}
 }
-
 .el-popper.is-dark {
 	max-width: 200px;
 }
 .mod-ellipsis {
 	overflow: hidden;
-	white-space: nowrap;
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .thin-scrollbar {
 	&::-webkit-scrollbar {
 		width: 6px;
 	}
-
 	&::-webkit-scrollbar:horizontal {
 		height: 6px;
 	}
-
 	&::-webkit-scrollbar-track {
 		border-radius: 10px;
 	}
-
 	&::-webkit-scrollbar-thumb {
-		background-color: #0003;
 		border-radius: 10px;
+		background-color: #0003;
 		transition: all 0.2s ease-in-out;
 	}
-
 	&::-webkit-scrollbar-thumb:hover {
-		cursor: pointer;
 		background-color: #0000004d;
+		cursor: pointer;
 	}
 }
 .el-textarea {
 	::-webkit-scrollbar {
 		width: 6px;
 	}
-
 	::-webkit-scrollbar:horizontal {
 		height: 6px;
 	}
-
 	::-webkit-scrollbar-track {
 		border-radius: 10px;
 	}
-
 	::-webkit-scrollbar-thumb {
-		background-color: #0003;
 		border-radius: 10px;
+		background-color: #0003;
 		transition: all 0.2s ease-in-out;
 	}
-
 	::-webkit-scrollbar-thumb:hover {
-		cursor: pointer;
 		background-color: #0000004d;
+		cursor: pointer;
 	}
 }
 .pointer {
 	cursor: pointer;
 }
-
 .v-enter-active,
 .v-leave-active {
 	transition: opacity 0.2s ease;
 }
-
 .v-enter-from,
 .v-leave-to {
 	opacity: 0;

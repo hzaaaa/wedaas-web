@@ -1,7 +1,7 @@
 <template>
 	<div class="">
 		<el-dialog v-model="dialogVisible" title="添加API路径" @open="getLabelInfo" width="530px" class="common-dialog">
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
+			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="left">
 				<el-form-item label="主路径名称" prop="name">
 					<el-input v-model="inputInfo.name" show-word-limit placeholder="" />
 				</el-form-item>

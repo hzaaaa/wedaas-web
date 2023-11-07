@@ -15,18 +15,19 @@
 					<template #default="scope"> {{ scope.row.data_source_id.split(".")[0] }}</template>
 				</el-table-column>
 
-				<el-table-column label="数据库" prop=" " show-overflow-tooltip-none>
+				<el-table-column label="数据库" prop=" " show-overflow-tooltip>
 					<template #default="scope"> {{ scope.row.data_source_id.split(".")[1] }}</template>
 				</el-table-column>
 
-				<el-table-column label="数据库类型" prop="type" show-overflow-tooltip-none> </el-table-column>
-				<el-table-column label="完成情况" prop=" " show-overflow-tooltip-none>
+				<el-table-column label="数据库类型" prop="type" show-overflow-tooltip> </el-table-column>
+				<el-table-column label="完成情况" prop=" " show-overflow-tooltip>
 					<template #default="scope"> {{ scope.row.total_run ? `${scope.row.total_run}/${scope.row.total}` : "暂无" }}</template>
 				</el-table-column>
-				<el-table-column label="创建时间" prop=" " show-overflow-tooltip-none>
+				<el-table-column label="创建时间" prop=" " width="230">
 					<template #default="scope">
 						<el-date-picker
-							style="width: 180px"
+							@change="editConfigEvent(scope.row)"
+							style="width: 100%"
 							v-model="scope.row.run_time"
 							type="datetime"
 							placeholder="暂未设置"
@@ -34,21 +35,30 @@
 						/>
 					</template>
 				</el-table-column>
-				<el-table-column label="运行时长" prop=" " show-overflow-tooltip-none>
+				<el-table-column label="运行时长" prop=" " width="160">
 					<template #default="scope">
-						<el-select v-model="scope.row.run_hours" placeholder="请选择" style="width: 180px">
+						<el-select
+							v-model="scope.row.run_hours"
+							placeholder="请选择"
+							style="width: 100%"
+							@change="editConfigEvent(scope.row)"
+						>
 							<el-option v-for="item in 24" :key="item" :label="item" :value="item" />
 						</el-select>
 					</template>
 				</el-table-column>
-				<el-table-column label="运行项" prop=" " show-overflow-tooltip-none>
+				<el-table-column label="运行项" prop=" " width="160">
 					<template #default="scope">
-						<el-select v-model="scope.row.run_item" placeholder="请选择" style="width: 180px">
+						<el-select v-model="scope.row.run_item" placeholder="请选择" style="width: 100%" @change="editConfigEvent(scope.row)">
 							<el-option
 								v-for="item in [
 									{
 										value: 'all',
-										label: 'all',
+										label: '全部',
+									},
+									{
+										value: '1',
+										label: '仅扫表行数',
 									},
 								]"
 								:key="item.value"
@@ -62,7 +72,7 @@
 					<template #default="scope">
 						<div class="flex-left">
 							<span class="two-word-button">
-								<el-button type="primary" link>删除</el-button>
+								<el-button type="primary" link @click="deleteClick(scope.row)">删除</el-button>
 								<el-button type="info" class="button-hold-position" disabled link>删除</el-button>
 							</span>
 						</div>
@@ -87,42 +97,61 @@
 
 <script setup lang="ts">
 import {} from "vue";
-import useListPageHook from "@/hooks/listPage";
-import listDataJson from "./listData.json";
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
+import useListPageHook from "./listPage";
 
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
+import { editQualityConfigApi, getQualityConfigListApi } from "@/api/modules/dataQuality/qualityConfig";
 
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
+const deleteClick = (row: any) => {
+	ElMessageBox.confirm("是否删除已配置好的设置?", `删除配置-${row.data_source_id.split(".")[1]}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			editQualityConfigApi({
+				dbName: row.db_name,
+				dbType: row.type,
+				dsID: row.data_source_id,
+				now: 0,
+				runHours: 0,
+				runItem: "",
+				runTime: 0,
+			}).then(() => {
+				ElMessage.success("重置成功");
+				refreshData();
+			});
+		})
+		.catch(() => {});
+};
+const editConfigEvent = (row: any) => {
+	// if()
+
+	if (row.run_time && row.run_hours && row.run_item) {
+		// debugger;
+		let now = 0;
+		let dateNumberS = Math.floor(new Date().getTime() / 1000);
+		// if()
+		let run_timeS = Math.floor(new Date(row.run_time).getTime() / 1000);
+		if (dateNumberS === run_timeS) {
+			now = 1;
+		}
+		// debugger;
+		console.log("now", 1);
+		editQualityConfigApi({
+			dbName: row.db_name,
+			dbType: row.type,
+			dsID: row.data_source_id,
+			now,
+			runHours: row.run_hours,
+			runItem: row.run_item,
+			runTime: run_timeS,
+		}).then(() => {
+			ElMessage.success("修改成功");
+			refreshData();
 		});
 	}
-	list = listDataJson.data.list;
-	list = [...list, ...list];
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	return list;
 };
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
-
 const beanInfo = {};
 const queryFormRaw = {};
 let {
@@ -146,10 +175,16 @@ let {
 	doReset,
 } = useListPageHook(
 	// getCompanyListApi,
-	getTableListApi, //temp test
+	getQualityConfigListApi, //temp test
 
 	beanInfo,
-	queryFormRaw
+	queryFormRaw,
+	null,
+	() => {
+		tableDataList.value.forEach((item: any) => {
+			item.run_hours = item.run_hours || null;
+		});
+	}
 );
 </script>
 

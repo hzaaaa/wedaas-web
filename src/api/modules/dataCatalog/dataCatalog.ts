@@ -59,3 +59,7 @@ export const getDSSelectorApi = (params: any) => {
 export const getDBSelectorApi = (params: any) => {
   return http.get<any>(PORTBiz + `/database/list/${params.dsName}/${params.metastoreType}`);
 };
+// **   
+export const getDBInfoSelectorApi = (params: any) => {
+  return http.get<any>(PORTBiz + `/database/info/${params.dsName}/${params.metastoreType}`);
+};

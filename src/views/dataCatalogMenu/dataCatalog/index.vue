@@ -18,7 +18,6 @@
 						ref="treeRef"
 						class="tree-class thin-scrollbar"
 						node-key="key"
-						:current-node-key="'All'"
 						:data="treeData"
 						:props="defaultProps"
 						@node-click="handleNodeClick"
@@ -162,6 +161,7 @@
 import useListPageHook from "./hooks/listPage";
 import useOptionsHook from "./hooks/optionsHook";
 import useTreeFilterHook from "./hooks/treeFilterHook";
+import useIndexCatalogHook from "./hooks/indexCatalogHook";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import addMainCatalogDialog from "./components/addMainCatalogDialog.vue";
 import addChildCatalogDialog from "./components/addChildCatalogDialog.vue";
@@ -186,83 +186,11 @@ const defaultProps = {
 	label: "name",
 };
 
-const treeRef = ref<any>(null);
-let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
-
-const addMainCatalogDialogRef = <any>ref(null);
-const addChildCatalogDialogRef = <any>ref(null);
-const modiftCatalogDialogRef = <any>ref(null);
-const openAddMainCatalogDialogClick = () => {
-	addMainCatalogDialogRef.value.acceptParams({
-		row: {},
-	});
-};
-
-const openAddChildCatalogDialogRefClick = (name: any) => {
-	addChildCatalogDialogRef.value.acceptParams({
-		row: {
-			list: treeDataJson.data,
-			name,
-		},
-	});
-};
-let modifyTempData = <any>null; //tree node data ref
-const openModiftCatalogDialogRefClick = (data: any) => {
-	// debugger;
-	modifyTempData = data;
-	modiftCatalogDialogRef.value.acceptParams({
-		row: data,
-	});
-};
-const modifyName = (name: any) => {
-	modifyTempData.name = name;
-};
-const removeCatalogClick = (row: any) => {
-	// debugger;
-	console.log("removeCatalogClick", row);
-	let title1 = "";
-	let title2 = "";
-	let deleteApi = <any>null;
-	if (row.rootId) {
-		//child
-		title1 = "此操作将永久删除该二级目录";
-		title2 = "二级目录";
-		deleteApi = delChildCatalogApi;
-	} else {
-		title1 = "此操作将永久删除该一级目录及其所有二级目录";
-		title2 = "一级目录";
-		deleteApi = delRootCatalogApi;
-	}
-	ElMessageBox.confirm(`${title1}, 是否继续?`, `移除${title2}-${row.name}`, {
-		confirmButtonText: "确定",
-		cancelButtonText: "取消",
-		customClass: "delete-message",
-		// type: "warning",
-	})
-		.then(() => {
-			//待续未完
-			deleteApi({
-				id: row.id,
-			}).then(() => {
-				console.log("delete success", row);
-				ElMessage({
-					type: "success",
-					message: "删除成功",
-				});
-				queryForm.value.type = "All";
-				searchByQueryForm();
-
-				getCatalogInfo();
-			});
-		})
-		.catch(() => {});
-};
-
 const show_mode = ref("list");
-let treeDataJson = <any>{ data: [] };
+let treeDataJson = <any>ref({ data: [] });
 const getCatalogInfo = (callBack?: any) => {
 	getCatalogInfoApi({}).then((res: any) => {
-		treeDataJson = res;
+		treeDataJson.value = res;
 
 		treeData.value = [
 			{
@@ -270,22 +198,31 @@ const getCatalogInfo = (callBack?: any) => {
 				count: allTypeNumber.value,
 				id: "All",
 			},
-			...treeDataJson.data,
+			...treeDataJson.value.data,
 		];
 		treeData.value.forEach((element: any) => {
 			element.key = element.id;
 			if (element.childs) {
 				element.childs.forEach((item: any) => {
-					item.key = item.rootId + "" + item.id;
+					item.key = item.rootId + "-" + item.id;
 				});
 			}
 		});
-		callBack && callBack();
+		if (callBack) {
+			callBack();
+		} else {
+			queryForm.value.type = "All";
+
+			nextTick(() => {
+				treeRef.value.setCurrentKey("All");
+			});
+			searchByQueryForm();
+		}
 	});
 };
 getCatalogInfo();
 
-const treeData = <any>ref(treeDataJson.data);
+const treeData = <any>ref(treeDataJson.value.data);
 
 const handleNodeClick = (data: any) => {
 	console.log(data);
@@ -308,6 +245,18 @@ const handleNodeClick = (data: any) => {
 	}
 };
 
+let {
+	treeRef,
+	addMainCatalogDialogRef,
+	addChildCatalogDialogRef,
+	modiftCatalogDialogRef,
+	openAddMainCatalogDialogClick,
+	openAddChildCatalogDialogRefClick,
+	openModiftCatalogDialogRefClick,
+	modifyName,
+	removeCatalogClick,
+} = useIndexCatalogHook(treeDataJson, delChildCatalogApi, delRootCatalogApi, getCatalogInfo);
+let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 // debugger;
 const openFormPageClick = (status: any, row?: any) => {
@@ -324,40 +273,6 @@ const gotoDetails = (row: any) => {
 		// name: "setChildCatalog",
 	});
 };
-//#region options
-// const dataSourceOptions = ref<any[]>([]);
-
-// const getDataSourceOptionMethod = () => {
-// 	let api = <any>getDSSelectorApi;
-
-// 	api().then((res: any) => {
-// 		dataSourceOptions.value = res.data || [];
-// 	});
-// };
-// getDataSourceOptionMethod();
-// const dsNameChange = (value: any) => {
-// 	queryForm.value.dbName = "";
-// 	dataBaseOptions.value = [];
-// 	searchByQueryForm();
-// 	if (value) {
-// 		let obj = dataSourceOptions.value.find((item: any) => {
-// 			return item.dsName === value;
-// 		});
-// 		getDataBaseOptionsMethod(obj);
-// 	}
-// };
-
-// const dataBaseOptions = ref<any[]>([]);
-
-// const getDataBaseOptionsMethod = (obj: any) => {
-// 	let api = <any>getDBSelectorApi;
-
-// 	api({ ...obj }).then((res: any) => {
-// 		dataBaseOptions.value = res.data || [];
-// 	});
-// };
-
-//#endregion
 
 const deleteRowData = (row: any) => {
 	console.log("delete", row);

@@ -1,7 +1,14 @@
 <template>
 	<div class="">
 		<el-dialog v-model="dialogVisible" title="属性编辑" @open="getLabelInfo" width="530px" class="common-dialog">
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left" label-width="auto">
+			<el-form
+				ref="inputInfoRef"
+				:model="inputInfo"
+				@keyup.enter="submit"
+				:rules="rulesForm"
+				label-position="left"
+				label-width="auto"
+			>
 				<el-form-item label="描述" prop=" ">
 					<el-input></el-input>
 				</el-form-item>

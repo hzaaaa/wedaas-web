@@ -11,7 +11,7 @@
 				</div>
 				<div class="input-item">
 					<el-select style="width: auto" v-model="queryForm.dbName" @change="searchByQueryForm">
-						<el-option v-for="item in dataBaseOptions" :key="item.c" :label="item.c" :value="item.c" />
+						<el-option v-for="item in dataBaseOptions" :key="item.database" :label="item.database" :value="item.database" />
 					</el-select>
 				</div>
 				<div class="input-item ml24">
@@ -85,18 +85,14 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import useListPageHook from "../../dataCatalog/hooks/listPageForSetChild";
+import useOptionsHook from "../../dataCatalog/hooks/optionsHookForChild";
 
 import { getTableByDataSourceIdandLabelIdApi, setTableFromLabelApi } from "@/api/modules/dataCatalog/labelManage";
-import { getCatalogListApi, getDSSelectorApi, getDBSelectorApi /* 待修改 */ } from "@/api/modules/dataCatalog/dataCatalog";
+import { getCatalogListApi, getDSSelectorApi, getDBInfoSelectorApi /* 待修改 */ } from "@/api/modules/dataCatalog/dataCatalog";
 const router = useRouter();
 
 let childData = ref<any>({ ...history.state.params });
 console.log("childData", childData.value);
-
-const viewChecked = ref(false);
-const viewCheckedChange = (value: any) => {
-	console.log("viewCheckedChange", value);
-};
 
 const beanInfo = {};
 const queryFormRaw = {
@@ -154,52 +150,27 @@ let {
 let addCheckedAll0 = checkedParamList[0].addCheckedAll;
 let setSize0 = checkedParamList[0].setSize;
 
-const filteredTableDataList = computed(() => {
-	if (!viewChecked.value) {
-		return tableDataList.value.filter((item: any) => {
-			return item.tn.indexOf(queryForm.value.tableName) !== -1;
-		});
-	} else {
-		return tableDataList.value.filter((item: any) => {
-			return item.tn.indexOf(queryForm.value.tableName) !== -1 && item.checked0;
-		});
-	}
-});
+// const viewChecked = ref(false);
+// const viewCheckedChange = (value: any) => {
+// 	console.log("viewCheckedChange", value);
+// };
+// const filteredTableDataList = computed(() => {
+// 	if (!viewChecked.value) {
+// 		return tableDataList.value.filter((item: any) => {
+// 			return item.tn.indexOf(queryForm.value.tableName) !== -1;
+// 		});
+// 	} else {
+// 		return tableDataList.value.filter((item: any) => {
+// 			return item.tn.indexOf(queryForm.value.tableName) !== -1 && item.checked0;
+// 		});
+// 	}
+// });
 
-const dataSourceOptions = ref<any[]>([]);
-
-const getDataSourceOptionMethod = () => {
-	let api = <any>getDSSelectorApi;
-
-	getDSSelectorApi({}).then((res: any) => {
-		dataSourceOptions.value = res.data || [];
-		queryForm.value.dsName = dataSourceOptions.value[0].dsName;
-		dsNameChange(queryForm.value.dsName);
-	});
-};
-getDataSourceOptionMethod();
-const dsNameChange = (value: any) => {
-	queryForm.value.dbName = "";
-	dataBaseOptions.value = [];
-
-	if (value) {
-		let obj = dataSourceOptions.value.find((item: any) => {
-			return item.dsName === value;
-		});
-		getDataBaseOptionsMethod(obj);
-	}
-};
-
-const dataBaseOptions = ref<any[]>([]);
-
-const getDataBaseOptionsMethod = (obj: any) => {
-	getDBSelectorApi({ ...obj }).then((res: any) => {
-		dataBaseOptions.value = res.data || [];
-		queryForm.value.dbName = dataBaseOptions.value[0].c;
-		searchByQueryForm();
-	});
-};
-
+let { dataSourceOptions, dataBaseOptions, dsNameChange, viewChecked, viewCheckedChange, filteredTableDataList } = useOptionsHook(
+	queryForm,
+	searchByQueryForm,
+	tableDataList
+);
 const setTableClick = () => {
 	let tableIdList = [...checkedParamList[0].checkedAllSet];
 	// let tableNameList = [];

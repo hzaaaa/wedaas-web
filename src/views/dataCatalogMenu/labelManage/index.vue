@@ -15,7 +15,6 @@
 						class="tree-class thin-scrollbar"
 						node-key="rootId"
 						:data="treeData"
-						:current-node-key="currentNodeKey"
 						:props="defaultProps"
 						@node-click="handleNodeClick"
 						:filter-node-method="filterNode"
@@ -161,7 +160,7 @@ const defaultProps = {
 	children: "childs",
 	label: "rootName",
 };
-const currentNodeKey = <any>ref(null);
+
 const treeRef = ref<any>(null);
 let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 
@@ -231,8 +230,7 @@ const getCatalogInfo = (callBack?: any) => {
 			callBack();
 		} else {
 			queryForm.value.id = treeData.value[0].rootId;
-			currentNodeKey.value = treeData.value[0].rootId;
-			console.log("rootId", treeData.value[0].rootId);
+
 			nextTick(() => {
 				treeRef.value.setCurrentKey(treeData.value[0].rootId + "");
 			});
@@ -278,7 +276,6 @@ const deleteRowData = (row: any) => {
 		// type: "warning",
 	})
 		.then(() => {
-			//待续未完
 			// debugger;
 			let label = treeData.value.find((item: any) => {
 				return item.rootId === queryForm.value.id;

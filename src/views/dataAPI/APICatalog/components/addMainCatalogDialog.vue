@@ -1,9 +1,16 @@
 <template>
 	<div class="">
-		<el-dialog v-model="dialogVisible" title="添加主目录" @open="getLabelInfo" width="530px" class="common-dialog">
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
-				<el-form-item label="主目录名称" prop="name">
-					<el-input v-model="inputInfo.name" maxlength="16" show-word-limit placeholder="" />
+		<el-dialog
+			:destroy-on-close="true"
+			v-model="dialogVisible"
+			title="添加主目录"
+			@open="getLabelInfo"
+			width="530px"
+			class="common-dialog"
+		>
+			<el-form @keyup.enter="submit" ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
+				<el-form-item label="主目录名称" prop="rootName">
+					<el-input v-model="inputInfo.rootName" maxlength="16" show-word-limit placeholder="" />
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -18,12 +25,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
-
+import { addApiCatalogApi } from "@/api/modules/dataApi/apiCatalog";
 const inputInfo = ref({
-	name: "",
+	rootName: "",
 });
 const rulesForm = reactive<any>({
-	name: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
+	rootName: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
 });
 
 const dialogVisible = ref(false);
@@ -46,12 +53,15 @@ const submit = async () => {
 	if (!formEl) return;
 	formEl.validate(async (valid, fields) => {
 		if (valid) {
+			addApiCatalogApi({ ...inputInfo.value }).then((res: any) => {
+				ElMessage.success("添加成功！");
+				dialogVisible.value = false;
+				emit("refreshData");
+			});
 		} else {
 			console.log("error", fields);
 		}
 	});
-	// dialogVisible.value = false;
-	// emit("refreshData");
 };
 const getLabelInfo = () => {};
 

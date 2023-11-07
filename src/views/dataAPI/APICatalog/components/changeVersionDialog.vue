@@ -1,7 +1,7 @@
 <template>
 	<div class="">
 		<el-dialog v-model="dialogVisible" title="版本切换" @open="getLabelInfo" width="530px" class="common-dialog">
-			<el-form ref="inputInfoRef" :model="inputInfo" :rules="rulesForm" label-position="left">
+			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="left">
 				<el-form-item label="API名称" prop=" ">
 					{{ `123` }}
 				</el-form-item>

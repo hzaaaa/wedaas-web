@@ -3,10 +3,16 @@
 		<div class="exploration-header">
 			<div class="filter-input">
 				<div class="title">正则名称搜索</div>
-				<el-input style="width: auto" placeholder="请输入查询的正则名称" :suffix-icon="Search" />
+				<el-input
+					@input="searchByQueryForm"
+					v-model="queryForm.regularName"
+					style="width: auto"
+					placeholder="请输入查询的正则名称"
+					:suffix-icon="Search"
+				/>
 			</div>
 			<div class="add-btn">
-				<el-button style="margin-bottom: 0" type="warning" @click="openRegularEditDialogClick">增加配置</el-button>
+				<el-button style="margin-bottom: 0" type="warning" @click="openRegularEditDialogClick('新增')">增加配置</el-button>
 			</div>
 		</div>
 		<div class="exploration-table">
@@ -32,11 +38,11 @@
 					<template #default="scope">
 						<div class="flex-left">
 							<span class="two-word-button">
-								<el-button type="primary" link @click="openRegularEditDialogClick">修改</el-button>
+								<el-button type="primary" link @click="openRegularEditDialogClick('修改', scope.row)">修改</el-button>
 								<el-button type="info" class="button-hold-position" disabled link>修改</el-button>
 							</span>
 							<span class="two-word-button">
-								<el-button type="primary" link>删除</el-button>
+								<el-button type="primary" link @click="deleteClick(scope.row)">删除</el-button>
 								<el-button type="info" class="button-hold-position" disabled link>删除</el-button>
 							</span>
 						</div>
@@ -57,58 +63,47 @@
 			/>
 		</div>
 
-		<regularEditDialog ref="regularEditDialogRef" @refreshData=""></regularEditDialog>
+		<regularEditDialog ref="regularEditDialogRef" @refreshData="refreshData"></regularEditDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
 import {} from "vue";
+import { userRegularListApi, deleteUserRegularApi } from "@/api/modules/dataQuality/explorationConfig";
 import useListPageHook from "@/hooks/listPage";
-import listDataJson from "./listData.json";
+
 import regularEditDialog from "./components/regularEditDialog.vue";
 import { Search } from "@element-plus/icons-vue";
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
 
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	list = listDataJson.data.list;
-	list = [...list, ...list];
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	// list = [...list, ...list];
-	return list;
-};
 const regularEditDialogRef = <any>ref(null);
-const openRegularEditDialogClick = () => {
+const openRegularEditDialogClick = (title: string, row?: any) => {
 	regularEditDialogRef.value.acceptParams({
-		row: {},
+		title,
+		row: { ...row },
 	});
 };
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
+const deleteClick = (row: any) => {
+	ElMessageBox.confirm("是否删除该正则配置?", `删除正则名称-${row.regularName}`, {
+		confirmButtonText: "确定",
+		cancelButtonText: "取消",
+		customClass: "delete-message",
+		// type: "warning",
+	})
+		.then(() => {
+			deleteUserRegularApi({
+				id: row.id,
+			}).then(() => {
+				ElMessage.success("删除成功");
+				refreshData();
 			});
-		}, 500);
-	});
+		})
+		.catch(() => {});
 };
 
 const beanInfo = {};
-const queryFormRaw = {};
+const queryFormRaw = {
+	regularName: "",
+};
 let {
 	tableLoading,
 
@@ -129,8 +124,7 @@ let {
 	queryForm,
 	doReset,
 } = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
+	userRegularListApi,
 
 	beanInfo,
 	queryFormRaw

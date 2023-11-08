@@ -13,7 +13,7 @@
 						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
 						<div class="market-tabs-item pointer">我的空间</div>
 					</div> -->
-					<el-select class="mt16" v-model="queryForm.dsName" @change="dsNameChange">
+					<el-select class="mt16" v-model="dbRawInfo.dsName" @change="dsNameChange">
 						<el-option v-for="item in dsOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
 					</el-select>
 
@@ -35,9 +35,9 @@
 		</div>
 		<div class="center-block">
 			<div class="left-btns">
-				<el-button :icon="CaretRight" circle />
-				<el-button :icon="Folder" circle />
-				<el-button :icon="Document" circle />
+				<el-button @click="executeClick" :icon="CaretRight" circle />
+				<el-button @click="saveQueryStrClick" :icon="Folder" circle />
+				<el-button @click="formatClick" :icon="Document" circle />
 			</div>
 			<div class="right-block">
 				<div class="exec-time">执行时间 : 0s</div>
@@ -47,7 +47,7 @@
 				</div> -->
 				<div class="top-info">
 					<span class="key">Database</span>
-					<el-select style="width: auto" value-key="datasourceId" v-model="queryForm.dbObj" @change="dbChange" clearable>
+					<el-select style="width: auto" value-key="datasourceId" v-model="dbRawInfo.dbObj" @change="dbChange" clearable>
 						<el-option v-for="item in dataBaseOptions" :key="item.datasourceId" :label="item.database" :value="item" />
 					</el-select>
 				</div>
@@ -66,7 +66,18 @@
 				</div>
 				<div class="sql-result">
 					<div class="abs-btn-wrap">
-						<el-icon><Download /></el-icon>
+						<el-dropdown>
+							<el-icon><Download /></el-icon>
+
+							<template #dropdown>
+								<el-dropdown-menu>
+									<el-dropdown-item> 将结果数据导出为CSV </el-dropdown-item>
+									<el-dropdown-item> 将结果数据导出为Excel </el-dropdown-item>
+									<el-dropdown-item @click="onlineExportCSVClick"> 在线导出CSV </el-dropdown-item>
+									<el-dropdown-item> 在线导出Excel </el-dropdown-item>
+								</el-dropdown-menu>
+							</template>
+						</el-dropdown>
 					</div>
 					<div class="res-types-title">
 						<div class="res-title" @click="activeTab = 'col1Show'" :class="activeTab === 'col1Show' ? 'res-title-active' : ''">
@@ -78,65 +89,129 @@
 							<el-icon :class="col2ShowInput && activeTab === 'col2Show' ? 'show' : ''" @click="col2ShowInput = !col2ShowInput"
 								><Search
 							/></el-icon>
-							<input v-show="activeTab === 'col2Show' && col2ShowInput" />
+							<input v-model="queryForm2.term" @input="searchByQueryForm2" v-show="activeTab === 'col2Show' && col2ShowInput" />
 						</div>
 						<div class="res-title" @click="activeTab = 'col3Show'" :class="activeTab === 'col3Show' ? 'res-title-active' : ''">
 							<span>保存的查询</span>
 							<el-icon :class="activeTab === 'col3Show' && col3ShowInput ? 'show' : ''" @click="col3ShowInput = !col3ShowInput"
 								><Search
 							/></el-icon>
-							<input v-show="activeTab === 'col3Show' && col3ShowInput" />
+							<!-- <input v-show="activeTab === 'col3Show' && col3ShowInput" /> -->
+							<input v-model="queryForm3.term" @input="searchByQueryForm3" v-show="activeTab === 'col3Show' && col3ShowInput" />
 						</div>
 						<div class="res-title" @click="activeTab = 'col4Show'" :class="activeTab === 'col4Show' ? 'res-title-active' : ''">
 							<span>历史导出</span><el-icon><Refresh /></el-icon>
 						</div>
 					</div>
-					<div class="table-wrap">
+					<div class="table-wrap" v-show="activeTab === 'col1Show'">
 						<el-table
 							class="common-table"
-							v-loading="tableLoading"
-							:data="tableDataList"
+							v-loading="tableLoading1"
+							:data="tableDataList1"
 							border
 							style="flex: 1 !important; height: auto"
 							ref="multipleTableRef"
 							:default-sort="{ prop: 'update_time', order: 'descending' }"
 						>
-							<el-table-column label="API名称" prop="name" min-width="180" show-overflow-tooltip>
-								<template #default="scope">
-									<span :key="scope.row.id" :underline="false" class="blue-link">{{ scope.row.name }}</span>
-								</template>
-							</el-table-column>
-
-							<el-table-column label="输出描述" prop="description" min-width="180" show-overflow-tooltip></el-table-column>
-
-							<el-table-column label="创建人" prop="createBy" width="150" show-overflow-tooltip-none></el-table-column>
-							<el-table-column prop="createTime" sortable="custom" label="创建时间" width="180">
-								<template #default="scope">
-									{{ scope.row.createTime }}
-								</template>
-							</el-table-column>
-							<el-table-column prop="executeCount" label="调用次数" width="180">
-								<template #default="scope">
-									{{ scope.row.executeCount }}
-								</template>
-							</el-table-column>
-							<el-table-column prop="status" label="审批状态" width="180">
-								<template #default="scope">
-									{{ scope.row.status }}
-								</template>
-							</el-table-column>
+							<el-table-column v-for="key in ddl" :label="key" :prop="key" show-overflow-tooltip> </el-table-column>
 						</el-table>
 						<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
 							<el-pagination
-								:page-sizes="pageParams.pageSizesList"
+								:page-sizes="pageParams1.pageSizesList"
 								background
 								layout="total,sizes,prev, pager, next,jumper"
-								@size-change="handleSizeChange"
-								@current-change="handleCurrentPageChange"
-								:current-page="pageParams.pageNum"
-								:page-size="pageParams.pageSize"
-								:total="pageParams.total"
+								@size-change="handleSizeChange1"
+								@current-change="handleCurrentPageChange1"
+								:current-page="pageParams1.pageNum"
+								:page-size="pageParams1.pageSize"
+								:total="pageParams1.total"
 							/>
+						</div>
+					</div>
+					<div class="table-wrap" v-show="activeTab === 'col2Show'">
+						<el-table
+							class="common-table"
+							v-loading="tableLoading2"
+							:data="tableDataList2"
+							border
+							style="flex: 1 !important; height: auto"
+							ref="multipleTableRef"
+							:default-sort="{ prop: 'update_time', order: 'descending' }"
+						>
+							<el-table-column label="create_timeSub" prop="create_timeSub" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="execute_state" prop="execute_state" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="excute_sql" prop="excute_sql" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="execute_time" prop="execute_time" show-overflow-tooltip> </el-table-column>
+						</el-table>
+						<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
+							<el-pagination
+								:page-sizes="pageParams2.pageSizesList"
+								background
+								layout="total,sizes,prev, pager, next,jumper"
+								@size-change="handleSizeChange2"
+								@current-change="handleCurrentPageChange2"
+								:current-page="pageParams2.pageNum"
+								:page-size="pageParams2.pageSize"
+								:total="pageParams2.total"
+							/>
+						</div>
+					</div>
+					<div class="table-wrap" v-show="activeTab === 'col3Show'">
+						<el-table
+							class="common-table"
+							v-loading="tableLoading3"
+							:data="tableDataList3"
+							border
+							style="flex: 1 !important; height: auto"
+							ref="multipleTableRef"
+							:default-sort="{ prop: 'update_time', order: 'descending' }"
+						>
+							<el-table-column label="filename" prop="filename" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="querystring" prop="querystring" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="dsName" prop="dsName" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="dbName" prop="dbName" show-overflow-tooltip> </el-table-column>
+						</el-table>
+						<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
+							<el-pagination
+								:page-sizes="pageParams3.pageSizesList"
+								background
+								layout="total,sizes,prev, pager, next,jumper"
+								@size-change="handleSizeChange3"
+								@current-change="handleCurrentPageChange3"
+								:current-page="pageParams3.pageNum"
+								:page-size="pageParams3.pageSize"
+								:total="pageParams3.total"
+							/>
+						</div>
+					</div>
+					<div class="table-wrap" v-show="activeTab === 'col4Show'">
+						<el-table
+							class="common-table"
+							v-loading="tableLoading4"
+							:data="tableDataList4"
+							border
+							style="flex: 1 !important; height: auto"
+							ref="multipleTableRef"
+							:default-sort="{ prop: 'update_time', order: 'descending' }"
+						>
+							<el-table-column label="excute_status" prop="excute_status" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="start_time" prop="start_time" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="sqlexcute_time" prop="sqlexcute_time" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="response_time" prop="response_time" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="row_num" prop="row_num" show-overflow-tooltip> </el-table-column>
+							<el-table-column label="sql_string" prop="sql_string" show-overflow-tooltip> </el-table-column>
+						</el-table>
+						<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
+							<!-- <el-pagination
+								:page-sizes="pageParams3.pageSizesList"
+								background
+								layout="total,sizes,prev, pager, next,jumper"
+								@size-change="handleSizeChange3"
+								@current-change="handleCurrentPageChange3"
+								:current-page="pageParams3.pageNum"
+								:page-size="pageParams3.pageSize"
+								:total="pageParams3.total"
+							/> -->
 						</div>
 					</div>
 				</div>
@@ -170,80 +245,66 @@
 			<div class="table-wrap">
 				<el-table
 					class="common-table"
-					v-loading="tableLoading"
-					:data="tableDataList"
+					v-loading="tableLoading1"
+					:data="tableDataList1"
 					border
 					style="flex: 1 !important; height: auto"
 					ref="multipleTableRef"
 					:default-sort="{ prop: 'update_time', order: 'descending' }"
 				>
-					<el-table-column label="API名称" prop="name" min-width="180" show-overflow-tooltip>
-						<template #default="scope">
-							<span :key="scope.row.id" :underline="false" class="blue-link">{{ scope.row.name }}</span>
-						</template>
-					</el-table-column>
-
-					<el-table-column label="输出描述" prop="description" min-width="180" show-overflow-tooltip></el-table-column>
-
-					<el-table-column label="创建人" prop="createBy" width="150" show-overflow-tooltip-none></el-table-column>
-					<el-table-column prop="createTime" sortable="custom" label="创建时间" width="180">
-						<template #default="scope">
-							{{ scope.row.createTime }}
-						</template>
-					</el-table-column>
-					<el-table-column prop="executeCount" label="调用次数" width="180">
-						<template #default="scope">
-							{{ scope.row.executeCount }}
-						</template>
-					</el-table-column>
-					<el-table-column prop="status" label="审批状态" width="180">
-						<template #default="scope">
-							{{ scope.row.status }}
-						</template>
-					</el-table-column>
+					<el-table-column v-for="key in ddl" :label="key" :prop="key" show-overflow-tooltip> </el-table-column>
 				</el-table>
 				<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
 					<el-pagination
-						:page-sizes="pageParams.pageSizesList"
+						:page-sizes="pageParams1.pageSizesList"
 						background
 						layout="total,sizes,prev, pager, next,jumper"
-						@size-change="handleSizeChange"
-						@current-change="handleCurrentPageChange"
-						:current-page="pageParams.pageNum"
-						:page-size="pageParams.pageSize"
-						:total="pageParams.total"
+						@size-change="handleSizeChange1"
+						@current-change="handleCurrentPageChange1"
+						:current-page="pageParams1.pageNum"
+						:page-size="pageParams1.pageSize"
+						:total="pageParams1.total"
 					/>
 				</div>
 			</div>
 		</div>
+		<saveQueryStrDialog ref="saveQueryStrDialogRef"></saveQueryStrDialog>
+		<exportCSVDialog ref="exportCSVDialogRef"></exportCSVDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
-import listDataJson from "./listData.json";
 import { Codemirror } from "vue-codemirror";
 import { xml as XML } from "@codemirror/lang-xml";
 import { html as HTML } from "@codemirror/lang-html";
 import { json as JSON } from "@codemirror/lang-json";
-import rightListDataJson from "./rightListData.json";
-import useListPageHook from "@/hooks/listPage";
+
+import useListPageHook1 from "./listPage";
+import useListPageHook2 from "@/hooks/listPage";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import { Search, CaretRight, Folder, Document } from "@element-plus/icons-vue";
 import { connectDsNameQueryApi, getDBSelectorApi } from "@/api/modules/sqlQuery/index";
-import { discardSqlApi, getRealtimetablesApi, getColsInfoRealtimeApi } from "@/api/modules/sqlQuery/index";
+import { discardSqlApi, getRealtimetablesApi, getColsInfoRealtimeApi, sqlQueryApi } from "@/api/modules/sqlQuery/index";
+import { historyQueryApi, saveSqlQueryApi, historyExportApi, saveQueryStrApi } from "@/api/modules/sqlQuery/index";
 import router from "@/routers";
 import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
-
+import saveQueryStrDialog from "./components/saveQueryStrDialog.vue";
+import exportCSVDialog from "./components/exportCSVDialog.vue";
 let stringInput = ref("");
 const extensionsOpt = <any>ref([JSON()]);
 interface Tree {
 	label: string;
 	children?: Tree[];
 }
+
 const defaultProps = {
 	children: "childTuple",
 	label: "b",
 };
+const dbRawInfo = <any>ref({
+	dsName: "",
+	dbObj: null,
+});
 const colInfoList = <any>ref([]);
 const fullScreenShow = ref(false);
 const activeTab = ref("col1Show");
@@ -265,81 +326,96 @@ let { asideClass: asideClassRight, foldClick: foldClickRight, expandClick: expan
 
 //#region 表格 查 相关
 
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
-
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	list = listDataJson.data;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
-
 const beanInfo = {};
 const queryFormRaw = {};
 let {
-	tableLoading,
+	tableLoading: tableLoading1,
 
-	pageParams,
-	tableDataList,
-	handleCurrentPageChange,
-	handleSizeChange,
-	resetPageToOne,
-	refreshData, //刷新按钮
+	pageParams: pageParams1,
+	tableDataList: tableDataList1,
+	ddl,
+	handleCurrentPageChange: handleCurrentPageChange1,
+	handleSizeChange: handleSizeChange1,
 
-	drawer,
-	employeeRow,
-	onAddDrawer,
-	onEditDrawer,
-	searchByQueryForm,
-	subData,
+	// refreshData, //刷新按钮
 
-	queryForm,
-	doReset,
-} = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
+	searchByQueryForm: searchByQueryForm1,
+
+	queryForm: queryForm1,
+} = useListPageHook1(
+	sqlQueryApi,
 
 	beanInfo,
 	queryFormRaw
 );
+let {
+	tableLoading: tableLoading2,
+
+	pageParams: pageParams2,
+	tableDataList: tableDataList2,
+
+	handleCurrentPageChange: handleCurrentPageChange2,
+	handleSizeChange: handleSizeChange2,
+
+	// refreshData, //刷新按钮
+
+	searchByQueryForm: searchByQueryForm2,
+
+	queryForm: queryForm2,
+} = useListPageHook2(
+	historyQueryApi,
+
+	beanInfo,
+	{
+		userId: "9",
+		term: "",
+	}
+);
+let {
+	tableLoading: tableLoading3,
+
+	pageParams: pageParams3,
+	tableDataList: tableDataList3,
+
+	handleCurrentPageChange: handleCurrentPageChange3,
+	handleSizeChange: handleSizeChange3,
+
+	// refreshData, //刷新按钮
+
+	searchByQueryForm: searchByQueryForm3,
+
+	queryForm: queryForm3,
+} = useListPageHook2(
+	saveSqlQueryApi,
+
+	beanInfo,
+	{
+		userId: "9",
+		term: "",
+	}
+);
+const tableLoading4 = <any>ref(false);
+const tableDataList4 = <any>ref([]);
+const queryHistoryExport = () => {
+	historyExportApi({}).then((res: any) => {
+		// console.log(historyExportApi)
+		tableDataList4.value = res.data;
+	});
+};
+queryHistoryExport();
 let treeRef = <any>ref(null);
 let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 const dsOptions = ref<any>([]);
 const dataBaseOptions = ref<any>([]);
 connectDsNameQueryApi({}).then((res: any) => {
 	dsOptions.value = res.data;
-	queryForm.value.dsName = res.data[0].dsName;
-	dsNameChange(queryForm.value.dsName);
+	dbRawInfo.value.dsName = res.data[0].dsName;
+	dsNameChange(dbRawInfo.value.dsName);
 });
 const dsNameChange = (value: any) => {
-	queryForm.value.dbObj = null;
+	dbRawInfo.value.dbObj = null;
 	dataBaseOptions.value = [];
-	// searchByQueryForm();
+
 	if (value) {
 		let obj = dsOptions.value.find((item: any) => {
 			return item.dsName === value;
@@ -352,8 +428,8 @@ const getDataBaseOptionsMethod = (obj: any) => {
 
 	api({ ...obj }).then((res: any) => {
 		dataBaseOptions.value = res.data || [];
-		queryForm.value.dbObj = res.data[0];
-		dbChange(queryForm.value.dbObj);
+		dbRawInfo.value.dbObj = res.data[0];
+		dbChange(dbRawInfo.value.dbObj);
 	});
 };
 let linkType = <any>null;
@@ -374,7 +450,7 @@ const dbChange = async (value: any) => {
 	tableChange(RealtimetablesRes.data[0]);
 };
 const tableChange = (data: any) => {
-	let value = queryForm.value.dbObj;
+	let value = dbRawInfo.value.dbObj;
 	getColsInfoRealtimeApi({
 		dbID: value.datasourceId,
 		type: value.type,
@@ -385,12 +461,51 @@ const tableChange = (data: any) => {
 		colInfoList.value = res.data;
 	});
 };
+const executeClick = () => {
+	let dbObj = dbRawInfo.value.dbObj;
+	console.log("dbObj", dbObj);
+	let params = {
+		conn_id: dbObj.datasourceId,
+		type: dbObj.type,
+		rawSQL: stringInput.value,
+		query: stringInput.value,
+		uuid: "9" + new Date().getTime(),
+	};
+	queryForm1.value = { ...params };
+	searchByQueryForm1();
+	// sqlQueryApi({}).then((res:any)=>{
+
+	// })
+};
+
+const saveQueryStrDialogRef = <any>ref(null);
+const exportCSVDialogRef = <any>ref(null);
+const saveQueryStrClick = () => {
+	saveQueryStrDialogRef.value.acceptParams(null);
+};
+const onlineExportCSVClick = () => {
+	exportCSVDialogRef.value.acceptParams(null);
+};
+const formatClick = () => {};
 //#endregion
 </script>
 
 <style lang="scss" scoped>
 * {
 	box-sizing: border-box;
+}
+:deep(.el-tree-node.is-current > .el-tree-node__content) {
+	background-color: var(--el-color-primary-light-9) !important;
+	border-radius: 4px;
+	.custom-node-name {
+		color: var(--el-color-primary) !important;
+	}
+	.custom-node-num {
+		color: var(--el-color-primary) !important;
+	}
+}
+:deep(.el-tree-node__content) {
+	height: 30px;
 }
 .left-tree-right-table-layout {
 	flex: 1;

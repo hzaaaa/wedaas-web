@@ -23,3 +23,27 @@ export const getRealtimetablesApi = (params: any) => {
 export const getColsInfoRealtimeApi = (params: any) => {
   return http.post<any>(PORTBiz + `/table/colsInfoRealtime`, params);
 };
+// **  数据库 查询
+export const sqlQueryApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/sql/query/${params.uuid}`, params);
+};
+// **  数据库 历史查询
+export const historyQueryApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/execute/queryByUser`, params);
+};
+// **  数据库 保存的查询
+export const saveSqlQueryApi = (params: any) => {
+  return http.get<any>(PORTBiz + `/user/usersavesqlquery`, params);
+};
+// **  数据库 历史导出
+export const historyExportApi = (params: any) => {
+  return http.get<any>(PORTBiz + `/export/task`, params);
+};
+// **  数据库 保存查询
+export const saveQueryStrApi = (params: any) => {
+  return http.get<any>(PORTBiz + `/user/saveQuery`, params);
+};
+// **  数据库 在线导出文件
+export const exportFileAPi = (params: any) => {
+  return http.get<any>(PORTBiz + `/export/save/sql`, params);
+};

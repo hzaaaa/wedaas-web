@@ -5,14 +5,9 @@
 				<el-icon class="icon" v-if="asideClass === 'wider-at-hook'" @click="foldClick"><Fold /></el-icon>
 				<el-icon class="icon" v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
 			</div>
-			<!-- v-show="asideClass === 'wider-at-hook'" -->
-			<!-- :style="{ opacity: asideClass === 'wider-at-hook' ? 1 : 0 }" -->
+
 			<Transition>
 				<div class="tree-wrap" v-show="asideClass === 'wider-at-hook'">
-					<!-- <div class="market-tabs">
-						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
-						<div class="market-tabs-item pointer">我的空间</div>
-					</div> -->
 					<el-select class="mt16" v-model="dbRawInfo.dsName" @change="dsNameChange">
 						<el-option v-for="item in dsOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
 					</el-select>
@@ -41,10 +36,7 @@
 			</div>
 			<div class="right-block">
 				<div class="exec-time">执行时间 : 0s</div>
-				<!-- <div class="data-base">
-					<span class="key">Database</span>
-					<el-select></el-select>
-				</div> -->
+
 				<div class="top-info">
 					<span class="key">Database</span>
 					<el-select style="width: auto" value-key="datasourceId" v-model="dbRawInfo.dbObj" @change="dbChange" clearable>
@@ -74,7 +66,7 @@
 									<el-dropdown-item> 将结果数据导出为CSV </el-dropdown-item>
 									<el-dropdown-item> 将结果数据导出为Excel </el-dropdown-item>
 									<el-dropdown-item @click="onlineExportCSVClick"> 在线导出CSV </el-dropdown-item>
-									<el-dropdown-item> 在线导出Excel </el-dropdown-item>
+									<el-dropdown-item @click="onlineExportExcelClick"> 在线导出Excel </el-dropdown-item>
 								</el-dropdown-menu>
 							</template>
 						</el-dropdown>
@@ -282,14 +274,16 @@ import { json as JSON } from "@codemirror/lang-json";
 import useListPageHook1 from "./listPage";
 import useListPageHook2 from "@/hooks/listPage";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
+import useParamsCodeHookfrom from "./hooks/paramsCodeHook";
 import { Search, CaretRight, Folder, Document } from "@element-plus/icons-vue";
 import { connectDsNameQueryApi, getDBSelectorApi } from "@/api/modules/sqlQuery/index";
 import { discardSqlApi, getRealtimetablesApi, getColsInfoRealtimeApi, sqlQueryApi } from "@/api/modules/sqlQuery/index";
-import { historyQueryApi, saveSqlQueryApi, historyExportApi, saveQueryStrApi } from "@/api/modules/sqlQuery/index";
+import { historyQueryApi, saveSqlQueryApi, historyExportApi, saveQueryStrApi, exportFileAPi } from "@/api/modules/sqlQuery/index";
 import router from "@/routers";
 import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
 import saveQueryStrDialog from "./components/saveQueryStrDialog.vue";
 import exportCSVDialog from "./components/exportCSVDialog.vue";
+
 let stringInput = ref("");
 const extensionsOpt = <any>ref([JSON()]);
 interface Tree {
@@ -297,15 +291,11 @@ interface Tree {
 	children?: Tree[];
 }
 
-const defaultProps = {
-	children: "childTuple",
-	label: "b",
-};
-const dbRawInfo = <any>ref({
-	dsName: "",
-	dbObj: null,
-});
-const colInfoList = <any>ref([]);
+// const dbRawInfo = <any>ref({
+// 	dsName: "",
+// 	dbObj: null,
+// });
+
 const fullScreenShow = ref(false);
 const activeTab = ref("col1Show");
 
@@ -313,13 +303,6 @@ const col2ShowInput = ref(false);
 const col3ShowInput = ref(false);
 
 const show_mode = ref("list");
-
-const treeData = ref([]);
-
-const handleNodeClick = (data: any) => {
-	// console.log(data);
-	tableChange(data);
-};
 
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 let { asideClass: asideClassRight, foldClick: foldClickRight, expandClick: expandClickRight } = useFoldOrExpandHook();
@@ -404,63 +387,23 @@ const queryHistoryExport = () => {
 };
 queryHistoryExport();
 let treeRef = <any>ref(null);
+
+let {
+	dbRawInfo,
+	dsOptions,
+	dataBaseOptions,
+	treeData,
+	defaultProps,
+	colInfoList,
+
+	dsNameChange,
+	getDataBaseOptionsMethod,
+	dbChange,
+	tableChange,
+	handleNodeClick,
+} = useParamsCodeHookfrom();
 let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
-const dsOptions = ref<any>([]);
-const dataBaseOptions = ref<any>([]);
-connectDsNameQueryApi({}).then((res: any) => {
-	dsOptions.value = res.data;
-	dbRawInfo.value.dsName = res.data[0].dsName;
-	dsNameChange(dbRawInfo.value.dsName);
-});
-const dsNameChange = (value: any) => {
-	dbRawInfo.value.dbObj = null;
-	dataBaseOptions.value = [];
 
-	if (value) {
-		let obj = dsOptions.value.find((item: any) => {
-			return item.dsName === value;
-		});
-		getDataBaseOptionsMethod(obj);
-	}
-};
-const getDataBaseOptionsMethod = (obj: any) => {
-	let api = <any>getDBSelectorApi;
-
-	api({ ...obj }).then((res: any) => {
-		dataBaseOptions.value = res.data || [];
-		dbRawInfo.value.dbObj = res.data[0];
-		dbChange(dbRawInfo.value.dbObj);
-	});
-};
-let linkType = <any>null;
-const dbChange = async (value: any) => {
-	linkType = linkType || value.type;
-
-	discardSqlApi({
-		uuid: "9" + new Date().getTime(),
-		linkType,
-	}).then((res: any) => {});
-	let params = {
-		dbID: value.datasourceId,
-		type: value.type,
-	};
-	let RealtimetablesRes = await getRealtimetablesApi(params);
-	treeData.value = RealtimetablesRes.data;
-
-	tableChange(RealtimetablesRes.data[0]);
-};
-const tableChange = (data: any) => {
-	let value = dbRawInfo.value.dbObj;
-	getColsInfoRealtimeApi({
-		dbID: value.datasourceId,
-		type: value.type,
-		tableId: data.a,
-		tableName: data.b,
-	}).then((res: any) => {
-		console.log("getColsInfoRealtimeApi", res);
-		colInfoList.value = res.data;
-	});
-};
 const executeClick = () => {
 	let dbObj = dbRawInfo.value.dbObj;
 	console.log("dbObj", dbObj);
@@ -481,10 +424,40 @@ const executeClick = () => {
 const saveQueryStrDialogRef = <any>ref(null);
 const exportCSVDialogRef = <any>ref(null);
 const saveQueryStrClick = () => {
-	saveQueryStrDialogRef.value.acceptParams(null);
+	let dbObj = dbRawInfo.value.dbObj;
+	saveQueryStrDialogRef.value.acceptParams({
+		database: dbObj.datasourceId,
+		query: stringInput.value,
+		userid: "9",
+	});
 };
 const onlineExportCSVClick = () => {
-	exportCSVDialogRef.value.acceptParams(null);
+	let dbObj = dbRawInfo.value.dbObj;
+	// debugger;
+	exportCSVDialogRef.value.acceptParams({
+		conn_id: dbObj.datasourceId,
+		fileType: "csv",
+		sql: stringInput.value,
+		type: dbObj.type,
+	});
+};
+const onlineExportExcelClick = () => {
+	let dbObj = dbRawInfo.value.dbObj;
+	// debugger;
+	let params = {
+		conn_id: dbObj.datasourceId,
+		fileType: "excel",
+		sql: stringInput.value,
+		type: dbObj.type,
+	};
+	exportFileAPi(params).then((res: any) => {
+		let a = document.createElement("a");
+		a.href = res.data;
+		a.click();
+		a.remove();
+
+		// emit("refreshData");
+	});
 };
 const formatClick = () => {};
 //#endregion

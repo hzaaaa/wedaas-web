@@ -9,8 +9,8 @@
 			class="common-dialog"
 		>
 			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" :rules="rulesForm" label-position="left">
-				<el-form-item label="文件名称" prop="rootName">
-					<el-input v-model="inputInfo.rootName" maxlength="16" show-word-limit placeholder="" />
+				<el-form-item label="文件名称" prop="filename">
+					<el-input v-model="inputInfo.filename" maxlength="16" show-word-limit placeholder="" />
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -27,19 +27,15 @@ import { ref } from "vue";
 import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
 import { saveQueryStrApi } from "@/api/modules/sqlQuery/index";
 const inputInfo = ref({
-	rootName: "",
+	filename: "",
 });
 const rulesForm = reactive<any>({
-	rootName: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
+	filename: [{ required: true, message: "请输入文件名称!", trigger: "blur" }],
 });
 
 const dialogVisible = ref(false);
 
-const dialogProps = ref<any>({
-	row: {
-		status: 0,
-	},
-});
+const dialogProps = ref<any>({});
 
 const acceptParams = (params: any) => {
 	dialogProps.value = params;
@@ -53,9 +49,17 @@ const submit = async () => {
 	if (!formEl) return;
 	formEl.validate(async (valid, fields) => {
 		if (valid) {
-			saveQueryStrApi({}).then((res: any) => {});
+			let params = {
+				...dialogProps.value,
+				...inputInfo.value,
+			};
+			saveQueryStrApi(params).then((res: any) => {
+				ElMessage.success("保存文件成功！");
+				dialogVisible.value = false;
+				// 	emit("refreshData");
+			});
 			// addCatalogApi({ ...inputInfo.value }).then((res: any) => {
-			// 	ElMessage.success("添加成功！");
+			// 	ElMessage.success("保存文件成功！");
 			// 	dialogVisible.value = false;
 			// 	emit("refreshData");
 			// });

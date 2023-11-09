@@ -41,9 +41,9 @@ export const historyExportApi = (params: any) => {
 };
 // **  数据库 保存查询
 export const saveQueryStrApi = (params: any) => {
-  return http.get<any>(PORTBiz + `/user/saveQuery`, params);
+  return http.post<any>(PORTBiz + `/user/saveQuery`, params);
 };
 // **  数据库 在线导出文件
 export const exportFileAPi = (params: any) => {
-  return http.get<any>(PORTBiz + `/export/save/sql`, params);
+  return http.post<any>(PORTBiz + `/export/save/sql`, params);
 };

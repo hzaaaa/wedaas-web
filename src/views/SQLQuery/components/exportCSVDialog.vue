@@ -8,25 +8,19 @@
 			width="530px"
 			class="common-dialog"
 		>
-			<el-form
-				ref="inputInfoRef"
-				:model="inputInfo"
-				@keyup.enter="submit"
-				:rules="rulesForm"
-				label-position="left"
-				label-width="auto"
-			>
+			<el-form ref="inputInfoRef" :model="inputInfo" @keyup.enter="submit" label-position="left" label-width="auto">
+				<!-- :rules="rulesForm" -->
 				<el-form-item label=" " prop="">
 					<el-radio-group v-model="inputInfo.type">
 						<el-radio label="rowNumber">行数</el-radio>
 						<el-radio label="all">全部</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="导出行数" prop="rootName" v-show="inputInfo.type === 'rowNumber'">
-					<el-input v-model="inputInfo.rootName" show-word-limit placeholder="" />
+				<el-form-item label="导出行数" prop="size" v-show="inputInfo.type === 'rowNumber'">
+					<el-input v-model="inputInfo.size" show-word-limit placeholder="" />
 				</el-form-item>
-				<el-form-item label="分隔符" prop="rootName">
-					<el-input v-model="inputInfo.rootName" show-word-limit placeholder="" />
+				<el-form-item label="分隔符" prop="separator">
+					<el-input v-model="inputInfo.separator" show-word-limit placeholder="" />
 				</el-form-item>
 			</el-form>
 			<template #footer>
@@ -41,22 +35,20 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
-// import { saveQueryStrApi } from "@/api/modules/sqlQuery/index";
+import { exportFileAPi } from "@/api/modules/sqlQuery/index";
 const inputInfo = ref({
-	rootName: "",
+	size: 200000,
+	separator: ",",
 	type: "rowNumber", //rowNumber or all
 });
 const rulesForm = reactive<any>({
-	rootName: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
+	// size: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
+	// separator: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
 });
 
 const dialogVisible = ref(false);
 
-const dialogProps = ref<any>({
-	row: {
-		status: 0,
-	},
-});
+const dialogProps = ref<any>({});
 
 const acceptParams = (params: any) => {
 	dialogProps.value = params;
@@ -70,12 +62,24 @@ const submit = async () => {
 	if (!formEl) return;
 	formEl.validate(async (valid, fields) => {
 		if (valid) {
-			// saveQueryStrApi({}).then((res: any) => {});
-			// addCatalogApi({ ...inputInfo.value }).then((res: any) => {
-			// 	ElMessage.success("添加成功！");
-			// 	dialogVisible.value = false;
-			// 	emit("refreshData");
-			// });
+			let { size, separator, type } = inputInfo.value;
+			if (type === "all") {
+				size = 0;
+			}
+			let params = {
+				...dialogProps.value,
+				size,
+				separator,
+			};
+			console.log(params);
+			exportFileAPi(params).then((res: any) => {
+				let a = document.createElement("a");
+				a.href = res.data;
+				a.click();
+				a.remove();
+				dialogVisible.value = false;
+				// emit("refreshData");
+			});
 		} else {
 			console.log("error", fields);
 		}

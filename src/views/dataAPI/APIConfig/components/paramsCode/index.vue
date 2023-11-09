@@ -5,21 +5,26 @@
 				<el-icon class="icon" v-if="asideClass === 'wider-at-hook'" @click="foldClick"><Fold /></el-icon>
 				<el-icon class="icon" v-if="asideClass === 'narrower-at-hook'" @click="expandClick"><Expand /></el-icon>
 			</div>
-			<!-- v-show="asideClass === 'wider-at-hook'" -->
-			<!-- :style="{ opacity: asideClass === 'wider-at-hook' ? 1 : 0 }" -->
+
 			<Transition>
 				<div class="tree-wrap" v-show="asideClass === 'wider-at-hook'">
-					<!-- <div class="market-tabs">
-						<div class="market-tabs-item pointer market-tabs-active">数据市场</div>
-						<div class="market-tabs-item pointer">我的空间</div>
-					</div> -->
-					<el-select class="mt16"></el-select>
-					<el-input class="mt16" placeholder="请输入关键字" :suffix-icon="Search" />
+					<el-select class="mt16" v-model="dbRawInfo.dsName" @change="dsNameChange">
+						<el-option v-for="item in dsOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName" />
+					</el-select>
+
+					<el-input class="mt16" placeholder="请输入关键字" v-model="filterText" :suffix-icon="Search" />
 					<div class="view-all">
 						<span>表({{ treeData.length }})</span>
 						<el-icon><RefreshRight /></el-icon>
 					</div>
-					<el-tree class="tree-class thin-scrollbar" :data="treeData" :props="defaultProps" @node-click="handleNodeClick" />
+					<el-tree
+						ref="treeRef"
+						class="tree-class thin-scrollbar"
+						:data="treeData"
+						:props="defaultProps"
+						@node-click="handleNodeClick"
+						:filter-node-method="filterNode"
+					/>
 				</div>
 			</Transition>
 		</div>
@@ -29,13 +34,12 @@
 			</div>
 			<div class="right-block">
 				<div class="exec-time">执行时间 : 0s</div>
-				<!-- <div class="data-base">
-					<span class="key">Database</span>
-					<el-select></el-select>
-				</div> -->
+
 				<div class="top-info">
 					<span class="key">Database</span>
-					<el-select></el-select>
+					<el-select style="width: auto" value-key="datasourceId" v-model="dbRawInfo.dbObj" @change="dbChange" clearable>
+						<el-option v-for="item in dataBaseOptions" :key="item.datasourceId" :label="item.database" :value="item" />
+					</el-select>
 				</div>
 				<div class="sql-input">
 					<codemirror
@@ -125,9 +129,9 @@
 			</div>
 			<Transition>
 				<div class="content-wrap" v-show="asideClassRight === 'wider-at-hook'">
-					<div class="title">渠道公司主体表</div>
+					<div class="title">{{ (colInfoList[0] && colInfoList[0].description) || "字段列表" }}</div>
 					<div class="details">
-						<div class="mt10" v-for="item in rightListDataJson.data">
+						<div class="mt10" v-for="item in colInfoList">
 							<div class="row1">
 								<tooltipWrap :content="item.colName" class="row1-left" type="x"></tooltipWrap>
 								<tooltipWrap :content="item.colType" class="row1-right" type="x"></tooltipWrap>
@@ -197,7 +201,6 @@
 </template>
 
 <script setup lang="ts">
-import treeDataJson from "./treeData.json";
 import listDataJson from "./listData.json";
 import { Codemirror } from "vue-codemirror";
 import { xml as XML } from "@codemirror/lang-xml";
@@ -208,60 +211,42 @@ import useListPageHook from "@/hooks/listPage";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import { Search, CaretRight, Folder, Document } from "@element-plus/icons-vue";
 import router from "@/routers";
+import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook.ts";
+import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
+
+let treeRef = <any>ref(null);
+let {
+	dbRawInfo,
+	dsOptions,
+	dataBaseOptions,
+	treeData,
+	defaultProps,
+	colInfoList,
+
+	dsNameChange,
+	getDataBaseOptionsMethod,
+	dbChange,
+	tableChange,
+	handleNodeClick,
+} = useParamsCodeHookfrom();
+let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 let stringInput = ref("");
 const extensionsOpt = <any>ref([JSON()]);
 interface Tree {
 	label: string;
 	children?: Tree[];
 }
-const defaultProps = {
-	children: "childTuple",
-	label: "b",
-};
+
 const fullScreenShow = ref(false);
 const activeTab = ref("col1Show");
 
 const col2ShowInput = ref(false);
 const col3ShowInput = ref(false);
 
-const show_mode = ref("list");
-const changeLabelName = (list: any) => {
-	list.forEach((item: any) => {
-		item.labelName = item.childName || item.rootName;
-		console.log("item.labelName", item.labelName);
-		if (item.childTuple) {
-			changeLabelName(item.childTuple);
-		}
-	});
-};
-changeLabelName(treeDataJson.data);
-const treeData = ref(treeDataJson.data);
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-// treeData.value = [...treeData.value, ...treeData.value];
-const handleNodeClick = (data: Tree) => {
-	console.log(data);
-};
-
 let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 let { asideClass: asideClassRight, foldClick: foldClickRight, expandClick: expandClickRight } = useFoldOrExpandHook();
 // debugger;
-const openFormPageClick = (status: any, row?: any) => {
-	// let pathName = pageName + "Api";
-	// userStore.setBehavior(status);
-	router.push({
-		// name: pathName,
-		// state: {
-		// 	// params: { ...employeeRow.value },
-		// },
-		// query: {
-		// 	id: row?.id,
-		// },
-	});
-};
+
 const gotoDetails = (row: any) => {
 	router.push({
 		name: "marketDetails",

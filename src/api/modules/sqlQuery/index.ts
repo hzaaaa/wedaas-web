@@ -47,3 +47,11 @@ export const saveQueryStrApi = (params: any) => {
 export const exportFileAPi = (params: any) => {
   return http.post<any>(PORTBiz + `/export/save/sql`, params);
 };
+// **  数据库 构建sql
+export const buildSQLApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/api/buildSQL`, params);
+};
+// **  数据库 test 执行sql
+export const testExecSqlApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/sql/apitest/${params.uuid}`, params);
+};

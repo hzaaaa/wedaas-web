@@ -2,6 +2,7 @@ import { getAllApiCatalogApi } from "@/api/modules/dataApi/apiCatalog";
 import { getApiPathListApi } from "@/api/modules/dataApi/pathManage";
 import { connectDsNameQueryApi, getDBSelectorApi } from "@/api/modules/sqlQuery/index";
 import { discardSqlApi, getRealtimetablesApi, getColsInfoRealtimeApi, sqlQueryApi } from "@/api/modules/sqlQuery/index";
+
 export default () => {
   const treeData = ref([]);
   const defaultProps = {
@@ -34,7 +35,7 @@ export default () => {
   const getDataBaseOptionsMethod = (obj: any) => {
     let api = <any>getDBSelectorApi;
 
-    api({ ...obj }).then((res: any) => {
+    api({ ...obj, }).then((res: any) => {
       dataBaseOptions.value = res.data || [];
       dbRawInfo.value.dbObj = res.data[0];
       dbChange(dbRawInfo.value.dbObj);
@@ -47,10 +48,12 @@ export default () => {
     discardSqlApi({
       uuid: "9" + new Date().getTime(),
       linkType,
+
     }).then((res: any) => { });
     let params = {
       dbID: value.datasourceId,
       type: value.type,
+
     };
     let RealtimetablesRes = await getRealtimetablesApi(params);
     treeData.value = RealtimetablesRes.data;
@@ -64,6 +67,7 @@ export default () => {
       type: value.type,
       tableId: data.a,
       tableName: data.b,
+
     }).then((res: any) => {
       console.log("getColsInfoRealtimeApi", res);
       colInfoList.value = res.data;

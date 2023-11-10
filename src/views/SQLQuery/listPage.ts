@@ -116,8 +116,8 @@ export default (
 	const searchByQueryForm = () => {
 		//修改 搜索条件query
 		useQueryParams = getUseQueryParamsByForm && getUseQueryParamsByForm(queryForm.value);
-		sqlQueryApi(useQueryParams).then((res: any) => {
-			console.log('sqlQueryApi', res)
+		getListApi(useQueryParams).then((res: any) => {
+			console.log('getListApi', res)
 			tableDataListRaw.value = [];
 			ddl.value = res.data.ddl;
 
@@ -150,6 +150,7 @@ export default (
 
 		pageParams,
 		tableDataList,
+		tableDataListRaw,
 		ddl,
 		handleCurrentPageChange,
 		handleSizeChange,

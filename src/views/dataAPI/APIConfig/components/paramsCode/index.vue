@@ -30,14 +30,14 @@
 		</div>
 		<div class="center-block">
 			<div class="left-btns">
-				<el-button :icon="CaretRight" circle />
+				<el-button @click="executeClick" :icon="CaretRight" circle />
 			</div>
 			<div class="right-block">
 				<div class="exec-time">执行时间 : 0s</div>
 
 				<div class="top-info">
 					<span class="key">Database</span>
-					<el-select style="width: auto" value-key="datasourceId" v-model="dbRawInfo.dbObj" @change="dbChange" clearable>
+					<el-select style="width: auto" value-key="datasourceId" v-model="dbRawInfo.dbObj" @change="dbChange">
 						<el-option v-for="item in dataBaseOptions" :key="item.datasourceId" :label="item.database" :value="item" />
 					</el-select>
 				</div>
@@ -59,65 +59,99 @@
 						<!-- <el-icon><Download /></el-icon> -->
 					</div>
 					<div class="res-types-title">
-						<div class="res-title" @click="activeTab = 'col1Show'" :class="activeTab === 'col1Show' ? 'res-title-active' : ''">
+						<div class="res-title" @click="activeTab = 'col3Show'" :class="activeTab === 'col3Show' ? 'res-title-active' : ''">
 							<span> 请求参数</span>
 						</div>
 						<div class="res-title" @click="activeTab = 'col2Show'" :class="activeTab === 'col2Show' ? 'res-title-active' : ''">
 							<span>返回参数</span>
 						</div>
-						<div class="res-title" @click="activeTab = 'col3Show'" :class="activeTab === 'col3Show' ? 'res-title-active' : ''">
+						<div class="res-title" @click="activeTab = 'col1Show'" :class="activeTab === 'col1Show' ? 'res-title-active' : ''">
 							<span> 结果(0)</span>
 						</div>
 					</div>
-					<div class="table-wrap">
+					<div class="table-wrap" v-show="activeTab === 'col1Show'">
 						<el-table
 							class="common-table"
-							v-loading="tableLoading"
-							:data="tableDataList"
+							v-loading="tableLoading1"
+							:data="tableDataListRaw"
 							border
 							style="flex: 1 !important; height: auto"
-							ref="multipleTableRef"
 							:default-sort="{ prop: 'update_time', order: 'descending' }"
-							@row-click="gotoDetails"
 						>
-							<el-table-column label="API名称" prop="name" min-width="180" show-overflow-tooltip>
+							<el-table-column v-for="key in ddl" :label="key" :prop="key" show-overflow-tooltip> </el-table-column>
+						</el-table>
+					</div>
+					<div class="table-wrap" v-show="activeTab === 'col2Show'">
+						<el-table
+							class="common-table"
+							:data="returnParamList"
+							border
+							style="flex: 1 !important; height: auto"
+							:default-sort="{ prop: 'update_time', order: 'descending' }"
+						>
+							<el-table-column label="字段名" prop="fieldName" show-overflow-tooltip>
 								<template #default="scope">
-									<span :key="scope.row.id" :underline="false" class="blue-link">{{ scope.row.name }}</span>
+									<el-input v-model="scope.row.fieldName" style="width: 100%" />
 								</template>
 							</el-table-column>
-
-							<el-table-column label="输出描述" prop="description" min-width="180" show-overflow-tooltip></el-table-column>
-
-							<el-table-column label="创建人" prop="createBy" width="150" show-overflow-tooltip-none></el-table-column>
-							<el-table-column prop="createTime" sortable="custom" label="创建时间" width="180">
+							<el-table-column label="描述" prop="description" show-overflow-tooltip>
 								<template #default="scope">
-									{{ scope.row.createTime }}
+									<el-input v-model="scope.row.description" style="width: 100%" />
 								</template>
 							</el-table-column>
-							<el-table-column prop="executeCount" label="调用次数" width="180">
+							<el-table-column label="操作">
 								<template #default="scope">
-									{{ scope.row.executeCount }}
-								</template>
-							</el-table-column>
-							<el-table-column prop="status" label="审批状态" width="180">
-								<template #default="scope">
-									{{ scope.row.status }}
+									<el-button size="small" link type="primary" @click="addRowCol2(scope)">增加行</el-button>
+									<el-button size="small" link type="primary" @click="deleteRowCol2(scope)">删除</el-button>
 								</template>
 							</el-table-column>
 						</el-table>
-						<div class="pagination-block" style="display: flex; justify-content: space-between; margin-top: 16px">
-							<el-button type="primary">辅助抽取参数</el-button>
-							<el-pagination
-								:page-sizes="pageParams.pageSizesList"
-								background
-								layout="total,sizes,prev, pager, next,jumper"
-								@size-change="handleSizeChange"
-								@current-change="handleCurrentPageChange"
-								:current-page="pageParams.pageNum"
-								:page-size="pageParams.pageSize"
-								:total="pageParams.total"
-							/>
-						</div>
+					</div>
+					<div class="table-wrap" v-show="activeTab === 'col3Show'">
+						<el-table
+							class="common-table"
+							:data="queryParamList"
+							border
+							style="flex: 1 !important; height: auto"
+							:default-sort="{ prop: 'update_time', order: 'descending' }"
+						>
+							<el-table-column label="字段名" prop="fieldName" show-overflow-tooltip>
+								<template #default="scope">
+									<el-input v-model="scope.row.fieldName" style="width: 100%" />
+								</template>
+							</el-table-column>
+							<el-table-column label="描述" prop="description" show-overflow-tooltip>
+								<template #default="scope">
+									<el-input v-model="scope.row.description" style="width: 100%" />
+								</template>
+							</el-table-column>
+							<el-table-column label="类型" prop="columnType" show-overflow-tooltip>
+								<template #default="scope">
+									<el-select v-model="scope.row.columnType" placeholder="请选择" style="width: 100%">
+										<el-option v-for="item in ['raw', 'number', 'string']" :key="item" :label="item" :value="item" />
+									</el-select>
+								</template>
+							</el-table-column>
+							<el-table-column label="默认值" prop="defaultValue" show-overflow-tooltip>
+								<template #default="scope">
+									<el-input v-model="scope.row.defaultValue" style="width: 100%" />
+								</template>
+							</el-table-column>
+							<el-table-column label="必填" prop="required" show-overflow-tooltip>
+								<template #default="scope">
+									<el-checkbox v-model="scope.row.required" label="" />
+								</template>
+							</el-table-column>
+							<el-table-column label="操作">
+								<template #default="scope">
+									<el-button size="small" link type="primary" @click="addRowCol3(scope)">增加行</el-button>
+									<el-button size="small" link type="primary" @click="deleteRowCol3(scope)">删除</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+					</div>
+					<div class="mt20">
+						<el-button type="primary" @click="abstractParamsClick">辅助抽取参数</el-button>
 					</div>
 				</div>
 			</div>
@@ -142,77 +176,27 @@
 				</div>
 			</Transition>
 		</div>
-		<div class="abs-table" v-show="fullScreenShow">
-			<div class="title">
-				<span> 结果(0) </span>
-				<el-icon @click="fullScreenShow = false"><Rank /></el-icon>
-			</div>
-			<div class="table-wrap">
-				<el-table
-					class="common-table"
-					v-loading="tableLoading"
-					:data="tableDataList"
-					border
-					style="flex: 1 !important; height: auto"
-					ref="multipleTableRef"
-					:default-sort="{ prop: 'update_time', order: 'descending' }"
-					@row-click="gotoDetails"
-				>
-					<el-table-column label="API名称" prop="name" min-width="180" show-overflow-tooltip>
-						<template #default="scope">
-							<span :key="scope.row.id" :underline="false" class="blue-link">{{ scope.row.name }}</span>
-						</template>
-					</el-table-column>
-
-					<el-table-column label="输出描述" prop="description" min-width="180" show-overflow-tooltip></el-table-column>
-
-					<el-table-column label="创建人" prop="createBy" width="150" show-overflow-tooltip-none></el-table-column>
-					<el-table-column prop="createTime" sortable="custom" label="创建时间" width="180">
-						<template #default="scope">
-							{{ scope.row.createTime }}
-						</template>
-					</el-table-column>
-					<el-table-column prop="executeCount" label="调用次数" width="180">
-						<template #default="scope">
-							{{ scope.row.executeCount }}
-						</template>
-					</el-table-column>
-					<el-table-column prop="status" label="审批状态" width="180">
-						<template #default="scope">
-							{{ scope.row.status }}
-						</template>
-					</el-table-column>
-				</el-table>
-				<div class="pagination-block" style="display: flex; justify-content: flex-end; margin-top: 16px">
-					<el-pagination
-						:page-sizes="pageParams.pageSizesList"
-						background
-						layout="total,sizes,prev, pager, next,jumper"
-						@size-change="handleSizeChange"
-						@current-change="handleCurrentPageChange"
-						:current-page="pageParams.pageNum"
-						:page-size="pageParams.pageSize"
-						:total="pageParams.total"
-					/>
-				</div>
-			</div>
-		</div>
+		<parseParamListDialog ref="parseParamListDialogRef" @exec="buildSql"></parseParamListDialog>
 	</div>
 </template>
 
 <script setup lang="ts">
-import listDataJson from "./listData.json";
+import useListPageHook1 from "@/views/SQLQuery/listPage";
+import useListPageHook2 from "@/hooks/listPage";
+
 import { Codemirror } from "vue-codemirror";
 import { xml as XML } from "@codemirror/lang-xml";
 import { html as HTML } from "@codemirror/lang-html";
 import { json as JSON } from "@codemirror/lang-json";
-import rightListDataJson from "./rightListData.json";
-import useListPageHook from "@/hooks/listPage";
+
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import { Search, CaretRight, Folder, Document } from "@element-plus/icons-vue";
 import router from "@/routers";
 import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook.ts";
 import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
+import parseParamListDialog from "../parseParamListDialog.vue";
+import { buildSQLApi, discardSqlApi, testExecSqlApi, sqlQueryApi } from "@/api/modules/sqlQuery/index";
+let parseParamListDialogRef = <any>ref(null);
 
 let treeRef = <any>ref(null);
 let {
@@ -230,15 +214,76 @@ let {
 	handleNodeClick,
 } = useParamsCodeHookfrom();
 let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
+const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
+const executeClick = () => {
+	let match = null;
+	let paramList = <any>[];
+	while ((match = defaultTagRE.exec(stringInput.value))) {
+		let obj = {
+			columnType: "number",
+			defaultValue: null,
+			fieldName: match[1],
+			name: match[1],
+			required: false,
+		};
+		paramList.push(obj);
+	}
+	console.log("paramList", paramList);
+	if (paramList.length) {
+		//解析变量
+		parseParamListDialogRef.value.acceptParams({ list: paramList });
+	} else {
+		buildSql(paramList);
+	}
+};
+const buildSql = (paramList) => {
+	let dbObj = dbRawInfo.value.dbObj;
+	let obj = <any>{};
+	paramList.forEach((item: any) => {
+		obj[item.name] = item.defaultValue;
+	});
+	let params = {
+		paramIns: paramList,
+		param: obj,
+		apiBase: {
+			databaseType: dbObj.type,
+			isSql: 1,
+			templateSql: stringInput.value,
+		},
+	};
+	buildSQLApi(params)
+		.then((res: any) => {
+			// debugger;
+			console.log("buildSQLApi", res.data);
+			if (res.data) {
+				discardSqlApi({
+					uuid: "9" + new Date().getTime(),
+					linkType: dbObj.type,
+				}).then((res2: any) => {});
+
+				queryForm1.value = {
+					conn_id: dbObj.datasourceId,
+					query: res.data,
+					type: dbObj.type,
+					uuid: "9" + new Date().getTime(),
+				};
+				searchByQueryForm1();
+			} else {
+				ElMessage.error("SQL生成异常");
+			}
+			// debugger;
+		})
+		.catch(() => {
+			if (paramList.length) {
+				parseParamListDialogRef.value.acceptParams({ list: paramList });
+			}
+		});
+};
 let stringInput = ref("");
 const extensionsOpt = <any>ref([JSON()]);
-interface Tree {
-	label: string;
-	children?: Tree[];
-}
 
 const fullScreenShow = ref(false);
-const activeTab = ref("col1Show");
+const activeTab = ref("col3Show");
 
 const col2ShowInput = ref(false);
 const col3ShowInput = ref(false);
@@ -247,76 +292,104 @@ let { asideClass, foldClick, expandClick } = useFoldOrExpandHook();
 let { asideClass: asideClassRight, foldClick: foldClickRight, expandClick: expandClickRight } = useFoldOrExpandHook();
 // debugger;
 
-const gotoDetails = (row: any) => {
-	router.push({
-		name: "marketDetails",
-	});
-};
 //#region 表格 查 相关
-
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
-
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	list = listDataJson.data;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
 
 const beanInfo = {};
 const queryFormRaw = {};
 let {
-	tableLoading,
+	tableLoading: tableLoading1,
 
-	pageParams,
-	tableDataList,
-	handleCurrentPageChange,
-	handleSizeChange,
-	resetPageToOne,
-	refreshData, //刷新按钮
+	pageParams: pageParams1,
+	tableDataList: tableDataList1,
+	tableDataListRaw,
+	ddl,
+	handleCurrentPageChange: handleCurrentPageChange1,
+	handleSizeChange: handleSizeChange1,
 
-	drawer,
-	employeeRow,
-	onAddDrawer,
-	onEditDrawer,
-	searchByQueryForm,
-	subData,
+	// refreshData, //刷新按钮
 
-	queryForm,
-	doReset,
-} = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
+	searchByQueryForm: searchByQueryForm1,
+
+	queryForm: queryForm1,
+} = useListPageHook1(
+	testExecSqlApi,
 
 	beanInfo,
 	queryFormRaw
 );
 
+const abstractParamsClick = () => {
+	let match = null;
+	let paramList = <any>[];
+	let arr = stringInput.value.split("from");
+	if (!arr[1]) {
+		return;
+	}
+	let str1 = arr[1];
+	let str0 = arr[0]; // before from
+	let headStrArr = str0.split("select");
+	if (!headStrArr[1]) {
+		return;
+	}
+	str0 = headStrArr[1].trim(); //after select
+	if (str0 === "") {
+		return;
+	}
+	let str0Arr = str0.split(",");
+
+	while ((match = defaultTagRE.exec(str1))) {
+		let obj = {
+			...queryParamRaw,
+
+			columnType: "number",
+			fieldName: match[1],
+		};
+		paramList.push(obj);
+	}
+	queryParamList.value = paramList;
+
+	let returnList = <any>[];
+	str0Arr.forEach((item: any) => {
+		let obj = {
+			...returnParamRaw,
+
+			fieldName: item,
+		};
+		returnList.push(obj);
+	});
+	returnParamList.value = returnList;
+};
+
+const queryParamList = <any>ref([]); //
+const returnParamList = <any>ref([]);
+const queryParamRaw = {
+	fieldName: "",
+	description: "",
+	columnType: "string",
+	defaultValue: "",
+	required: true,
+};
+const returnParamRaw = {
+	fieldName: "",
+	description: "",
+};
+const addRowCol3 = (scope: any) => {
+	queryParamList.value.splice(scope.$index + 1, 0, { ...queryParamRaw });
+};
+const deleteRowCol3 = (scope: any) => {
+	queryParamList.value.splice(scope.$index, 1);
+};
+const addRowCol2 = (scope: any) => {
+	returnParamList.value.splice(scope.$index + 1, 0, { ...returnParamRaw });
+};
+const deleteRowCol2 = (scope: any) => {
+	returnParamList.value.splice(scope.$index, 1);
+};
+
+defineExpose({
+	queryParamList,
+	returnParamList,
+});
 //#endregion
 </script>
 

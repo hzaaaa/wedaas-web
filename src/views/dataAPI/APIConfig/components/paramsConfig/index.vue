@@ -3,9 +3,18 @@
 		<div class="left-block">
 			<div class="block-title">配置表</div>
 			<div class="" style="height: 40px">
-				<el-select style="height: 30px; width: 200px"></el-select>
+				<el-select style="height: 30px; width: 200px" v-model="dbRawInfo.dsName" @change="dsNameChange">
+					<el-option v-for="item in dsOptions" :key="item.dsName" :label="item.dsName" :value="item.dsName"
+				/></el-select>
 				<div style="display: inline-block; width: 4%"></div>
-				<el-select style="display: inline-block; width: calc(46% - 100px)"></el-select>
+				<el-select
+					style="display: inline-block; width: calc(46% - 100px)"
+					value-key="datasourceId"
+					v-model="dbRawInfo.dbObj"
+					@change="dbChange"
+				>
+					<el-option v-for="item in dataBaseOptions" :key="item.datasourceId" :label="item.database" :value="item"
+				/></el-select>
 				<div style="display: inline-block; width: 4%"></div>
 				<el-select style="display: inline-block; width: calc(46% - 100px)"></el-select>
 			</div>
@@ -86,9 +95,25 @@
 
 <script setup lang="ts">
 import {} from "vue";
+import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook.ts";
 import useListPageHook from "@/hooks/listPage";
 import listDataJson from "./listData.json";
 import apiListDialog from "./apiListDialog.vue";
+
+let {
+	dbRawInfo,
+	dsOptions,
+	dataBaseOptions,
+	treeData,
+	defaultProps,
+	colInfoList,
+
+	dsNameChange,
+	getDataBaseOptionsMethod,
+	dbChange,
+	tableChange,
+	handleNodeClick,
+} = useParamsCodeHookfrom();
 
 const apiListDialogRef = <any>ref(null);
 const openApiListDialogClick = () => {

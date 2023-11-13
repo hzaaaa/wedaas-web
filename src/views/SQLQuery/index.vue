@@ -401,7 +401,7 @@ let {
 	dbChange,
 	tableChange,
 	handleNodeClick,
-} = useParamsCodeHookfrom();
+} = useParamsCodeHookfrom(getRealtimetablesApi, getColsInfoRealtimeApi);
 let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 
 const executeClick = () => {

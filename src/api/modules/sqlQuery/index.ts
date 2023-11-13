@@ -19,9 +19,21 @@ export const discardSqlApi = (params: any) => {
 export const getRealtimetablesApi = (params: any) => {
   return http.post<any>(PORTBiz + `/database/realtimetables`, params);
 };
+// **  数据库 事实表 apiConfig
+export const tablesForQueryByUserIdNoPageApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/database/tablesForQueryByUserIdNoPage`, params);
+};
 // **  数据库 实时列信息
 export const getColsInfoRealtimeApi = (params: any) => {
   return http.post<any>(PORTBiz + `/table/colsInfoRealtime`, params);
+};
+// **  数据库 实时列信息 apiConfig
+export const getColsInfoApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/table/colsInfo?tableId=${params.tableId}`, params);
+};
+// **  数据库 生成api数量 apiConfig
+export const getApiListQueryBytableNameApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/apiManage/apiListQueryBytableName`, params);
 };
 // **  数据库 查询
 export const sqlQueryApi = (params: any) => {
@@ -55,3 +67,8 @@ export const buildSQLApi = (params: any) => {
 export const testExecSqlApi = (params: any) => {
   return http.post<any>(PORTBiz + `/sql/apitest/${params.uuid}`, params);
 };
+// **  api list at api config
+export const queryApiLisByDatasourceApi = (params: any) => {
+  return http.post<any>(PORTBiz + `/apiManage/queryApiLisByDatasource`, params);
+};
+

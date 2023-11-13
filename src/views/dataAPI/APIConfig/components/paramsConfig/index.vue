@@ -16,58 +16,121 @@
 					<el-option v-for="item in dataBaseOptions" :key="item.datasourceId" :label="item.database" :value="item"
 				/></el-select>
 				<div style="display: inline-block; width: 4%"></div>
-				<el-select style="display: inline-block; width: calc(46% - 100px)"></el-select>
+				<el-select
+					value-key="a"
+					style="display: inline-block; width: calc(46% - 100px)"
+					v-model="dbRawInfo.tableObj"
+					@change="tableChange"
+				>
+					<el-option v-for="item in treeData" :key="item.a" :label="item.b" :value="item"></el-option>
+				</el-select>
 			</div>
 
 			<div class="btn-and-title">
 				<div class="title">参数字段</div>
-				<div class="btn-right" @click="openApiListDialogClick">已生成API 3</div>
+				<div class="btn-right" @click="openApiListDialogClick">已生成API {{ apiCount }}</div>
 			</div>
 
 			<el-table
-				ref="multipleTableRef"
-				:data="tableData"
+				ref="colInfoRef"
+				:data="colInfoList"
 				style="width: 100%; flex: 1 !important; height: auto"
 				class="common-table"
+				@selection-change="handleColInfoSelectionChange"
 				border
 			>
 				<el-table-column type="selection" width="55" />
-				<el-table-column label="字段名" width="120">
-					<template #default="scope">{{ scope.row.date }}</template>
-				</el-table-column>
-				<el-table-column property="name" label="描述" width="120" />
-				<el-table-column property="address" label="类型" show-overflow-tooltip />
+				<el-table-column label="字段名" prop="colName" show-overflow-tooltip> </el-table-column>
+				<el-table-column prop="colDesp" label="描述" show-overflow-tooltip />
+				<el-table-column prop="colType" label="类型" show-overflow-tooltip />
 			</el-table>
 		</div>
 		<div class="center-btns">
-			<div class="btn btn1">
+			<div class="btn btn1" @click="left2RightClick">
 				<el-icon><ArrowRight /></el-icon>
 			</div>
-			<div class="btn btn2">
+			<div class="btn btn2" @click="right2LeftClick">
 				<el-icon><ArrowLeft /></el-icon>
 			</div>
 		</div>
 		<div class="right-block">
 			<div class="sql-result">
 				<div class="res-types-title">
-					<div class="res-title" @click="activeTab = 'col1Show'" :class="activeTab === 'col1Show' ? 'res-title-active' : ''">
+					<div
+						class="res-title"
+						@click="activeTab = 'queryListShow'"
+						:class="activeTab === 'queryListShow' ? 'res-title-active' : ''"
+					>
 						<span> 请求参数</span>
 					</div>
-					<div class="res-title" @click="activeTab = 'col2Show'" :class="activeTab === 'col2Show' ? 'res-title-active' : ''">
+					<div
+						class="res-title"
+						@click="activeTab = 'returnListShow'"
+						:class="activeTab === 'returnListShow' ? 'res-title-active' : ''"
+					>
 						<span>返回参数</span>
 					</div>
-					<div class="res-title" @click="activeTab = 'col3Show'" :class="activeTab === 'col3Show' ? 'res-title-active' : ''">
-						<span> 结果(0)</span>
+					<div
+						class="res-title"
+						@click="activeTab = 'sortListShow'"
+						:class="activeTab === 'sortListShow' ? 'res-title-active' : ''"
+					>
+						<span> 排序参数</span>
 					</div>
 				</div>
-				<div class="table-wrap">
+				<div class="table-wrap" v-show="activeTab === 'queryListShow'">
 					<el-table
+						ref="queryListRef"
 						class="common-table"
-						v-loading="tableLoading"
-						:data="tableDataList"
+						:data="queryParamList"
 						border
 						style="flex: 1 !important; height: auto"
 						:default-sort="{ prop: 'update_time', order: 'descending' }"
+						@selection-change="handleQuerySelectionChange"
+					>
+						<el-table-column type="selection" width="55" />
+
+						<el-table-column label="字段名" prop="colName" show-overflow-tooltip> </el-table-column>
+						<el-table-column label="描述" prop="description" show-overflow-tooltip>
+							<template #default="scope">
+								<el-input v-model="scope.row.description" style="width: 100%" />
+							</template>
+						</el-table-column>
+						<el-table-column label="类型" prop="columnType" show-overflow-tooltip>
+							<template #default="scope">
+								<el-select v-model="scope.row.columnType" placeholder="请选择" style="width: 100%">
+									<el-option v-for="item in ['raw', 'number', 'string']" :key="item" :label="item" :value="item" />
+								</el-select>
+							</template>
+						</el-table-column>
+						<el-table-column prop="condition" label="条件" width="180">
+							<template #default="scope">
+								<el-select v-model="scope.row.condition" placeholder="请选择" style="width: 100%">
+									<el-option v-for="item in ['>', '<', '=', '!=', '>=', '<=']" :key="item" :label="item" :value="item" />
+								</el-select>
+							</template>
+						</el-table-column>
+						<el-table-column label="默认值" prop="defaultValue" show-overflow-tooltip>
+							<template #default="scope">
+								<el-input v-model="scope.row.defaultValue" style="width: 100%" />
+							</template>
+						</el-table-column>
+						<el-table-column label="必填" prop="required" show-overflow-tooltip>
+							<template #default="scope">
+								<el-checkbox v-model="scope.row.required" label="" />
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+				<div class="table-wrap" v-show="activeTab === 'returnListShow'">
+					<el-table
+						ref="returnListRef"
+						class="common-table"
+						:data="returnParamList"
+						border
+						style="flex: 1 !important; height: auto"
+						:default-sort="{ prop: 'update_time', order: 'descending' }"
+						@selection-change="handleReturnSelectionChange"
 					>
 						<el-table-column type="selection" width="55" />
 						<el-table-column label="字段名" prop="name" min-width="180" show-overflow-tooltip>
@@ -78,7 +141,33 @@
 
 						<el-table-column label="描述" prop="description" min-width="180" show-overflow-tooltip></el-table-column>
 
-						<el-table-column prop="createTime" sortable="custom" label="类型" width="180">
+						<el-table-column prop="createTime" label="类型" width="180">
+							<template #default="scope">
+								{{ scope.row.createTime }}
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+				<div class="table-wrap" v-show="activeTab === 'sortListShow'">
+					<el-table
+						ref="sortListRef"
+						class="common-table"
+						:data="sortParamList"
+						border
+						style="flex: 1 !important; height: auto"
+						:default-sort="{ prop: 'update_time', order: 'descending' }"
+						@selection-change="handleSortSelectionChange"
+					>
+						<el-table-column type="selection" width="55" />
+						<el-table-column label="字段名" prop="name" min-width="180" show-overflow-tooltip>
+							<template #default="scope">
+								<span :key="scope.row.id" :underline="false" class="blue-link">{{ scope.row.name }}</span>
+							</template>
+						</el-table-column>
+
+						<el-table-column label="描述" prop="description" min-width="180" show-overflow-tooltip></el-table-column>
+
+						<el-table-column prop="createTime" label="类型" width="180">
 							<template #default="scope">
 								{{ scope.row.createTime }}
 							</template>
@@ -95,11 +184,11 @@
 
 <script setup lang="ts">
 import {} from "vue";
-import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook.ts";
+import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook";
 import useListPageHook from "@/hooks/listPage";
 import listDataJson from "./listData.json";
 import apiListDialog from "./apiListDialog.vue";
-
+import { tablesForQueryByUserIdNoPageApi, getColsInfoApi, getApiListQueryBytableNameApi } from "@/api/modules/sqlQuery/index";
 let {
 	dbRawInfo,
 	dsOptions,
@@ -107,123 +196,92 @@ let {
 	treeData,
 	defaultProps,
 	colInfoList,
+	apiCount,
 
 	dsNameChange,
 	getDataBaseOptionsMethod,
 	dbChange,
 	tableChange,
 	handleNodeClick,
-} = useParamsCodeHookfrom();
+} = useParamsCodeHookfrom(tablesForQueryByUserIdNoPageApi, getColsInfoApi, true);
 
 const apiListDialogRef = <any>ref(null);
 const openApiListDialogClick = () => {
-	apiListDialogRef.value.acceptParams({
-		row: {},
-	});
-};
-let tableData = [
-	{
-		date: "2016-05-03",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-	{
-		date: "2016-05-02",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-	{
-		date: "2016-05-04",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-	{
-		date: "2016-05-01",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-	{
-		date: "2016-05-08",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-	{
-		date: "2016-05-06",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-	{
-		date: "2016-05-07",
-		name: "Tom",
-		address: "No. 189, Grove St, Los Angeles",
-	},
-];
-tableData = [...tableData, ...tableData];
-tableData = [...tableData, ...tableData];
-tableData = [...tableData, ...tableData];
-const activeTab = ref("col1Show");
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
-
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
+	if (apiCount.value === 0) {
+		ElMessage.warning("API total is 0");
+		return;
 	}
-	list = listDataJson.data;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
+	let dbObj = dbRawInfo.value.dbObj;
+	let tableObj = dbRawInfo.value.tableObj;
+	apiListDialogRef.value.acceptParams({
+		row: {
+			datasourceId: dbObj.datasourceId,
+			dbType: dbObj.type,
+			tablesName: tableObj.b,
+		},
 	});
 };
+const colInfoRef = <any>ref(null);
+const colInfoMultipleSelection = <any>ref([]);
+const handleColInfoSelectionChange = (val: any) => {
+	colInfoMultipleSelection.value = val;
+};
+const queryListRef = <any>ref(null);
+const queryListMultipleSelection = <any>ref([]);
+const handleQuerySelectionChange = (val: any) => {
+	queryListMultipleSelection.value = val;
+};
+const returnListRef = <any>ref(null);
+const returnListMultipleSelection = <any>ref([]);
+const handleReturnSelectionChange = (val: any) => {
+	returnListMultipleSelection.value = val;
+};
+const sortListRef = <any>ref(null);
+const sortListMultipleSelection = <any>ref([]);
+const handleSortSelectionChange = (val: any) => {
+	sortListMultipleSelection.value = val;
+};
 
-const beanInfo = {};
-const queryFormRaw = {};
-let {
-	tableLoading,
+const activeTab = ref("queryListShow");
+const queryParamList = <any>ref([]);
+const returnParamList = <any>ref([]);
+const sortParamList = <any>ref([]);
+let name2objMap = <any>{
+	queryListShow: {
+		ref: queryListRef,
+		multipleSelection: queryListMultipleSelection,
+		tableList: queryParamList,
+		rawObj: {},
+	},
+	returnListShow: {
+		ref: returnListRef,
+		tableList: returnParamList,
+		rawObj: {},
+	},
+	sortListShow: {
+		ref: sortListRef,
+		tableList: sortParamList,
+		rawObj: {},
+	},
+};
+const left2RightClick = () => {
+	let obj = name2objMap[activeTab.value];
 
-	pageParams,
-	tableDataList,
-	handleCurrentPageChange,
-	handleSizeChange,
-	resetPageToOne,
-	refreshData, //刷新按钮
+	obj.tableList.value = [...obj.tableList.value, ...colInfoMultipleSelection.value];
+	colInfoRef.value.clearSelection();
+};
+const right2LeftClick = () => {
+	let obj = name2objMap[activeTab.value];
 
-	drawer,
-	employeeRow,
-	onAddDrawer,
-	onEditDrawer,
-	searchByQueryForm,
-	subData,
-
-	queryForm,
-	doReset,
-} = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
-
-	beanInfo,
-	queryFormRaw
-);
+	obj.tableList.value = obj.tableList.value.filter((item: any) => {
+		let isOut = obj.multipleSelection.value.every((selectItem: any) => {
+			// debugger;
+			return selectItem.colName !== item.colName;
+		});
+		return isOut;
+	});
+	obj.ref.value.clearSelection();
+};
 </script>
 
 <style lang="scss" scoped>

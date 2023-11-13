@@ -9,11 +9,13 @@
 				border
 			>
 				<el-table-column type="index" width="55" label=" " />
-				<el-table-column label="名称" width="120">
-					<template #default="scope">{{ scope.row.date }}</template>
+				<el-table-column label="名称">
+					<template #default="scope">{{ scope.row.name }}</template>
 				</el-table-column>
-				<el-table-column property="name" label="描述" width="120" />
-				<el-table-column property="address" label="创建时间" show-overflow-tooltip />
+				<el-table-column prop="description" label="描述" />
+				<el-table-column prop="create_time" label="创建时间" show-overflow-tooltip>
+					<template #default="scope">{{ moment(scope.row.create_time * 1000).format("YYYY-MM-DD") }}</template>
+				</el-table-column>
 			</el-table>
 			<div class="pagination-block mt30" style="display: flex; justify-content: flex-end">
 				<el-pagination
@@ -34,40 +36,8 @@
 import { ref } from "vue";
 import useListPageHook from "@/hooks/listPage";
 import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
-let createTableByData = (pageSize: number, pageNum: number) => {
-	let list: any = [];
-
-	while (pageSize--) {
-		list.push({
-			dataName: 0,
-
-			receiptSide: "receiptSide",
-			description: "description",
-			status: "status",
-			notes: "notes" + pageNum,
-		});
-	}
-	// list = listDataJson.data.list;
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	list = [...list, ...list];
-	return list;
-};
-const getTableListApi = (params: any) => {
-	console.log({ ...params });
-	return new Promise((resolve, reject) => {
-		setTimeout(() => {
-			resolve({
-				data: {
-					total: params.pageSize * 2,
-					list: createTableByData(params.pageSize, params.pageNum),
-				},
-			});
-		}, 500);
-	});
-};
-
+import { queryApiLisByDatasourceApi } from "@/api/modules/sqlQuery/index";
+import moment from "moment";
 const beanInfo = {};
 const queryFormRaw = {};
 let {
@@ -90,49 +60,29 @@ let {
 	queryForm,
 	doReset,
 } = useListPageHook(
-	// getCompanyListApi,
-	getTableListApi, //temp test
+	queryApiLisByDatasourceApi,
 
 	beanInfo,
-	queryFormRaw
+	queryFormRaw,
+	(obj: any) => {
+		let target = { ...obj, ...dialogProps.value.row };
+
+		return target;
+	}
 );
-// tableData = [...tableData, ...tableData];
-// tableData = [...tableData, ...tableData];
-// tableData = [...tableData, ...tableData];
-const inputInfo = ref({
-	name: "",
-});
-const rulesForm = reactive<any>({
-	name: [{ required: true, message: "请输入主目录名称!", trigger: "blur" }],
-});
 
 const dialogVisible = ref(false);
 
 const dialogProps = ref<any>({
-	row: {
-		status: 0,
-	},
+	row: {},
 });
 
 const acceptParams = (params: any) => {
 	dialogProps.value = params;
 	dialogVisible.value = true;
+	searchByQueryForm();
 };
 
-const inputInfoRef = <any>ref(null);
-// 提交
-const submit = async () => {
-	let formEl = <FormInstance | undefined>inputInfoRef.value;
-	if (!formEl) return;
-	formEl.validate(async (valid, fields) => {
-		if (valid) {
-		} else {
-			console.log("error", fields);
-		}
-	});
-	// dialogVisible.value = false;
-	// emit("refreshData");
-};
 const getLabelInfo = () => {};
 
 const emit = defineEmits(["refreshData"]);

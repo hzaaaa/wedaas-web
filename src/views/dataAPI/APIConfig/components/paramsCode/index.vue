@@ -192,10 +192,11 @@ import { json as JSON } from "@codemirror/lang-json";
 import useFoldOrExpandHook from "@/hooks/foldOrExpandHook";
 import { Search, CaretRight, Folder, Document } from "@element-plus/icons-vue";
 import router from "@/routers";
-import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook.ts";
+import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook";
 import useTreeFilterHook from "@/views/dataCatalogMenu/dataCatalog/hooks/treeFilterHook";
 import parseParamListDialog from "../parseParamListDialog.vue";
 import { buildSQLApi, discardSqlApi, testExecSqlApi, sqlQueryApi } from "@/api/modules/sqlQuery/index";
+import { tablesForQueryByUserIdNoPageApi, getColsInfoApi } from "@/api/modules/sqlQuery/index";
 let parseParamListDialogRef = <any>ref(null);
 
 let treeRef = <any>ref(null);
@@ -212,7 +213,7 @@ let {
 	dbChange,
 	tableChange,
 	handleNodeClick,
-} = useParamsCodeHookfrom();
+} = useParamsCodeHookfrom(tablesForQueryByUserIdNoPageApi, getColsInfoApi);
 let { filterText, filterNode } = useTreeFilterHook(defaultProps.label, treeRef);
 const defaultTagRE = /\{\{((?:.|\r?\n)+?)\}\}/g;
 const executeClick = () => {
@@ -236,7 +237,7 @@ const executeClick = () => {
 		buildSql(paramList);
 	}
 };
-const buildSql = (paramList) => {
+const buildSql = (paramList: any) => {
 	let dbObj = dbRawInfo.value.dbObj;
 	let obj = <any>{};
 	paramList.forEach((item: any) => {

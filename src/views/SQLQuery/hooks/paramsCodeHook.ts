@@ -1,10 +1,10 @@
 import { getAllApiCatalogApi } from "@/api/modules/dataApi/apiCatalog";
 import { getApiPathListApi } from "@/api/modules/dataApi/pathManage";
 import { connectDsNameQueryApi, getDBSelectorApi } from "@/api/modules/sqlQuery/index";
-import { discardSqlApi, getRealtimetablesApi, getColsInfoRealtimeApi, sqlQueryApi } from "@/api/modules/sqlQuery/index";
+import { discardSqlApi, sqlQueryApi, getApiListQueryBytableNameApi } from "@/api/modules/sqlQuery/index";
 
-export default () => {
-  const treeData = ref([]);
+export default (getTableApi: any, getColsInApi: any, needCount?: boolean) => {
+  const treeData = <any>ref([]);
   const defaultProps = {
     children: "childTuple",
     label: "b",
@@ -13,6 +13,7 @@ export default () => {
   const dbRawInfo = <any>ref({
     dsName: "",
     dbObj: null,
+    tableObj: null,
   });
   const dsOptions = ref<any>([]);
   const dataBaseOptions = ref<any>([]);
@@ -55,29 +56,41 @@ export default () => {
       type: value.type,
 
     };
-    let RealtimetablesRes = await getRealtimetablesApi(params);
+    let RealtimetablesRes = await getTableApi(params);
     treeData.value = RealtimetablesRes.data;
-
-    tableChange(RealtimetablesRes.data[0]);
+    if (treeData.value.length > 0) {
+      dbRawInfo.value.tableObj = treeData.value[0];
+      tableChange(RealtimetablesRes.data[0]);
+    }
   };
+  const apiCount = ref(0);
   const tableChange = (data: any) => {
     let value = dbRawInfo.value.dbObj;
-    getColsInfoRealtimeApi({
+    getColsInApi({
       dbID: value.datasourceId,
       type: value.type,
       tableId: data.a,
       tableName: data.b,
 
     }).then((res: any) => {
-      console.log("getColsInfoRealtimeApi", res);
+
       colInfoList.value = res.data;
     });
+    if (needCount) {
+
+      getApiListQueryBytableNameApi({
+        datasourceId: value.datasourceId,
+        tablesName: data.b,
+      }).then((res: any) => {
+        apiCount.value = res.data.count;
+      });
+    }
   };
   const handleNodeClick = (data: any) => {
     tableChange(data);
   };
   return {
-    dbRawInfo, dsOptions, dataBaseOptions, treeData, defaultProps, colInfoList,
+    dbRawInfo, dsOptions, dataBaseOptions, treeData, defaultProps, colInfoList, apiCount,
 
     dsNameChange, getDataBaseOptionsMethod, dbChange, tableChange, handleNodeClick
 

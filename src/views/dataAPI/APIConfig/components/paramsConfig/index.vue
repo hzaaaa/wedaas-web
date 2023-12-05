@@ -185,6 +185,7 @@
 <script setup lang="ts">
 import {} from "vue";
 import useParamsCodeHookfrom from "@/views/SQLQuery/hooks/paramsCodeHook";
+import { ElMessage, type FormInstance, type FormRules, type TabsPaneContext } from "element-plus";
 import useListPageHook from "@/hooks/listPage";
 import listDataJson from "./listData.json";
 import apiListDialog from "./apiListDialog.vue";
